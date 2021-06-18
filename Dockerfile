@@ -23,7 +23,8 @@ RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 --slave /usr
 
 COPY . /usr/src/eagle-to-mqtt
 
-# Build and install the various dependencies 
+# Build and install the various dependencies
+RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/paho.mqtt.sh"]
 RUN /usr/src/eagle-to-mqtt/deps/paho.mqtt.sh
 
 # Build and install the application
@@ -38,6 +39,8 @@ FROM base AS runtime
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /usr/src/eagle-to-mqtt/app/app_entrypoint.sh /app_entrypoint.sh
+
+RUN ["chmod", "+x", "/app_entrypoint.sh"]
 
 ENV LD_LIBRARY_PATH /usr/local/lib:${LD_LIBRARY_PATH}
 

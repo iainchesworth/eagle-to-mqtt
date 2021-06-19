@@ -8,7 +8,8 @@
 #include "metering/common/fragment_types.h"
 
 IEagle::IEagle() :
-	m_DeviceMacId()
+	m_DeviceMacId(),
+	m_DemandHistory()
 {
 }
 
@@ -26,6 +27,8 @@ void IEagle::ProcessFragment(const DeviceInfo& device_info)
 
 void IEagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
+	BOOST_LOG_TRIVIAL(debug) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Demand().Demand() << L")";
+	m_DemandHistory.insert(std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Demand()));
 }
 
 void IEagle::ProcessFragment(const NetworkInfo& network_info)

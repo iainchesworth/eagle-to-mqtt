@@ -73,8 +73,7 @@ public:
 		return *this;
 	}
 
-
-private:
+protected:
 	std::array<uint8_t, ADDRESS_ELEMENTS> m_DeviceMacId;
 };
 

@@ -24,20 +24,25 @@ Options::Options(int argc, char* argv[]) :
 {
 	boost::program_options::options_description cmdline_options("Program Arguments");
 
-	auto set_logging_level = [](boost::log::trivial::severity_level log_level) { boost::log::core::get()->set_filter(boost::log::trivial::severity >= log_level);  };
-	auto set_trace_logging = [set_logging_level](const bool&) { set_logging_level(boost::log::trivial::trace); };
-	auto set_debug_logging = [set_logging_level](const bool&) { set_logging_level(boost::log::trivial::debug); };;
-	auto set_fatal_logging = [set_logging_level](const bool&) { set_logging_level(boost::log::trivial::fatal); };;
+	auto set_logging_level = [](boost::log::trivial::severity_level log_level) { boost::log::core::get()->set_filter(boost::log::trivial::severity >= log_level); };
+	auto set_debug_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(boost::log::trivial::debug); } };
+	auto set_trace_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(boost::log::trivial::trace); } };
+	auto set_fatal_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(boost::log::trivial::fatal); } };
+
 	auto enable_authentication = [this](const std::string&) { this->m_MqttUseAuthentication = true; };
 
 	try
 	{
+		// Set the default logging level before any of the various level options are processed.
+		set_logging_level(boost::log::trivial::info);
+
+		// Configure the various options for the application,
 		boost::program_options::options_description options_app("Application Options");
 		options_app.add_options()
-			("debug,d", boost::program_options::bool_switch()->notifier(set_debug_logging), "Enable debugging")
-			("quiet,q", boost::program_options::bool_switch()->notifier(set_fatal_logging), "Don't output any status messages")
+			("debug,d", boost::program_options::bool_switch()->default_value(false)->notifier(set_debug_logging), "Enable debugging")
+			("quiet,q", boost::program_options::bool_switch()->default_value(false)->notifier(set_fatal_logging), "Don't output any status messages")
 			("help,h", "Prints this message")
-			("verbose,v", boost::program_options::bool_switch()->notifier(set_trace_logging), "Verbose output");
+			("verbose,v", boost::program_options::bool_switch()->default_value(false)->notifier(set_trace_logging), "Verbose output");
 
 		boost::program_options::options_description options_httpuploader("HTTP Uploader API Options");
 		options_httpuploader.add_options()

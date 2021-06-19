@@ -3,6 +3,10 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <chrono>
+#include <map>
+
+#include "metering/common/demand_in_watts.h"
 #include "metering/common/ethernet_mac_id.h"
 #include "metering/fragment_processors/connection_status.h"
 #include "metering/fragment_processors/current_summation.h"
@@ -27,6 +31,9 @@ public:
 
 protected:
 	EthernetMacId m_DeviceMacId;
+
+private:
+	std::map<std::chrono::time_point<std::chrono::system_clock>, DemandInWatts> m_DemandHistory;
 };
 
 #endif // IEAGLE_H

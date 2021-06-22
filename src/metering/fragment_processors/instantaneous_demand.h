@@ -3,29 +3,25 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <chrono>
-#include <string>
-
 #include "interfaces/ifragmentprocessor.h"
-#include "metering/common/demand_in_watts.h"
-#include "metering/common/protocol_types.h"
-#include "metering/common/zigbee_mac_id.h"
+#include "metering/common/timestamps.h"
+#include "metering/fragment_processors/partial_fragment_types/demand.h"
+#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
 class InstantaneousDemand : public IFragmentProcessor
 {
 public:
 	InstantaneousDemand(const boost::property_tree::ptree& node);
+	virtual ~InstantaneousDemand();
 
 public:
-	DemandInWatts Demand() const;
-	std::chrono::time_point<std::chrono::system_clock> Timestamp() const;
+	Demand Now() const;
+	timepoint_from_jan2000 Timestamp() const;
 
 private:
-	ZigBeeMacId m_DeviceMacId;
-	std::string m_MeterMacId;
-	std::chrono::time_point<std::chrono::system_clock> m_Timestamp;
-	DemandInWatts m_Demand;
-	ProtocolTypes m_Protocol;
+	ZigBeeMacId m_MeterMacId;
+	timepoint_from_jan2000 m_Timestamp;
+	Demand m_Demand;
 };
 
 #endif // INSTANTANEOUS_DEMAND_H

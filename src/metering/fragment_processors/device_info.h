@@ -6,16 +6,21 @@
 #include <string>
 
 #include "interfaces/ifragmentprocessor.h"
-#include "metering/common/protocol_types.h"
-#include "metering/common/zigbee_mac_id.h"
 
 class DeviceInfo : public IFragmentProcessor
 {
 public:
 	DeviceInfo(const boost::property_tree::ptree& node);
+	virtual ~DeviceInfo();
+
+public:
+	std::string FirmwareVersion() const;
+	std::string HardwareVersion() const;
+	std::string ModelId() const;
+	std::string ManufactureDate() const;
+	std::string LotNumber() const;
 
 private:
-	ZigBeeMacId m_DeviceMacId;
 	std::string m_InstallCode;
 	std::string m_LinkKey;
 	std::string m_FWVersion;
@@ -23,8 +28,8 @@ private:
 	std::string m_ImageType;
 	std::string m_Manufacturer;
 	std::string m_ModelId;
-	std::string m_DateCodeAndLotNumber;
-	ProtocolTypes m_Protocol;
+	std::string m_DateCode;
+	std::string m_LotNumber;
 };
 
 #endif // DEVICE_INFO_H

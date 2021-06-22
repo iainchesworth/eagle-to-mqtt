@@ -6,10 +6,10 @@
 #include <string>
 
 #include "interfaces/ieagle.h"
-#include "metering/common/ethernet_mac_id.h"
 #include "metering/device_factory.h"
 #include "metering/device_registry.h"
 #include "metering/device_identifier.h"
+#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
 std::shared_ptr<IEagle> IdentifyAndGetDeviceInstance(boost::property_tree::ptree& device_payload)
 {

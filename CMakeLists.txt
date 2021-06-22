@@ -32,6 +32,10 @@ if (UNIX)
     set(Boost_USE_STATIC_LIBS OFF)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
+
+    # Fix issues with dynamic linking for Boost under Linux/Unix
+    add_definitions(-DBOOST_LOG_DYN_LINK)
+
 endif ()
 
 if (WIN32)
@@ -61,21 +65,28 @@ endif ()
 # Main application
 #-----------------------------------------------------------------------------------------------------------------------
 
-find_package(Boost COMPONENTS log program_options system thread REQUIRED)
+find_package(Boost COMPONENTS log program_options system thread unit_test_framework REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(PahoMqttCpp CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
-file(GLOB_RECURSE PROJECT_SOURCES "src/**.cpp")
+file(GLOB_RECURSE PROJECT_SOURCES "src/*/*.cpp")
 
-add_executable (${PROJECT_NAME} ${PROJECT_SOURCES})
+set(LIBRARY_TARGET "eagle-to-mqtt-core")
+add_library(${LIBRARY_TARGET} STATIC ${PROJECT_SOURCES})
+target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
+target_include_directories(${LIBRARY_TARGET} PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/src")
-target_link_directories(${PROJECT_NAME} PRIVATE ${Boost_LIBRARY_DIRS} ${CMAKE_THREAD_LIBS_INIT})
+set(APPLICATION_TARGET "eagle-to-mqtt")
+add_executable (${APPLICATION_TARGET} "src/main.cpp")
+target_include_directories(${APPLICATION_TARGET} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
+target_include_directories(${APPLICATION_TARGET} PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
+target_link_directories(${APPLICATION_TARGET} PRIVATE ${Boost_LIBRARY_DIRS} ${CMAKE_THREAD_LIBS_INIT})
 target_link_libraries(
-    ${PROJECT_NAME} 
+    ${APPLICATION_TARGET}
+        PRIVATE
+            ${LIBRARY_TARGET}
         PRIVATE 
             Boost::boost 
             Boost::log 
@@ -83,7 +94,13 @@ target_link_libraries(
             OpenSSL::Crypto 
             OpenSSL::SSL 
             PahoMqttCpp::paho-mqttpp3
+            Threads::Threads
 )
+
+# Unit testing
+#-----------------------------------------------------------------------------------------------------------------------
+
+add_subdirectory(tests)
 
 # Packaging and distribution
 #-----------------------------------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 
 #include "interfaces/ieagle.h"
 #include "metering/device_factory.h"
-#include "metering/common/ethernet_mac_id.h"
+#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
 class DeviceRegistry
 {

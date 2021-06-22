@@ -8,9 +8,8 @@ class Eagle200 : public IEagle
 public:
 	Eagle200();
 
-public:
-	virtual void ProcessFragment(const DeviceInfo& device_info) final;
-	virtual void ProcessFragment(const InstantaneousDemand& instantaneous_demand) final;
+private:
+	virtual void ProcessFragment(const NetworkInfo& network_info) final;
 };
 
 #endif // EAGLE_200_H

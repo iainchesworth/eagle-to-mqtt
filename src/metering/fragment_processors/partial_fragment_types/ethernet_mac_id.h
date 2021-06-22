@@ -1,11 +1,15 @@
 #ifndef ETHERNET_MAC_ID_H
 #define ETHERNET_MAC_ID_H
 
+#include <boost/property_tree/ptree.hpp>
+
 #include <string>
 
-#include "metering/common/mac_id.h"
+#include "metering/fragment_processors/partial_fragment_types/mac_id.h"
 
-class EthernetMacId : public MacId<6> // Is 6 elements of 2 chars encoded as 0x123456789012.
+static constexpr uint32_t ETHERNET_MAC_ID_LENGTH_IN_PAIRS{ 6 };
+
+class EthernetMacId : public MacId<ETHERNET_MAC_ID_LENGTH_IN_PAIRS> // Is 6 elements of 2 chars encoded as 0x123456789012.
 {
 public:
 	EthernetMacId();
@@ -19,6 +23,9 @@ public:
 	{
 		std::size_t operator()(const EthernetMacId& k) const;
 	};
+
+public:
+	static EthernetMacId ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& key);
 };
 
 #endif // ETHERNET_MAC_ID_H

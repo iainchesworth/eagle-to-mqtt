@@ -3,7 +3,8 @@
 
 enum class UnitsOfMeasure
 {
-	Kilowatts = 0x00
+	Kilowatts,
+	KilowattHours
 };
 
 #endif // UNITS_OF_MEASURE_H

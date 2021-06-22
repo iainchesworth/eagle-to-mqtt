@@ -2,50 +2,43 @@
 #define IFRAGMENTPROCESSOR_H
 
 #include <boost/log/trivial.hpp>
-#include <boost/optional/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include <string>
 
 #include "metering/common/protocol_types.h"
-#include "metering/common/status_types.h"
-#include "metering/common/zigbee_mac_id.h"
+#include "metering/common/statuses.h"
+#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
 class IFragmentProcessor
 {
 protected:
-	template<typename VALUE_TYPE>
-	VALUE_TYPE ProcessOptionalTag(const boost::property_tree::ptree& node, const std::string& tag_key, VALUE_TYPE default_value) const
-	{
-		auto tag = node.get_optional<VALUE_TYPE>(tag_key);
-		if (!tag)
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"No " << tag_key << L" tag present in payload...setting default value";
-			return default_value;
-		}
-		else
-		{
-			return tag.value();
-		}
-	}
+	IFragmentProcessor(const boost::property_tree::ptree& node);
 
-	template<>
-	ZigBeeMacId ProcessOptionalTag(const boost::property_tree::ptree& node, const std::string& tag_key, ZigBeeMacId default_value) const
-	{
-		auto tag = node.get_optional<ZigBeeMacId>(tag_key, ZigBeeMacId_PropertyTreeTranslator());
-		if (!tag)
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"No " << tag_key << L" tag present in payload...setting default ZigBee MAC id value";
-			return default_value;
-		}
-		else
-		{
-			return tag.value();
-		}
-	}
+public:
+	ZigBeeMacId DeviceMacId() const;
 
 protected:
-	ProtocolTypes ProcessOptionalProtocol(const boost::property_tree::ptree& node) const
+	ZigBeeMacId m_DeviceMacId;
+	ProtocolTypes m_Protocol;
+
+protected:
+	Statuses ProcessStatus(const boost::property_tree::ptree& node) const
+	{
+		auto status = node.get_optional<std::string>("Status");
+		if (!status)
+		{
+			BOOST_LOG_TRIVIAL(trace) << L"No Status tag present in payload...defaulting to NotSpecified";
+			return Statuses::StatusTypes::NotSpecified;
+		}
+		else
+		{
+			return Statuses(status.value());
+		}
+	}
+
+private:
+	ProtocolTypes ProcessProtocol(const boost::property_tree::ptree& node) const
 	{
 		auto protocol = node.get_optional<std::string>("Protocol");
 		if (!protocol)
@@ -56,20 +49,6 @@ protected:
 		else
 		{
 			return protocol_type_from_string(protocol.value());
-		}
-	}
-
-	StatusTypes ProcessOptionalStatus(const boost::property_tree::ptree& node) const
-	{
-		auto status = node.get_optional<std::string>("Status");
-		if (!status)
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"No Status tag present in payload...defaulting to NotSpecified";
-			return StatusTypes::NotSpecified;
-		}
-		else
-		{
-			return status_type_from_string(status.value());
 		}
 	}
 };

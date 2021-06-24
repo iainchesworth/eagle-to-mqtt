@@ -14,6 +14,16 @@ IEagle::IEagle() :
 	m_EthernetMacId(),
 	m_ZigbeeMacId(),
 	m_CoordinatorZigbeeMacId(),
+	m_FirmwareVersion(),
+	m_HardwareVersion(),
+	m_ModelId(),
+	m_MeterMessages{
+		// Instantiate the various available meter messages queues.
+		std::make_pair(Queues::QueueTypes::NotSpecified, MeterMessageQueue()),
+		std::make_pair(Queues::QueueTypes::Active, MeterMessageQueue()),
+		std::make_pair(Queues::QueueTypes::CancelPending, MeterMessageQueue()),
+		std::make_pair(Queues::QueueTypes::Unknown, MeterMessageQueue())
+	},
 	m_DemandHistory()
 {
 }
@@ -70,6 +80,12 @@ void IEagle::ProcessPayload(const boost::property_tree::ptree& node)
 						++m_MessageStats.InstantaneousDemandCount;
 						break;
 
+					case FragmentTypes::MessageCluster:
+						BOOST_LOG_TRIVIAL(debug) << L"Processing MessageCluster fragment";
+						ProcessFragment(MessageCluster(node_data));
+						++m_MessageStats.MessageClusterCount;
+						break;
+
 					case FragmentTypes::NetworkInfo:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing NetworkInfo fragment";
 						ProcessFragment(NetworkInfo(node_data));
@@ -85,7 +101,6 @@ void IEagle::ProcessPayload(const boost::property_tree::ptree& node)
 
 					case FragmentTypes::BillingPeriodList:
 					case FragmentTypes::BlockPriceDetail:
-					case FragmentTypes::MessageCluster:
 					case FragmentTypes::TimeCluster:
 					default:
 						BOOST_LOG_TRIVIAL(debug) << L"Ignoring unhandled XML fragments in upload data set (" << v.first << L")";
@@ -136,6 +151,12 @@ void IEagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
 	BOOST_LOG_TRIVIAL(debug) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue() << L")";
 	m_DemandHistory.insert(std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now()));
+}
+
+void IEagle::ProcessFragment(const MessageCluster& message_cluster)
+{
+	BOOST_LOG_TRIVIAL(debug) << L"Capturing meter messages intended for the user";
+	m_MeterMessages[message_cluster.Queue()].push(message_cluster.Message());
 }
 
 void IEagle::ProcessFragment(const NetworkInfo& network_info)

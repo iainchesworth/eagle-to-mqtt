@@ -1,10 +1,11 @@
 #ifndef INVALID_CURRENCY_VALUE_H
 #define INVALID_CURRENCY_VALUE_H
 
-#include <stdexcept>
 #include <string>
 
-class InvalidCurrencyValue : public std::runtime_error
+#include "exceptions/invalid_value.h"
+
+class InvalidCurrencyValue : public InvalidValue
 {
 public:
 	InvalidCurrencyValue(std::string reason_for_invalid_value);

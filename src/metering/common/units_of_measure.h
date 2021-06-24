@@ -3,7 +3,10 @@
 
 enum class UnitsOfMeasure
 {
+	Watts,
 	Kilowatts,
+
+	WattHours,
 	KilowattHours
 };
 

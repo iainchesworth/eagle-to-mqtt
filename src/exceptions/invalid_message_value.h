@@ -4,7 +4,9 @@
 #include <stdexcept>
 #include <string_view>
 
-class InvalidMessageValue : public std::runtime_error
+#include "exceptions/invalid_value.h"
+
+class InvalidMessageValue : public InvalidValue
 {
 public:
 	InvalidMessageValue(std::string_view missing_key);

@@ -1,10 +1,11 @@
 #ifndef INVALID_PRICING_TIER_VALUE_H
 #define INVALID_PRICING_TIER_VALUE_H
 
-#include <stdexcept>
 #include <string>
 
-class InvalidPricingTierValue : public std::runtime_error
+#include "exceptions/invalid_value.h"
+
+class InvalidPricingTierValue : public InvalidValue
 {
 public:
 	InvalidPricingTierValue(std::string reason_for_invalid_value);

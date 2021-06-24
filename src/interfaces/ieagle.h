@@ -13,6 +13,7 @@
 #include "metering/fragment_processors/current_summation.h"
 #include "metering/fragment_processors/device_info.h"
 #include "metering/fragment_processors/instantaneous_demand.h"
+#include "metering/fragment_processors/message_cluster.h"
 #include "metering/fragment_processors/network_info.h"
 #include "metering/fragment_processors/price_cluster.h"
 #include "metering/fragment_processors/partial_fragment_types/demand.h"
@@ -32,6 +33,7 @@ protected:
 	virtual void ProcessFragment(const CurrentSummation& current_summation);
 	virtual void ProcessFragment(const DeviceInfo& device_info);
 	virtual void ProcessFragment(const InstantaneousDemand& instantaneous_demand);
+	virtual void ProcessFragment(const MessageCluster& network_info);
 	virtual void ProcessFragment(const NetworkInfo& network_info);
 	virtual void ProcessFragment(const PriceCluster& price_cluster);
 
@@ -54,6 +56,7 @@ protected:
 		std::atomic<uint64_t> CurrentSummationCount;
 		std::atomic<uint64_t> DeviceInfoCount;
 		std::atomic<uint64_t> InstantaneousDemandCount;
+		std::atomic<uint64_t> MessageClusterCount;
 		std::atomic<uint64_t> NetworkInfoCount;
 		std::atomic<uint64_t> PriceClusterCount;
 	}
@@ -72,6 +75,9 @@ protected:
 
 protected:
 	PricingTiers m_PricingTiers;
+
+protected:
+	std::map<Queues, MeterMessageQueue> m_MeterMessages;
 
 protected:
 	std::map<timepoint_from_jan2000, Demand> m_DemandHistory;

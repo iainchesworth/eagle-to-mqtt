@@ -6,6 +6,21 @@ Summation::Summation(uint32_t raw_summation, uint32_t multiplier, uint32_t divis
 {
 }
 
+double Summation::EnergyValue(UnitsOfMeasure units) const
+{
+	switch (units)
+	{
+	case UnitsOfMeasure::WattHours:
+		return CalculatedEnergyValue::EnergyValue() * 1000.0f;
+
+	case UnitsOfMeasure::KilowattHours:
+		return CalculatedEnergyValue::EnergyValue();
+
+	default:
+		throw std::invalid_argument("Units!");
+	}
+}
+
 Summation Summation::ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& raw_value_key)
 {
 	return CalculatedEnergyValue::ExtractFromPayload<Summation>(node, raw_value_key);

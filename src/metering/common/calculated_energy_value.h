@@ -17,7 +17,7 @@ public:
 	CalculatedEnergyValue(uint32_t raw_summation, uint32_t multiplier, uint32_t divisor, UnitsOfMeasure units, uint8_t digits_right, uint8_t digits_left, bool suppress_leading_zero);
 
 public:
-	double EnergyValue() const;
+	virtual double EnergyValue() const;
 
 private:
 	double m_EnergyValue;

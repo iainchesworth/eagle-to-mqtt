@@ -59,7 +59,7 @@ if (WIN32)
     add_definitions(-D_WIN32_WINNT=${ver})
 
     # Silence MSVC warnings about features that are deprecated in C++17 (notably in Boost headers)
-    add_definitions(-D_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING)
+    add_definitions(-D_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
 # Main application
@@ -100,6 +100,7 @@ target_link_libraries(
 # Unit testing
 #-----------------------------------------------------------------------------------------------------------------------
 
+enable_testing()
 add_subdirectory(tests)
 
 # Packaging and distribution

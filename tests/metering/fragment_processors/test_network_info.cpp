@@ -8,6 +8,8 @@
 #include "metering/fragment_processors/network_info.h"
 #include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
+#include "test_tools/test_tools_fragment_generator.h"
+
 BOOST_AUTO_TEST_SUITE(FragmentProcessors);
 
 /*
@@ -40,27 +42,14 @@ BOOST_AUTO_TEST_SUITE(FragmentProcessors);
 
 BOOST_AUTO_TEST_CASE(Test_NetworkInfo)
 {
-	static const std::string V1_HEADER = "<?xml version=\"1.0\"?><rainforest macId=\"0xffffffffffff\" version=\"undefined\" timestamp=\"0000000000s\">";
-	static const std::string V1_BODY = 
-		"<NetworkInfo>"
-		"<DeviceMacId>0xFFFFFFFFFFFFFFFF</DeviceMacId>"
-		"<CoordMacId>0xFFFFFFFFFFFFFFFF</CoordMacId>"
-		"<Status>Join: Success</Status>"
-		"<Description>{string}</Description>"
-		"<StatusCode>0xFF</StatusCode>"
-		"<ExtPanId>0xFFFFFFFFFFFFFFFF</ExtPanId>"
-		"<Channel>00</Channel>"
-		"<ShortAddr>0xFFFF</ShortAddr>"
-		"<LinkStrength>0xFF</LinkStrength>"
-		"</NetworkInfo>";
-	static const std::string FOOTER = "</rainforest>";
+	using namespace test_tools;
+
+	auto v1 = FragmentGenerator(FragmentGenerator::FragmentVersions::V1)
+		.AddFragment_NetworkInfo()
+		.Generate();
 
 	boost::property_tree::ptree v1_networkinfo;
-	std::stringstream v1_iss, v2_iss;
-
-	v1_iss << V1_HEADER << V1_BODY << FOOTER;
-
-	boost::property_tree::read_xml(v1_iss, v1_networkinfo);
+	boost::property_tree::read_xml(v1, v1_networkinfo);
 
 	try
 	{

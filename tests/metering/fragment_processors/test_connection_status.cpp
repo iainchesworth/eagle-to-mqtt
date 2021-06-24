@@ -9,6 +9,8 @@
 #include "metering/fragment_processors/connection_status.h"
 #include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
+#include "test_tools/test_tools_fragment_generator.h"
+
 BOOST_AUTO_TEST_SUITE(FragmentProcessors);
 
 /*
@@ -40,26 +42,14 @@ BOOST_AUTO_TEST_SUITE(FragmentProcessors);
 
 BOOST_AUTO_TEST_CASE(Test_ConnectionStatus)
 {
-	static const std::string V2_HEADER = "<?xml version=\"1.0\"?><rainforest timestamp=\"0000000000s\" version=\"2.0\" macId=\"0xffffffffffff\">";
-	static const std::string V2_BODY = 
-		"<ConnectionStatus>"
-		"<DeviceMacId>0xd8d5b9000000b200</DeviceMacId>"
-		"<MeterMacId>0x000781000081fd0b</MeterMacId>"
-		"<Status>Authenticating: Success</Status>"
-		"<ExtPanId>0x000781000081fd0b</ExtPanId>"
-		"<Channel>14</Channel>"
-		"<ShortAddr>0xd291</ShortAddr>"
-		"<LinkStrength>0x00</LinkStrength>"
-		"<Protocol>Zigbee</Protocol>"
-		"</ConnectionStatus>";
-	static const std::string FOOTER = "</rainforest>";
+	using namespace test_tools;
+
+	auto v2 = FragmentGenerator(FragmentGenerator::FragmentVersions::V2)
+		.AddFragment_ConnectionStatus()
+		.Generate();
 
 	boost::property_tree::ptree v2_connectionstatus;
-	std::stringstream v2_iss;
-
-	v2_iss << V2_HEADER << V2_BODY << FOOTER;
-
-	boost::property_tree::read_xml(v2_iss, v2_connectionstatus);
+	boost::property_tree::read_xml(v2, v2_connectionstatus);
 
 	try
 	{

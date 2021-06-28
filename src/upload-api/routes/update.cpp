@@ -9,8 +9,8 @@
 #include <string>
 
 #include "exceptions/unknown_fragment_type.h"
-#include "interfaces/ieagle.h"
 #include "metering/device_identifier.h"
+#include "metering/devices/eagle.h"
 #include "upload-api/responses/response_200.h"
 #include "upload-api/responses/response_400.h"
 #include "upload-api/responses/response_500.h"
@@ -29,7 +29,7 @@ boost::beast::http::response<boost::beast::http::string_body> Update(const boost
 
 	try
 	{
-		std::shared_ptr<IEagle> eagle_processor(IdentifyAndGetDeviceInstance(upload_dataset));
+		std::shared_ptr<Eagle> eagle_processor(IdentifyAndGetDeviceInstance(upload_dataset));
 		if (nullptr == eagle_processor)
 		{
 			BOOST_LOG_TRIVIAL(warning) << L"Failed to determine the specific device type reporting data!";

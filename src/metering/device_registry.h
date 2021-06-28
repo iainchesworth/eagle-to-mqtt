@@ -4,18 +4,24 @@
 #include <memory>
 #include <unordered_map>
 
-#include "interfaces/ieagle.h"
 #include "metering/device_factory.h"
+#include "metering/devices/eagle.h"
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
 class DeviceRegistry
 {
+	using DeviceRegistryMap = std::unordered_map<EthernetMacId, std::shared_ptr<Eagle>, EthernetMacId::EthernetMacId_Hasher>;
+
 public:
 	static DeviceRegistry& Get();
 
 public:
-	void Add(const EthernetMacId device_ethernet_mac_id, std::shared_ptr<IEagle> device);
-	std::shared_ptr<IEagle> Find(const EthernetMacId device_ethernet_mac_id);
+	void Add(const EthernetMacId device_ethernet_mac_id, std::shared_ptr<Eagle> device);
+	std::shared_ptr<Eagle> Find(const EthernetMacId device_ethernet_mac_id);
+
+public:
+	DeviceRegistryMap::const_iterator begin() { return m_Registry.begin(); }
+	DeviceRegistryMap::const_iterator end() { return m_Registry.end(); }
 
 private:
 	DeviceRegistry();
@@ -24,11 +30,11 @@ private:
 	DeviceRegistry& operator=(const DeviceRegistry&) = delete;
 
 private:
-	std::unordered_map<EthernetMacId, std::shared_ptr<IEagle>, EthernetMacId::EthernetMacId_Hasher> m_Registry;
+	DeviceRegistryMap m_Registry;
 };
 
 template<class DEVICE_TYPE>
-std::shared_ptr<IEagle> CheckRegistryAndGetOrCreate(EthernetMacId device_mac_id)
+std::shared_ptr<Eagle> CheckRegistryAndGetOrCreate(EthernetMacId device_mac_id)
 {
 	auto device = DeviceRegistry::Get().Find(device_mac_id);
 	if (!device)

@@ -5,6 +5,8 @@
 
 #include <memory>
 
-std::shared_ptr<IEagle> IdentifyAndGetDeviceInstance(boost::property_tree::ptree& device_payload);
+#include "metering/devices/eagle.h"
+
+std::shared_ptr<Eagle> IdentifyAndGetDeviceInstance(boost::property_tree::ptree& device_payload);
 
 #endif // DEVICE_IDENTIFIER_H

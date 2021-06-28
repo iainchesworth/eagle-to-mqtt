@@ -5,15 +5,15 @@
 #include <memory>
 #include <string>
 
-#include "interfaces/ieagle.h"
 #include "metering/device_factory.h"
 #include "metering/device_registry.h"
 #include "metering/device_identifier.h"
+#include "metering/devices/eagle.h"
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
-std::shared_ptr<IEagle> IdentifyAndGetDeviceInstance(boost::property_tree::ptree& device_payload)
+std::shared_ptr<Eagle> IdentifyAndGetDeviceInstance(boost::property_tree::ptree& device_payload)
 {
-	std::shared_ptr<IEagle> eagle_processor;
+	std::shared_ptr<Eagle> eagle_processor;
 
 	boost::optional<std::string> processor_v1; // <sigh> ... yes, the v1 version string is "undefined" (see RFA-Z109 v6 doco)
 	boost::optional<double> processor_v2;

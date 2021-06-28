@@ -1,0 +1,6 @@
+#ifndef EAGLE_200_CONSTANTS_H
+#define EAGLE_200_CONSTANTS_H
+
+
+
+#endif // EAGLE_200_CONSTANTS_H

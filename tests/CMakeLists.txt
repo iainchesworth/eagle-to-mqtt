@@ -14,6 +14,7 @@ target_link_libraries(
             ${LIBRARY_TARGET}
         PRIVATE 
             Boost::boost 
+            Boost::json
             Boost::log 
             Boost::program_options
             Boost::unit_test_framework

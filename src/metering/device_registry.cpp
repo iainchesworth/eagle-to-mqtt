@@ -9,7 +9,7 @@ DeviceRegistry& DeviceRegistry::Get()
 	return instance;
 }
 
-void DeviceRegistry::Add(const EthernetMacId device_ethernet_mac_id, std::shared_ptr<IEagle> device)
+void DeviceRegistry::Add(const EthernetMacId device_ethernet_mac_id, std::shared_ptr<Eagle> device)
 {
 	if (!(m_Registry.insert(std::make_pair(device_ethernet_mac_id, device)).second))
 	{
@@ -17,7 +17,7 @@ void DeviceRegistry::Add(const EthernetMacId device_ethernet_mac_id, std::shared
 	}
 }
 
-std::shared_ptr<IEagle> DeviceRegistry::Find(const EthernetMacId device_ethernet_mac_id)
+std::shared_ptr<Eagle> DeviceRegistry::Find(const EthernetMacId device_ethernet_mac_id)
 {
 	auto it = m_Registry.find(device_ethernet_mac_id);
 	if (m_Registry.end() == it)

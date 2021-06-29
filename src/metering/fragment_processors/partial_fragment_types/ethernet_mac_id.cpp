@@ -25,18 +25,7 @@ std::size_t EthernetMacId::EthernetMacId_Hasher::operator()(const EthernetMacId&
 
 EthernetMacId EthernetMacId::ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& key)
 {
-	struct EthernetMacId_PropertyTreeTranslator
-	{
-		typedef EthernetMacId external_type;
-		typedef std::string internal_type;
-
-		boost::optional<external_type> get_value(const internal_type& value)
-		{
-			return external_type(value);
-		}
-	};
-
-	auto ethernet_id = node.get_optional<EthernetMacId>(key, EthernetMacId_PropertyTreeTranslator());
+	auto ethernet_id = node.get_optional<EthernetMacId>(key, EthernetMacId::PropertyTreeTranslator());
 	if (!ethernet_id.is_initialized())
 	{
 		throw MissingMessageKey(key);

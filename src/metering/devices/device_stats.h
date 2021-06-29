@@ -23,6 +23,8 @@ public:
 	uint64_t ErrorsWhileProcessing;
 
 	// Payload types
+	uint64_t BillingPeriodCount;
+	uint64_t BlockPriceDetailCount;
 	uint64_t ConnectionStatusCount;
 	uint64_t CurrentSummationCount;
 	uint64_t DeviceInfoCount;
@@ -30,6 +32,7 @@ public:
 	uint64_t MessageClusterCount;
 	uint64_t NetworkInfoCount;
 	uint64_t PriceClusterCount;
+	uint64_t TimeClusterCount;
 	uint64_t UnknownMessageCount;
 
 public:

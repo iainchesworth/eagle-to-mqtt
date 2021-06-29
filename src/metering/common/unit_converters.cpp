@@ -17,14 +17,23 @@ INTEGER_TYPE hex_string_to_unsigned_integer(const std::string& hex_string)
 		BOOST_LOG_TRIVIAL(debug) << L"Received hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
 	}
 
-	auto converted_value = std::stoull(hex_string, nullptr, 16);
-	if (std::numeric_limits<INTEGER_TYPE>::max() < converted_value)
+	try
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; too large for destination type";
-		throw InvalidNumberConversion(std::string("Invalid number conversion performed: cannot fit ") + hex_string + std::string(" into ") + typeid(INTEGER_TYPE).name());
-	}
+		auto converted_value = std::stoull(hex_string, nullptr, 16);
+		if (std::numeric_limits<INTEGER_TYPE>::max() < converted_value)
+		{
+			BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; too large for destination type";
+			throw InvalidNumberConversion(std::string("Invalid number conversion performed: cannot fit ") + hex_string + std::string(" into ") + typeid(INTEGER_TYPE).name());
+		}
 
-	return converted_value;
+		return converted_value;
+	}
+	catch (const std::invalid_argument& ex_ia)
+	{
+		BOOST_LOG_TRIVIAL(debug) << L"Failed while processing hex string (argument was invalid)";
+		BOOST_LOG_TRIVIAL(debug) << L"Invalid hex string (invalid_argument exception) was: " << hex_string;
+		throw;
+	}
 }
 
 uint64_t hex_string_to_uint64_t(const std::string& hex_string)

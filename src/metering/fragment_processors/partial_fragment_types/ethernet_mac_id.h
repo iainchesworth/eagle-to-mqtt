@@ -1,6 +1,7 @@
 #ifndef ETHERNET_MAC_ID_H
 #define ETHERNET_MAC_ID_H
 
+#include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include <string>
@@ -22,6 +23,18 @@ public:
 	struct EthernetMacId_Hasher
 	{
 		std::size_t operator()(const EthernetMacId& k) const;
+	};
+
+public:
+	struct PropertyTreeTranslator
+	{
+		typedef EthernetMacId external_type;
+		typedef std::string internal_type;
+
+		boost::optional<external_type> get_value(const internal_type& value)
+		{
+			return external_type(value);
+		}
 	};
 
 public:

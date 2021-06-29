@@ -1,5 +1,6 @@
 #include <boost/foreach.hpp>
 #include <boost/log/trivial.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 #include <stdexcept>
 #include <string_view>
@@ -46,7 +47,7 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 				// v.first is the name of the child.
 				// v.second is the child tree.
 
-				const std::string_view node_name = v.first;
+				const std::string node_name = v.first;
 				const boost::property_tree::ptree node_data = v.second;
 
 				if (0 == v.first.compare("<xmlattr>"))
@@ -58,6 +59,18 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 				{
 					switch (string_view_to_fragmenttype(node_name))
 					{
+					case FragmentTypes::BillingPeriodList:
+						BOOST_LOG_TRIVIAL(debug) << L"Processing BillingPeriodList fragment";
+						ProcessFragment(BillingPeriodList(node_data));
+						++m_Statistics.BillingPeriodCount;
+						break;					
+
+					case FragmentTypes::BlockPriceDetail:
+						BOOST_LOG_TRIVIAL(debug) << L"Processing BlockPriceDetail fragment";
+						ProcessFragment(BlockPriceDetail(node_data));
+						++m_Statistics.BlockPriceDetailCount;
+						break;
+
 					case FragmentTypes::ConnectionStatus:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing ConnectionStatus fragment";
 						ProcessFragment(ConnectionStatus(node_data));
@@ -101,9 +114,11 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 						++m_Statistics.PriceClusterCount;
 						break;
 
-					case FragmentTypes::BillingPeriodList:
-					case FragmentTypes::BlockPriceDetail:
 					case FragmentTypes::TimeCluster:
+						BOOST_LOG_TRIVIAL(debug) << L"Processing TimeCluster fragment";
+						++m_Statistics.TimeClusterCount;
+						break;
+
 					default:
 						BOOST_LOG_TRIVIAL(debug) << L"Ignoring unhandled XML fragments in upload data set (" << v.first << L")";
 						++m_Statistics.UnknownMessageCount;
@@ -137,6 +152,14 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 	}
 }
 
+void Eagle::ProcessFragment(const BillingPeriodList& billing_period_list)
+{
+}
+
+void Eagle::ProcessFragment(const BlockPriceDetail& block_price_detail)
+{
+}
+
 void Eagle::ProcessFragment(const ConnectionStatus& connection_status)
 {
 }
@@ -158,7 +181,7 @@ void Eagle::ProcessFragment(const DeviceInfo& device_info)
 
 void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue(UnitsOfMeasure::Watts) << L"W)";
+	BOOST_LOG_TRIVIAL(info) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue(UnitsOfMeasure::Watts) << L"W)";
 	m_DemandHistory.insert(std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now()));
 }
 

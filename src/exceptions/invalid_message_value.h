@@ -2,20 +2,20 @@
 #define INVALID_MESSAGE_VALUE_H
 
 #include <stdexcept>
-#include <string_view>
+#include <string>
 
 #include "exceptions/invalid_value.h"
 
 class InvalidMessageValue : public InvalidValue
 {
 public:
-	InvalidMessageValue(std::string_view missing_key);
+	InvalidMessageValue(std::string missing_key);
 
 public:
-	const std::string_view InvalidValueKey() const;
+	const std::string InvalidValueKey() const;
 
 private:
-	const std::string_view m_InvalidValueKey;
+	const std::string m_InvalidValueKey;
 };
 
 #endif // INVALID_MESSAGE_VALUE_H

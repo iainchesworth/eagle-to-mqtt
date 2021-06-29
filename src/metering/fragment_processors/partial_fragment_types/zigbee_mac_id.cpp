@@ -15,18 +15,7 @@ ZigBeeMacId::ZigBeeMacId(const std::string& zigbee_mac_id) :
 
 ZigBeeMacId ZigBeeMacId::ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& key)
 {
-	struct ZigBeeMacId_PropertyTreeTranslator
-	{
-		typedef ZigBeeMacId external_type;
-		typedef std::string internal_type;
-
-		boost::optional<external_type> get_value(const internal_type& value)
-		{
-			return external_type(value);
-		}
-	};
-
-	auto zigbee_id = node.get_optional<ZigBeeMacId>(key, ZigBeeMacId_PropertyTreeTranslator());
+	auto zigbee_id = node.get_optional<ZigBeeMacId>(key, ZigBeeMacId::PropertyTreeTranslator());
 	if (!zigbee_id.is_initialized())
 	{
 		throw MissingMessageKey(key);

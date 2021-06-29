@@ -12,6 +12,61 @@ test_tools::FragmentGenerator::FragmentGenerator(FragmentVersions version) :
 {
 }
 
+test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_BillingPeriodList()
+{
+	static const std::string V2_BILLING_PERIOD_LIST_FRAGMENT =
+		"<BillingPeriodList>"
+		"<DeviceMacId>0xd8d5b9000000ff7c</DeviceMacId>"
+		"<MeterMacId>0x0013500300118175</MeterMacId>"
+		"<TimeStamp>0x286d9310</TimeStamp>"
+		"<NumberOfPeriods>0x00</NumberOfPeriods>"
+		"<CurrentStart>0x28518880</CurrentStart>"
+		"<CurrentDuration>0x3983db9</CurrentDuration>"
+		"<Protocol>Zigbee</Protocol>"
+		"</BillingPeriodList>";
+
+	switch (m_Version)
+	{
+	case FragmentVersions::V2: m_Fragment.append(V2_BILLING_PERIOD_LIST_FRAGMENT); break;
+	case FragmentVersions::V1:
+	default:
+		throw std::runtime_error("AddFragment_BillingPeriodList(): Invalid version present in the FragmentGenerator test tool");
+	}
+
+	return *this;
+}
+
+test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_BlockPriceDetail()
+{
+	static const std::string V2_BLOCK_PRICE_DETAIL_FRAGMENT =
+		"<BlockPriceDetail>"
+		"<DeviceMacId>0xd8d5b9000000ff7c</DeviceMacId>"
+		"<MeterMacId>0x0013500300118175</MeterMacId>"
+		"<TimeStamp>0x286d4aa3</TimeStamp>"
+		"<CurrentStart>0x00000000</CurrentStart>"
+		"<CurrentDuration>0x0000</CurrentDuration>"
+		"<BlockPeriodConsumption>0x0000000000000000</BlockPeriodConsumption>"
+		"<BlockPeriodConsumptionMultiplier>0x00000001</BlockPeriodConsumptionMultiplier>"
+		"<BlockPeriodConsumptionDivisor>0x000003e8</BlockPeriodConsumptionDivisor>"
+		"<NumberOfBlocks>0x00</NumberOfBlocks>"
+		"<Multiplier>0x00000001</Multiplier>"
+		"<Divisor>0x00000001</Divisor>"
+		"<Currency>0x0348</Currency>"
+		"<TrailingDigits>0x00</TrailingDigits>"
+		"<Protocol>Zigbee</Protocol>"
+		"</BlockPriceDetail>";
+
+	switch (m_Version)
+	{
+	case FragmentVersions::V2: m_Fragment.append(V2_BLOCK_PRICE_DETAIL_FRAGMENT); break;
+	case FragmentVersions::V1:
+	default:
+		throw std::runtime_error("AddFragment_BlockPriceDetail(): Invalid version present in the FragmentGenerator test tool");
+	}
+
+	return *this;
+}
+
 test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_ConnectionStatus()
 {
 	static const std::string V2_CONNECTION_STATUS_FRAGMENT =
@@ -29,8 +84,8 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_Connec
 	switch (m_Version)
 	{
 	case FragmentVersions::V2: m_Fragment.append(V2_CONNECTION_STATUS_FRAGMENT); break;
-	case FragmentVersions::V1: 
-	default: 
+	case FragmentVersions::V1:
+	default:
 		throw std::runtime_error("AddFragment_ConnectionStatus(): Invalid version present in the FragmentGenerator test tool");
 	}
 
@@ -214,7 +269,7 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_Networ
 	{
 	case FragmentVersions::V1: m_Fragment.append(V1_NETWORK_INFO_FRAGMENT); break;
 	case FragmentVersions::V2:
-	default: 
+	default:
 		throw std::runtime_error("AddFragment_NetworkInfo(): Invalid version present in the FragmentGenerator test tool");
 	}
 

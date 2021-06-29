@@ -2,11 +2,12 @@
 
 #include "metering/fragment_processors/device_info.h"
 #include "metering/type_handlers/essential.h"
+#include "metering/type_handlers/expected.h"
 
 DeviceInfo::DeviceInfo(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
-	m_InstallCode(IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("InstallCode"); })),
-	m_LinkKey(IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("LinkKey"); })),
+	m_InstallCode(IsExpected<std::string>([&node]() -> std::string { return node.get<std::string>("InstallCode"); })),
+	m_LinkKey(IsExpected<std::string>([&node]() -> std::string { return node.get<std::string>("LinkKey"); })),
 	m_FWVersion(IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("FWVersion"); })),
 	m_HWVersion(IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("HWVersion"); })),
 	m_ImageType(IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("ImageType"); })),

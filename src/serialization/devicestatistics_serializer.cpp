@@ -14,6 +14,8 @@ boost::json::object DeviceStatistics_Serializer::Serialize() const
 	device_stats["MessageCount"] = ds_ptr->MessageCount;
 	device_stats["MissingPayloadFields"] = ds_ptr->MissingPayloadFields;
 	device_stats["ErrorsWhileProcessing"] = ds_ptr->ErrorsWhileProcessing;
+	device_stats["BillingPeriodCount"] = ds_ptr->BillingPeriodCount;
+	device_stats["BlockPriceDetailCount"] = ds_ptr->BlockPriceDetailCount;
 	device_stats["ConnectionStatusCount"] = ds_ptr->ConnectionStatusCount;
 	device_stats["CurrentSummationCount"] = ds_ptr->CurrentSummationCount;
 	device_stats["DeviceInfoCount"] = ds_ptr->DeviceInfoCount;
@@ -21,6 +23,7 @@ boost::json::object DeviceStatistics_Serializer::Serialize() const
 	device_stats["MessageClusterCount"] = ds_ptr->MessageClusterCount;
 	device_stats["NetworkInfoCount"] = ds_ptr->NetworkInfoCount;
 	device_stats["PriceClusterCount"] = ds_ptr->PriceClusterCount;
+	device_stats["TimeClusterCount"] = ds_ptr->TimeClusterCount;
 	device_stats["UnknownMessageCount"] = ds_ptr->UnknownMessageCount;
 
 	return device_stats;

@@ -2,6 +2,7 @@
 #define ZIGBEE_MAC_ID_H
 
 #include <boost/property_tree/ptree.hpp>
+#include <boost/optional.hpp>
 
 #include <string>
 
@@ -14,6 +15,18 @@ class ZigBeeMacId : public MacId<ZIGBEE_MAC_ID_LENGTH_IN_PAIRS> // Is 8 elements
 public:
 	ZigBeeMacId();
 	ZigBeeMacId(const std::string& zigbee_mac_id);
+
+public:
+	struct PropertyTreeTranslator
+	{
+		typedef ZigBeeMacId external_type;
+		typedef std::string internal_type;
+
+		boost::optional<external_type> get_value(const internal_type& value)
+		{
+			return external_type(value);
+		}
+	};
 
 public:
 	static ZigBeeMacId ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& key);

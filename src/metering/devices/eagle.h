@@ -14,6 +14,8 @@
 #include "interfaces/iserializable.h"
 #include "metering/common/timestamps.h"
 #include "metering/devices/device_stats.h"
+#include "metering/fragment_processors/billing_period_list.h"
+#include "metering/fragment_processors/block_price_detail.h"
 #include "metering/fragment_processors/connection_status.h"
 #include "metering/fragment_processors/current_summation.h"
 #include "metering/fragment_processors/device_info.h"
@@ -38,6 +40,8 @@ public:
 	virtual void ProcessPayload(const boost::property_tree::ptree& node);
 
 protected:
+	virtual void ProcessFragment(const BillingPeriodList& billing_period_list);
+	virtual void ProcessFragment(const BlockPriceDetail& block_price_detail);
 	virtual void ProcessFragment(const ConnectionStatus& connection_status);
 	virtual void ProcessFragment(const CurrentSummation& current_summation);
 	virtual void ProcessFragment(const DeviceInfo& device_info);

@@ -23,6 +23,8 @@ public:
 	FragmentGenerator(FragmentVersions version);
 
 public:
+	FragmentGenerator& AddFragment_BillingPeriodList();
+	FragmentGenerator& AddFragment_BlockPriceDetail();
 	FragmentGenerator& AddFragment_ConnectionStatus();
 	FragmentGenerator& AddFragment_CurrentSummation();
 	FragmentGenerator& AddFragment_DeviceInfo();

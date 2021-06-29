@@ -23,8 +23,8 @@ boost::json::object Eagle_Serializer::Serialize() const
 	// Energy Usage
 	boost::json::object energy_usage;
 
-	energy_usage["TotalDelivered_kWh"] = eagle_ptr->m_TotalDelivered.EnergyValue();
-	energy_usage["TotalReceived_kWh"] = eagle_ptr->m_TotalReceived.EnergyValue();
+	energy_usage["TotalDelivered_kWh"] = std::to_string(eagle_ptr->m_TotalDelivered.EnergyValue());
+	energy_usage["TotalReceived_kWh"] = std::to_string(eagle_ptr->m_TotalReceived.EnergyValue());
 
 	using demand_pair_type = decltype(eagle_ptr->m_DemandHistory)::value_type;
 	auto latest_demand_it = std::max_element(eagle_ptr->m_DemandHistory.begin(), eagle_ptr->m_DemandHistory.end(),
@@ -36,7 +36,7 @@ boost::json::object Eagle_Serializer::Serialize() const
 	if (eagle_ptr->m_DemandHistory.cend() != latest_demand_it)
 	{
 		const auto& latest_id_in_watts = (*latest_demand_it).second.EnergyValue(UnitsOfMeasure::Watts);
-		energy_usage["InstantaneousDemand_Watts"] = latest_id_in_watts;
+		energy_usage["InstantaneousDemand_Watts"] = std::to_string(latest_id_in_watts);
 	}
 
 	for (const auto& energy_history_elem : eagle_ptr->m_DemandHistory)
@@ -44,7 +44,7 @@ boost::json::object Eagle_Serializer::Serialize() const
 		const auto& usage_datetime = energy_history_elem.first;
 		const auto& demand_in_watts = energy_history_elem.second.EnergyValue(UnitsOfMeasure::Watts);
 
-		energy_usage["History"].emplace_object()[Timestamps::ToString(usage_datetime)] = demand_in_watts;
+		energy_usage["History"].emplace_object()[Timestamps::ToString(usage_datetime)] = std::to_string(demand_in_watts);
 	}
 
 	device_object["EnergyUsage"] = energy_usage;

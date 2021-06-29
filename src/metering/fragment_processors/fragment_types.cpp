@@ -1,7 +1,7 @@
 #include "exceptions/unknown_fragment_type.h"
 #include "metering/fragment_processors/fragment_types.h"
 
-FragmentTypes string_view_to_fragmenttype(const std::string_view& fragment)
+FragmentTypes string_view_to_fragmenttype(const std::string& fragment)
 {
 	if (0 == fragment.compare("BillingPeriodList")) return FragmentTypes::BillingPeriodList;
 	if (0 == fragment.compare("BlockPriceDetail")) return FragmentTypes::BlockPriceDetail;

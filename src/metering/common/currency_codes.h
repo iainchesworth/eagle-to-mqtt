@@ -1,6 +1,8 @@
 #ifndef CURRENCY_CODES_H
 #define CURRENCY_CODES_H
 
+#include <boost/optional.hpp>
+
 #include <ostream>
 #include <string>
 
@@ -20,6 +22,18 @@ public:
 		USD = 840,
 		XXX = 999,
 		Unknown
+	};
+
+public:
+	struct PropertyTreeTranslator
+	{
+		typedef CurrencyCodes external_type;
+		typedef std::string internal_type;
+
+		boost::optional<external_type> get_value(const internal_type& value)
+		{
+			return external_type(value);
+		}
 	};
 
 public:

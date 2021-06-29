@@ -2,10 +2,11 @@
 
 #include "metering/fragment_processors/message_cluster.h"
 #include "metering/type_handlers/essential.h"
+#include "metering/type_handlers/expected.h"
 
 MessageCluster::MessageCluster(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
-	m_MeterMacId(IsEssential<ZigBeeMacId>([&node]() -> ZigBeeMacId { return ZigBeeMacId::ExtractFromPayload(node, "MeterMacId"); })),
+	m_MeterMacId(IsExpected<ZigBeeMacId>([&node]() -> ZigBeeMacId { return ZigBeeMacId::ExtractFromPayload(node, "MeterMacId"); })),
 	m_Timestamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>("TimeStamp"))),
 	m_MeterMessage(MeterMessage::ExtractFromPayload(node)),
 	m_Queue(IsEssential<Queues>([&node]() -> Queues { return Queues::FromString(node.get<std::string>("Queue")); }))

@@ -30,7 +30,7 @@ FIELD_TYPE IsEssential(std::function<FIELD_TYPE()> getter_func)
 	}
 	catch (const MissingMessageKey& mmk)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Exception (MissingMessageKey) while retrieving essential field - what(): " << mmk.what();
+		BOOST_LOG_TRIVIAL(warning) << L"Exception (MissingMessageKey - " << mmk.MissingKey() << L") while retrieving essential field - what() : " << mmk.what();
 		throw;
 	}
 }

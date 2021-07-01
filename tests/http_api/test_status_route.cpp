@@ -13,12 +13,15 @@ BOOST_AUTO_TEST_SUITE(HTTP_API);
 
 BOOST_AUTO_TEST_CASE(Test_StatusRoute)
 {
-	auto test_device = CheckRegistryAndGetOrCreate<Eagle200>(EthernetMacId("0xaabbccddeeff"));
+	auto test_device = CheckRegistryAndGetOrCreate<Eagle200>(EthernetMacId("0x19F95BEA87DE"));
 	auto raw_payload = test_tools::FragmentGenerator(test_tools::FragmentGenerator::FragmentVersions::V2)
 		.AddFragment_ConnectionStatus()
 		.AddFragment_CurrentSummation()
 		.AddFragment_DeviceInfo()
-		.AddFragment_InstantaneousDemand()
+		.AddFragment_InstantaneousDemand("0x211cc7a8", "0x000032", "0x00000001", "0x000003e8")
+		.AddFragment_InstantaneousDemand("0x211cc7a9", "0x000033", "0x00000001", "0x000003e8")
+		.AddFragment_InstantaneousDemand("0x211cc7aa", "0x000034", "0x00000001", "0x000003e8")
+		.AddFragment_InstantaneousDemand("0x211cc7ab", "0x000035", "0x00000001", "0x000003e8")
 		.AddFragment_MessageCluster()
 		.AddFragment_PriceCluster()
 		.Generate();

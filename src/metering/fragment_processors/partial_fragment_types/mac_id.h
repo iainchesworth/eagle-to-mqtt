@@ -62,10 +62,18 @@ public:
 		}
 		else
 		{
-			for (auto [string_elem, array_elem] = std::tuple{ 2, 0 }; array_elem < ADDRESS_ELEMENTS; string_elem += 2, ++array_elem)
+			try
 			{
-				const auto char_seq = std::string(device_mac_id.begin() + string_elem, device_mac_id.begin() + string_elem + 2);
-				mac_id.m_DeviceMacId[array_elem] = std::stoi(char_seq, nullptr, 16);
+				for (auto [string_elem, array_elem] = std::tuple{ 2, 0 }; array_elem < ADDRESS_ELEMENTS; string_elem += 2, ++array_elem)
+				{
+					const auto char_seq = std::string(device_mac_id.begin() + string_elem, device_mac_id.begin() + string_elem + 2);
+					mac_id.m_DeviceMacId[array_elem] = std::stoi(char_seq, nullptr, 16);
+				}
+			}
+			catch (const std::invalid_argument& ex_ia)
+			{
+				BOOST_LOG_TRIVIAL(warning) << L"Invalid Device MAC Id content received - what(): " << ex_ia.what();
+				throw InvalidMessageValue("Mac Id - invalid characters present in string");
 			}
 		}
 
@@ -74,11 +82,17 @@ public:
 
 	static std::string ToString(const MacId<ADDRESS_ELEMENTS>& mac_id)
 	{
+		static const uint32_t HEX_BUF_STRING_LENGTH = 3; // <CHAR> + <CHAR> + NULL;
+
 		std::ostringstream oss;
 
-		for(uint32_t i = 0; i < mac_id.m_DeviceMacId.size(); ++i)
+		for(uint32_t i = 0; i < ADDRESS_ELEMENTS; ++i)
 		{
-			oss << std::setw(2) << std::setfill('0') << std::hex << std::to_string(mac_id.m_DeviceMacId[i]);
+			char hex_value_buffer[HEX_BUF_STRING_LENGTH] = { 0 };
+
+			std::snprintf(hex_value_buffer, HEX_BUF_STRING_LENGTH, "%.02hX", mac_id.m_DeviceMacId[i]);
+
+			oss << hex_value_buffer;
 
 			if ((mac_id.m_DeviceMacId.size() - 1) > i)
 			{

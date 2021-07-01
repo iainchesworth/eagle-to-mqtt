@@ -13,6 +13,7 @@
 #include "exceptions/not_implemented.h"
 #include "interfaces/iserializable.h"
 #include "metering/common/timestamps.h"
+#include "metering/devices/device_energy_usage.h"
 #include "metering/devices/device_stats.h"
 #include "metering/fragment_processors/billing_period_list.h"
 #include "metering/fragment_processors/block_price_detail.h"
@@ -23,10 +24,8 @@
 #include "metering/fragment_processors/message_cluster.h"
 #include "metering/fragment_processors/network_info.h"
 #include "metering/fragment_processors/price_cluster.h"
-#include "metering/fragment_processors/partial_fragment_types/demand.h"
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 #include "metering/fragment_processors/partial_fragment_types/pricing_tier.h"
-#include "metering/fragment_processors/partial_fragment_types/summation.h"
 
 // Forward declarations
 class Eagle_Serializer;
@@ -53,8 +52,13 @@ protected:
 protected:
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
 
+public:
+	DeviceStatistics Statistics() const;
+	DeviceEnergyUsage EnergyUsage() const;
+
 protected:
 	DeviceStatistics m_Statistics;
+	DeviceEnergyUsage m_EnergyUsage;
 
 protected:
 	EthernetMacId m_EthernetMacId;
@@ -71,11 +75,6 @@ protected:
 
 protected:
 	std::map<Queues, MeterMessageQueue> m_MeterMessages;
-
-protected:
-	Summation m_TotalDelivered;
-	Summation m_TotalReceived;
-	std::map<timepoint_from_jan2000, Demand> m_DemandHistory;
 
 public:
 	friend class Eagle_Serializer;

@@ -1,3 +1,5 @@
+#include <boost/log/trivial.hpp>
+
 #include "serialization/devicestatistics_serializer.h"
 
 DeviceStatistics_Serializer::DeviceStatistics_Serializer(std::shared_ptr<DeviceStatistics> ds_ptr) :
@@ -10,7 +12,9 @@ boost::json::object DeviceStatistics_Serializer::Serialize() const
 	auto ds_ptr = std::static_pointer_cast<DeviceStatistics>(m_Serializable);
 	boost::json::object device_stats;
 
-	//device_stats.put("LastMessageTimestamp", ds_ptr->LastMessageTimestamp);
+	BOOST_LOG_TRIVIAL(debug) << L"Serializing DeviceStatistics";
+
+	device_stats["LastMessageTimestamp"] = Timestamps::ToString(ds_ptr->LastMessageTimestamp);
 	device_stats["MessageCount"] = ds_ptr->MessageCount;
 	device_stats["MissingPayloadFields"] = ds_ptr->MissingPayloadFields;
 	device_stats["ErrorsWhileProcessing"] = ds_ptr->ErrorsWhileProcessing;

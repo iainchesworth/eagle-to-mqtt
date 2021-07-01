@@ -25,9 +25,7 @@ Eagle::Eagle() :
 		std::make_pair(Queues::QueueTypes::CancelPending, MeterMessageQueue()),
 		std::make_pair(Queues::QueueTypes::Unknown, MeterMessageQueue())
 	},
-	m_TotalDelivered(0, 0, 0, 0, 0, false),
-	m_TotalReceived(0, 0, 0, 0, 0, false),
-	m_DemandHistory()
+	m_EnergyUsage()
 {
 }
 
@@ -167,8 +165,8 @@ void Eagle::ProcessFragment(const ConnectionStatus& connection_status)
 void Eagle::ProcessFragment(const CurrentSummation& current_summation)
 {
 	BOOST_LOG_TRIVIAL(debug) << L"Capturing total summation values (delivered and received)";
-	m_TotalDelivered = current_summation.Delivered();
-	m_TotalReceived = current_summation.Received();
+	m_EnergyUsage.TotalDelivered = current_summation.Delivered();
+	m_EnergyUsage.TotalReceived = current_summation.Received();
 }
 
 void Eagle::ProcessFragment(const DeviceInfo& device_info)
@@ -182,7 +180,11 @@ void Eagle::ProcessFragment(const DeviceInfo& device_info)
 void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
 	BOOST_LOG_TRIVIAL(info) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue(UnitsOfMeasure::Watts) << L"W)";
-	m_DemandHistory.insert(std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now()));
+	
+	auto energy_history_elem = std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now());
+
+	m_EnergyUsage.Now = instantaneous_demand.Now();
+	m_EnergyUsage.History.insert(energy_history_elem);
 }
 
 void Eagle::ProcessFragment(const MessageCluster& message_cluster)
@@ -262,4 +264,14 @@ void Eagle::ProcessHeaderAttributes(const boost::property_tree::ptree& header_at
 	{
 		m_EthernetMacId = EthernetMacId(mac_id.get());
 	}
+}
+
+DeviceStatistics Eagle::Statistics() const
+{
+	return m_Statistics;
+}
+
+DeviceEnergyUsage Eagle::EnergyUsage() const
+{
+	return m_EnergyUsage;
 }

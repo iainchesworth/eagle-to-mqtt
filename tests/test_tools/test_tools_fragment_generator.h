@@ -29,6 +29,7 @@ public:
 	FragmentGenerator& AddFragment_CurrentSummation();
 	FragmentGenerator& AddFragment_DeviceInfo();
 	FragmentGenerator& AddFragment_InstantaneousDemand();
+	FragmentGenerator& AddFragment_InstantaneousDemand(const std::string& timestamp, const std::string& demand, const std::string& multipler, const std::string& divisor);
 	FragmentGenerator& AddFragment_MessageCluster();
 	FragmentGenerator& AddFragment_NetworkInfo();
 	FragmentGenerator& AddFragment_PriceCluster();

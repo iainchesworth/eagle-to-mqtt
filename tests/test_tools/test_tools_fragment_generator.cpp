@@ -173,26 +173,33 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_Device
 
 test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_InstantaneousDemand()
 {
-	static const std::string V1_INSTANTANEOUS_DEMAND_FRAGMENT =
+	switch (m_Version)
+	{
+	case FragmentVersions::V1: AddFragment_InstantaneousDemand("0xFFFFFFFF", "0xFFFFFF", "0xFFFFFFFF", "0xFFFFFFFF"); break;
+	case FragmentVersions::V2: AddFragment_InstantaneousDemand("0x211cc7a8", "0x000032", "0x00000001", "0x000003e8"); break;
+	default: throw std::runtime_error("AddFragment_InstantaneousDemand(): Invalid version present in the FragmentGenerator test tool");
+	}
+
+	return *this;
+}
+
+test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_InstantaneousDemand(const std::string& timestamp, const std::string& demand, const std::string& multipler, const std::string& divisor)
+{
+	static const std::string V1_INSTANTANEOUS_DEMAND_FRAGMENT_PRE =
 		"<InstantaneousDemand>"
 		"<DeviceMacId>0xFFFFFFFFFFFFFFFF</DeviceMacId>"
-		"<MeterMacId>0xFFFFFFFFFFFFFFFF</MeterMacId>"
-		"<TimeStamp>0xFFFFFFFF</TimeStamp>"
-		"<Demand>0xFFFFFF</Demand>"
-		"<Multiplier>0xFFFFFFFF</Multiplier>"
-		"<Divisor>0xFFFFFFFF</Divisor>"
+		"<MeterMacId>0xFFFFFFFFFFFFFFFF</MeterMacId>";
+	static const std::string V1_INSTANTANEOUS_DEMAND_FRAGMENT_POST =
 		"<DigitsRight>0xFF</DigitsRight>"
 		"<DigitsLeft>0xFF</DigitsLeft>"
 		"<SuppressLeadingZero>N</SuppressLeadingZero>"
 		"</InstantaneousDemand>";
-	static const std::string V2_INSTANTANEOUS_DEMAND_FRAGMENT =
+
+	static const std::string V2_INSTANTANEOUS_DEMAND_FRAGMENT_PRE =
 		"<InstantaneousDemand>"
 		"<DeviceMacId>0xd8d5b9000000b74d</DeviceMacId>"
-		"<MeterMacId>0x001d230100402d72</MeterMacId>"
-		"<TimeStamp>0x211cc7a8</TimeStamp>"
-		"<Demand>0x000032</Demand>"
-		"<Multiplier>0x00000001</Multiplier>"
-		"<Divisor>0x000003e8</Divisor>"
+		"<MeterMacId>0x001d230100402d72</MeterMacId>";
+	static const std::string V2_INSTANTANEOUS_DEMAND_FRAGMENT_POST =
 		"<UnitOfMeasure>0x00</UnitOfMeasure>"
 		"<DigitsRight>0x03</DigitsRight>"
 		"<DigitsLeft>0x06</DigitsLeft>"
@@ -202,9 +209,26 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_Instan
 
 	switch (m_Version)
 	{
-	case FragmentVersions::V1: m_Fragment.append(V1_INSTANTANEOUS_DEMAND_FRAGMENT); break;
-	case FragmentVersions::V2: m_Fragment.append(V2_INSTANTANEOUS_DEMAND_FRAGMENT); break;
-	default: throw std::runtime_error("AddFragment_InstantaneousDemand(): Invalid version present in the FragmentGenerator test tool");
+	case FragmentVersions::V1: 
+		m_Fragment.append(V1_INSTANTANEOUS_DEMAND_FRAGMENT_PRE);
+		m_Fragment.append("<TimeStamp>").append(timestamp).append("</TimeStamp>");
+		m_Fragment.append("<Demand>").append(demand).append("</Demand>");
+		m_Fragment.append("<Multiplier>").append(multipler).append("</Multiplier>");
+		m_Fragment.append("<Divisor>").append(divisor).append("</Divisor>");
+		m_Fragment.append(V1_INSTANTANEOUS_DEMAND_FRAGMENT_POST);
+		break;
+
+	case FragmentVersions::V2: 
+		m_Fragment.append(V2_INSTANTANEOUS_DEMAND_FRAGMENT_PRE);
+		m_Fragment.append("<TimeStamp>").append(timestamp).append("</TimeStamp>");
+		m_Fragment.append("<Demand>").append(demand).append("</Demand>");
+		m_Fragment.append("<Multiplier>").append(multipler).append("</Multiplier>");
+		m_Fragment.append("<Divisor>").append(divisor).append("</Divisor>");
+		m_Fragment.append(V2_INSTANTANEOUS_DEMAND_FRAGMENT_POST);
+		break;
+
+	default: 
+		throw std::runtime_error("AddFragment_InstantaneousDemand(): Invalid version present in the FragmentGenerator test tool");
 	}
 
 	return *this;

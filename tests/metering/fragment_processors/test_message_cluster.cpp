@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(Test_MessageCluster)
 		const auto v1_valid_from = std::chrono::system_clock::now();
 		const auto v1_valid_till = std::chrono::system_clock::now();
 
-		BOOST_TEST(mc_v1.DeviceMacId() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
+		BOOST_TEST(mc_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
 		BOOST_TEST(mc_v1.Message().Id() == std::string("0xFFFFFFFF"));
 		BOOST_TEST(mc_v1.Message().Text() == std::string("{string}"));
 		BOOST_TEST(mc_v1.Message().Priority() == Priorities::PriorityTypes::Critical);
@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(Test_MessageCluster)
 		const auto v2_valid_from = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x20acad0d);
 		const auto v2_valid_till = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x20acad0d) + std::chrono::minutes(0xffff);
 
-		BOOST_TEST(mc_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000af85"));
+		BOOST_TEST(mc_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000af85"));
 		BOOST_TEST(mc_v2.Message().Id() == std::string("0x00000000"));
 		BOOST_TEST(mc_v2.Message().Text() == std::string("Welcome to the program"));
 		BOOST_TEST(mc_v2.Message().Priority() == Priorities::PriorityTypes::Low);

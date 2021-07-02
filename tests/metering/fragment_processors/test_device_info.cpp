@@ -68,19 +68,19 @@ BOOST_AUTO_TEST_CASE(Test_DeviceInfo)
 		DeviceInfo di_v1(v1_deviceinfo.get_child("rainforest.DeviceInfo"));
 		DeviceInfo di_v2(v2_deviceinfo.get_child("rainforest.DeviceInfo"));
 
-		BOOST_TEST(di_v1.DeviceMacId() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
-		BOOST_TEST(di_v1.FirmwareVersion() == std::string("{string}"));
-		BOOST_TEST(di_v1.HardwareVersion() == std::string("{string}"));
-		BOOST_TEST(di_v1.ModelId() == std::string("{string}"));
-		BOOST_TEST(di_v1.ManufactureDate() == std::string("{string}"));
-		BOOST_TEST(di_v1.LotNumber() == std::string("{string}"));
+		BOOST_TEST(di_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
+		BOOST_TEST(di_v1.FirmwareVersion().value() == std::string("{string}"));
+		BOOST_TEST(di_v1.HardwareVersion().value() == std::string("{string}"));
+		BOOST_TEST(di_v1.ModelId().value() == std::string("{string}"));
+		BOOST_TEST(di_v1.ManufactureDate().value() == std::string("{string}"));
+		BOOST_TEST(di_v1.LotNumber().value() == std::string("{string}"));
 
-		BOOST_TEST(di_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000b200"));
-		BOOST_TEST(di_v2.FirmwareVersion() == std::string("2.1.6 (9463)"));
-		BOOST_TEST(di_v2.HardwareVersion() == std::string("1.3.4"));
-		BOOST_TEST(di_v2.ModelId() == std::string("Z114-EAGLE3"));
-		BOOST_TEST(di_v2.ManufactureDate() == std::string("20170405"));
-		BOOST_TEST(di_v2.LotNumber() == std::string("29021003"));
+		BOOST_TEST(di_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000b200"));
+		BOOST_TEST(di_v2.FirmwareVersion().value() == std::string("2.1.6 (9463)"));
+		BOOST_TEST(di_v2.HardwareVersion().value() == std::string("1.3.4"));
+		BOOST_TEST(di_v2.ModelId().value() == std::string("Z114-EAGLE3"));
+		BOOST_TEST(di_v2.ManufactureDate().value() == std::string("20170405"));
+		BOOST_TEST(di_v2.LotNumber().value() == std::string("29021003"));
 	}
 	catch (const std::exception& ex)
 	{

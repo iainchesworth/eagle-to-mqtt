@@ -69,10 +69,10 @@ BOOST_AUTO_TEST_CASE(Test_InstantaneousDemand, * boost::unit_test::tolerance(0.0
 		InstantaneousDemand id_v1(v1_instantaneousdemand.get_child("rainforest.InstantaneousDemand"));
 		InstantaneousDemand id_v2(v2_instantaneousdemand.get_child("rainforest.InstantaneousDemand"));
 
-		BOOST_TEST(id_v1.DeviceMacId() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
+		BOOST_TEST(id_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
 		BOOST_TEST(16777215.0f == id_v1.Now().EnergyValue());
 
-		BOOST_TEST(id_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000b74d"));
+		BOOST_TEST(id_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000b74d"));
 		BOOST_TEST(0.05f == id_v2.Now().EnergyValue());
 	}
 	catch (const std::exception& ex)

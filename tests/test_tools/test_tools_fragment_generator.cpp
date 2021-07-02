@@ -307,7 +307,7 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_PriceC
 		"<DeviceMacId>0xFFFFFFFFFFFFFFFF</DeviceMacId>"
 		"<MeterMacId>0xFFFFFFFFFFFFFFFF</MeterMacId>"
 		"<TimeStamp>0xFFFFFFFF</TimeStamp>"
-		"<Price>0xFFFFFFFF</Price>"
+		"<Price>0x000003E8</Price>"
 		"<Currency>0x03E7</Currency>"
 		"<TrailingDigits>0x02</TrailingDigits>"
 		"<Tier>00</Tier>"

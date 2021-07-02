@@ -52,26 +52,25 @@ bool MeterMessage::IsConfirmed() const
 
 MeterMessage MeterMessage::ExtractFromPayload(const boost::property_tree::ptree& node)
 {
-	auto start_time = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("StartTime"); }, "0x00000000");  // Does not exist in V1 payloads
-	auto duration = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("Duration"); }, "0x0000");		   // Does not exist in V1 payloads
+	auto start_time = IsOptionalWithDefault<uint32_t>(node, "StartTime", 0); // Does not exist in V1 payloads
+	auto duration = IsOptionalWithDefault<uint16_t>(node, "Duration", 0);	 // Does not exist in V1 payloads
 
-	auto offset = unsigned_to_signed(hex_string_to_uint32_t(start_time));				  // Will default to an offset of "0" if not present.
+	auto duration_in_minutes = std::chrono::minutes(duration); // Will default to a duration of "0" if not present.
+	auto offset = unsigned_to_signed(start_time);			   // Will default to an offset of "0" if not present.
 	auto now = std::chrono::system_clock::now();
 	auto start_time_as_time_point = now + std::chrono::duration<int64_t>(offset);
-	auto duration_in_minutes = std::chrono::minutes(hex_string_to_uint16_t(duration));	  // Will default to a duration of "0" if not present.
 
 	// There appears to be a bug where the EAGLE-200 uses "PRI" as the field name not "Priority"
-	boost::optional<std::string> priority_as_string;
 	Priorities priority;
 
-	if (priority_as_string = node.get_optional<std::string>("Priority"); priority_as_string.is_initialized())
+	if (auto raw_priority = IsOptional<Priorities>(node, "Priority"); raw_priority.has_value())
 	{
-		priority = Priorities::FromString(priority_as_string.get());
+		priority = raw_priority.value();
 	}
-	else if (priority_as_string = node.get_optional<std::string>("PRI"); priority_as_string.is_initialized())
+	else if (auto raw_priority = IsOptional<Priorities>(node, "PRI"); raw_priority.has_value())
 	{
 		BOOST_LOG_TRIVIAL(warning) << L"Eagle Bug: Priority field uses incorrect field name \"PRI\" (refer to EAGLE-200 API documentation, section 4.6.1)";
-		priority = Priorities::FromString(priority_as_string.get());
+		priority = raw_priority.value();
 	}
 	else
 	{
@@ -79,12 +78,12 @@ MeterMessage MeterMessage::ExtractFromPayload(const boost::property_tree::ptree&
 	}
 
 	return MeterMessage(
-		IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("Id"); }),
-		IsEssential<std::string>([&node]() -> std::string { return node.get<std::string>("Text"); }),
+		IsEssential<std::string>(node, "Id"),
+		IsEssential<std::string>(node, "Text"),
 		priority,
 		start_time_as_time_point,
 		duration_in_minutes,
-		IsEssential<bool>([&node]() -> bool { return GetValue_Boolean(node, "ConfirmationRequired"); }),
-		IsEssential<bool>([&node]() -> bool { return GetValue_Boolean(node, "Confirmed"); })
+		IsEssential<bool>(node, "ConfirmationRequired"),
+		IsEssential<bool>(node, "Confirmed")
 	);
 }

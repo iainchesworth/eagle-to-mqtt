@@ -9,7 +9,6 @@
 #include "metering/common/unit_converters.h"
 #include "metering/common/units_of_measure.h"
 #include "metering/type_handlers/essential.h"
-#include "metering/type_handlers/integer.h"
 
 class CalculatedEnergyValue
 {
@@ -27,12 +26,12 @@ protected:
 	static ENERGY_VALUE ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& raw_value_key)
 	{
 		return ENERGY_VALUE(
-			IsEssential<int64_t>([&node, &raw_value_key]() -> int64_t { return GetValue_Int64(node, raw_value_key); }),
-			IsEssential<uint32_t>([&node]() -> uint32_t { return GetValue_UInt32(node, "Multiplier"); }),
-			IsEssential<uint32_t>([&node]() -> uint32_t { return GetValue_UInt32(node, "Divisor"); }),
-			IsEssential<uint8_t>([&node]() -> uint8_t { return GetValue_UInt8(node, "DigitsRight"); }),
-			IsEssential<uint8_t>([&node]() -> uint8_t { return GetValue_UInt8(node, "DigitsLeft"); }),
-			string_to_bool(node.get<std::string>("SuppressLeadingZero"))
+			IsEssential<int64_t>(node, raw_value_key),
+			IsEssential<uint32_t>(node, "Multiplier"),
+			IsEssential<uint32_t>(node, "Divisor"),
+			IsEssential<uint8_t>(node, "DigitsRight"),
+			IsEssential<uint8_t>(node, "DigitsLeft"),
+			IsEssential<bool>(node, "SuppressLeadingZero")
 		);
 	}
 };

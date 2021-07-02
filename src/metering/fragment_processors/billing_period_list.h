@@ -4,6 +4,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include <chrono>
+#include <optional>
 #include <cstdint>
 
 #include "interfaces/ifragmentprocessor.h"
@@ -12,6 +13,12 @@
 
 class BillingPeriodList : public IFragmentProcessor
 {
+	static const std::string FIELDNAME_METERMACID;
+	static const std::string FIELDNAME_TIMESTAMP;
+	static const std::string FIELDNAME_NUMBEROFPERIODS;
+	static const std::string FIELDNAME_CURRENTSTART;
+	static const std::string FIELDNAME_CURRENTDURATION;
+
 public:
 	BillingPeriodList(const boost::property_tree::ptree& node);
 	virtual ~BillingPeriodList();
@@ -22,7 +29,7 @@ public:
 	uint8_t NumberOfPeriods() const;
 
 private:
-	ZigBeeMacId m_MeterMacId;
+	std::optional<ZigBeeMacId> m_MeterMacId;
 	timepoint_from_jan2000 m_Timestamp;
 	uint8_t m_NumberOfPeriods;
 	std::chrono::time_point<std::chrono::system_clock> m_Start;

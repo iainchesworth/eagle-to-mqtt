@@ -1,18 +1,23 @@
 #include "metering/fragment_processors/billing_period_list.h"
-#include "metering/type_handlers/expected.h"
 #include "metering/type_handlers/integer.h"
 #include "metering/type_handlers/optional.h"
 
+const std::string BillingPeriodList::FIELDNAME_METERMACID{ "MeterMacId" };
+const std::string BillingPeriodList::FIELDNAME_TIMESTAMP{ "TimeStamp" };
+const std::string BillingPeriodList::FIELDNAME_NUMBEROFPERIODS{ "NumberOfPeriods" };
+const std::string BillingPeriodList::FIELDNAME_CURRENTSTART{ "CurrentStart" };
+const std::string BillingPeriodList::FIELDNAME_CURRENTDURATION{ "CurrentDuration" };
+
 BillingPeriodList::BillingPeriodList(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
-	m_MeterMacId(IsExpected<ZigBeeMacId>([&node]() -> ZigBeeMacId { return ZigBeeMacId::ExtractFromPayload(node, "MeterMacId"); })),
-	m_Timestamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>("TimeStamp"))),
-	m_NumberOfPeriods(),
+	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
+	m_Timestamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>(FIELDNAME_TIMESTAMP))),
+	m_NumberOfPeriods(IsOptionalWithDefault<uint8_t>(node, FIELDNAME_NUMBEROFPERIODS, 0)),
 	m_Start(),
 	m_Duration()
 {
-	auto current_start = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("CurrentStart"); }, "0x00000000");
-	auto current_duration = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("CurrentDuration"); }, "0x00000000");
+	auto current_start = IsOptionalWithDefault<std::string>(node, FIELDNAME_CURRENTSTART, "0x00000000");
+	auto current_duration = IsOptionalWithDefault<std::string>(node, FIELDNAME_CURRENTDURATION, "0x00000000");
 
 	auto offset = unsigned_to_signed(hex_string_to_uint32_t(current_start));				   // Will default to an offset of "0" if not present.
 	auto now = std::chrono::system_clock::now();

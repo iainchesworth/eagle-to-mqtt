@@ -6,17 +6,17 @@
 #include "exceptions/invalid_value.h"
 #include "exceptions/missing_message_key.h"
 #include "metering/type_handlers/boolean.h"
+#include "metering/type_handlers/optional.h"
 
 bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string& key)
 {
-	boost::optional<std::string> value_as_string;
 	bool value;
 
 	if (0 == key.length())
 	{
 		throw std::invalid_argument("Key name is invalid (zero-length string)");
 	}
-	else if (value_as_string = node.get_optional<std::string>(key); !value_as_string.is_initialized())
+	else if (auto value_as_string = IsOptional<std::string>(node, key); !value_as_string.has_value())
 	{
 		throw MissingMessageKey(key);
 	}
@@ -41,7 +41,7 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 		static const std::string FALSE_ENCODING_3{ "FALSE" };
 		static const std::string FALSE_ENCODING_4{ "0" };
 
-		const std::string uppercase_value_as_string = boost::algorithm::to_upper_copy(value_as_string.get());
+		const std::string uppercase_value_as_string = boost::algorithm::to_upper_copy(value_as_string.value());
 
 		if (0 == uppercase_value_as_string.length())
 		{

@@ -1,35 +1,23 @@
 #ifndef OPTIONAL_H
 #define OPTIONAL_H
 
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 
-#include <functional>
+#include <optional>
+#include <string>
 
-#include "exceptions/missing_message_key.h"
+#include "metering/type_handlers/presence_helpers.h"
 
-template<typename FIELD_TYPE, typename GETTER_FUNC>
-FIELD_TYPE IsOptional(GETTER_FUNC getter_func, FIELD_TYPE default_value = FIELD_TYPE())
+template<typename FIELD_TYPE>
+std::optional<FIELD_TYPE> IsOptional(const boost::property_tree::ptree& node, const std::string& field)
 {
-	try
-	{
-		// Attempt to retrieve the "optional" value...return the default in the event of failure.
-		return getter_func();
-	}
-	catch (const std::invalid_argument& ia)
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Exception (std::invalid_argument) while retrieving optional field - what(): " << ia.what();
-	}
-	catch (const boost::property_tree::ptree_error& pterr)
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Exception (boost::property_tree::ptree_error) while retrieving optional field - what(): " << pterr.what();
-	}
-	catch (const MissingMessageKey& mmk)
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Exception (MissingMessageKey - " << mmk.MissingKey() << L") while retrieving optional field - what(): " << mmk.what();
-	}
+	return PresenseHelpers::TryAndRetrieveValue<FIELD_TYPE>(node, field);
+}
 
-	return default_value;
+template<typename FIELD_TYPE>
+FIELD_TYPE IsOptionalWithDefault(const boost::property_tree::ptree& node, const std::string& field, FIELD_TYPE default_value)
+{
+	return IsOptional<FIELD_TYPE>(node, field).value_or(default_value);
 }
 
 #endif // OPTIONAL_H

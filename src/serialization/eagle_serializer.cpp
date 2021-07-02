@@ -1,5 +1,6 @@
 #include <boost/log/trivial.hpp>
 
+#include "serialization/deviceconnectivity_serializer.h"
 #include "serialization/deviceenergyusage_serializer.h"
 #include "serialization/devicestatistics_serializer.h"
 #include "serialization/eagle_serializer.h"
@@ -21,13 +22,17 @@ boost::json::object Eagle_Serializer::Serialize() const
 	device_object["Hardware"] = eagle_ptr->m_HardwareVersion;
 	device_object["Model"] = eagle_ptr->m_ModelId;
 
-	// Device Statistics
-	DeviceStatistics_Serializer ds_serializer(std::make_shared<DeviceStatistics>(eagle_ptr->m_Statistics));
-	device_object["Stats"] = ds_serializer.Serialize();
+	// Connectivity
+	DeviceConnectivity_Serializer dc_serializer(std::make_shared<DeviceConnectivity>(eagle_ptr->m_Connectivity));
+	device_object["Connectivity"] = dc_serializer.Serialize();
 
 	// Energy Usage
 	DeviceEnergyUsage_Serializer deu_serializer(std::make_shared<DeviceEnergyUsage>(eagle_ptr->m_EnergyUsage));
 	device_object["EnergyUsage"] = deu_serializer.Serialize();
+
+	// Device Statistics
+	DeviceStatistics_Serializer ds_serializer(std::make_shared<DeviceStatistics>(eagle_ptr->m_Statistics));
+	device_object["Stats"] = ds_serializer.Serialize();
 
 	// Meter Messages
 

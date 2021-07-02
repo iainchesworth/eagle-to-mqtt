@@ -22,9 +22,9 @@ BOOST_AUTO_TEST_SUITE(FragmentProcessors);
 <DeviceMacId>0xFFFFFFFFFFFFFFFF</DeviceMacId>
 <MeterMacId>0xFFFFFFFFFFFFFFFF</MeterMacId>
 <TimeStamp>0xFFFFFFFF</TimeStamp>
-<Price>0xFFFFFFFF</Price>
-<Currency>0xFFFF</Currency>
-<TrailingDigits>0xFF</TrailingDigits>
+<Price>0x000003E8</Price>
+<Currency>0x0348</Currency>
+<TrailingDigits>0x02</TrailingDigits>
 <Tier>00</Tier>
 [<TierLabel>{string}</TierLabel> | <RateLabel>{string}</RateLabel>]
 </PriceCluster>
@@ -72,9 +72,9 @@ BOOST_AUTO_TEST_CASE(Test_PriceCluster, *boost::unit_test::tolerance(0.00001)) /
 		const auto v1_valid_from = std::chrono::system_clock::now();
 		const auto v1_valid_till = std::chrono::system_clock::now();
 
-		BOOST_TEST(pc_v1.DeviceMacId() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
+		BOOST_TEST(pc_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
 		BOOST_TEST(pc_v1.TierPricing().Pricing().Currency() == CurrencyCodes::ISO4127_CurrencyCodes::XXX);
-		BOOST_TEST(pc_v1.TierPricing().Pricing().Price() == 0.01f);
+		BOOST_TEST(pc_v1.TierPricing().Pricing().Price() == 10.0f);
 		BOOST_TEST(pc_v1.Tier() == Tiers::SupportedTiers::Unknown);
 		BOOST_TEST(test_tools::within_60_seconds(pc_v1.TierPricing().StartsAt(), v1_valid_from));
 		BOOST_TEST(test_tools::within_60_seconds(pc_v1.TierPricing().EndsAt(), v1_valid_till));
@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(Test_PriceCluster, *boost::unit_test::tolerance(0.00001)) /
 		const auto v2_valid_from = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x24e60010);
 		const auto v2_valid_till = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x24e60010) + std::chrono::minutes(0xffff);
 
-		BOOST_TEST(pc_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000fca8"));
+		BOOST_TEST(pc_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000fca8"));
 		BOOST_TEST(pc_v2.TierPricing().Pricing().Currency() == CurrencyCodes::ISO4127_CurrencyCodes::USD);
 		BOOST_TEST(pc_v2.TierPricing().Pricing().Price() == 0.5f);
 		BOOST_TEST(pc_v2.Tier() == Tiers::SupportedTiers::Tier_1);

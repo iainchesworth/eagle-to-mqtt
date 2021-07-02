@@ -11,10 +11,11 @@
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
 Eagle::Eagle() :
+	m_Connectivity(),
+	m_EnergyUsage(),
 	m_Statistics(),
 	m_EthernetMacId(),
 	m_ZigbeeMacId(),
-	m_CoordinatorZigbeeMacId(),
 	m_FirmwareVersion(),
 	m_HardwareVersion(),
 	m_ModelId(),
@@ -24,8 +25,7 @@ Eagle::Eagle() :
 		std::make_pair(Queues::QueueTypes::Active, MeterMessageQueue()),
 		std::make_pair(Queues::QueueTypes::CancelPending, MeterMessageQueue()),
 		std::make_pair(Queues::QueueTypes::Unknown, MeterMessageQueue())
-	},
-	m_EnergyUsage()
+	}
 {
 }
 
@@ -150,86 +150,6 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 	}
 }
 
-void Eagle::ProcessFragment(const BillingPeriodList& billing_period_list)
-{
-}
-
-void Eagle::ProcessFragment(const BlockPriceDetail& block_price_detail)
-{
-}
-
-void Eagle::ProcessFragment(const ConnectionStatus& connection_status)
-{
-}
-
-void Eagle::ProcessFragment(const CurrentSummation& current_summation)
-{
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing total summation values (delivered and received)";
-	m_EnergyUsage.TotalDelivered = current_summation.Delivered();
-	m_EnergyUsage.TotalReceived = current_summation.Received();
-}
-
-void Eagle::ProcessFragment(const DeviceInfo& device_info)
-{
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing model id and version information";
-	m_FirmwareVersion = device_info.FirmwareVersion();
-	m_HardwareVersion = device_info.HardwareVersion();
-	m_ModelId = device_info.ModelId();
-}
-
-void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
-{
-	BOOST_LOG_TRIVIAL(info) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue(UnitsOfMeasure::Watts) << L"W)";
-	
-	auto energy_history_elem = std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now());
-
-	m_EnergyUsage.Now = instantaneous_demand.Now();
-	m_EnergyUsage.History.insert(energy_history_elem);
-}
-
-void Eagle::ProcessFragment(const MessageCluster& message_cluster)
-{
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing meter messages intended for the user";
-	m_MeterMessages[message_cluster.Queue()].push(message_cluster.Message());
-}
-
-void Eagle::ProcessFragment(const NetworkInfo& network_info)
-{
-	if (!network_info.DeviceMacId().IsValid())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received invalid Zigbee End Device (ZED) id in message payload";
-	}
-	else if (m_ZigbeeMacId.IsValid())
-	{
-		BOOST_LOG_TRIVIAL(trace) << L"Have already received valid Zigbee End Device (ZED) id; ignoring";
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Capturing Zigbee End Device (ZED) id for Eagle: " << ZigBeeMacId::ToString(network_info.DeviceMacId());
-		m_ZigbeeMacId = network_info.DeviceMacId();
-	}
-
-	if (!network_info.CoordinatorZigbeeId().IsValid())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received invalid Zigbee Coordinator (ZC) id in message payload";
-	}
-	else if (m_CoordinatorZigbeeMacId.IsValid())
-	{
-		BOOST_LOG_TRIVIAL(trace) << L"Have already received valid Zigbee Coordinator (ZC) id; ignoring";
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Capturing Zigbee Coordinator (ZC) id of device forming root with Eagle: " << ZigBeeMacId::ToString(network_info.CoordinatorZigbeeId());
-		m_CoordinatorZigbeeMacId = network_info.CoordinatorZigbeeId();
-	}
-}
-
-void Eagle::ProcessFragment(const PriceCluster& price_cluster)
-{
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing pricing tier and it's price information set";
-	m_PricingTiers.insert_or_assign(price_cluster.Tier(), price_cluster.TierPricing());
-}
-
 void Eagle::ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes)
 {
 	// Capture the timestamp for this device payload
@@ -266,12 +186,17 @@ void Eagle::ProcessHeaderAttributes(const boost::property_tree::ptree& header_at
 	}
 }
 
-DeviceStatistics Eagle::Statistics() const
+DeviceConnectivity Eagle::Connectivity() const
 {
-	return m_Statistics;
+	return m_Connectivity;
 }
 
 DeviceEnergyUsage Eagle::EnergyUsage() const
 {
 	return m_EnergyUsage;
+}
+
+DeviceStatistics Eagle::Statistics() const
+{
+	return m_Statistics;
 }

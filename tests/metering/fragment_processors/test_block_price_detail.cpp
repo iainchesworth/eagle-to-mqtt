@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Test_BlockPriceDetail, *boost::unit_test::tolerance(0.00001
 		const auto v2_block_start = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x00000000);
 		const auto v2_block_end = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x00000000) + std::chrono::minutes(0x0000);
 
-		BOOST_TEST(bpd_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000ff7c"));
+		BOOST_TEST(bpd_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000ff7c"));
 		BOOST_TEST(test_tools::within_60_seconds(bpd_v2.CurrentBlock().Starts(), v2_block_start));
 		BOOST_TEST(test_tools::within_60_seconds(bpd_v2.CurrentBlock().Ends(), v2_block_end));
 		BOOST_TEST(bpd_v2.CurrentBlock().Consumption() == 0.0f);

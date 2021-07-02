@@ -27,9 +27,6 @@ public:
 			return external_type(value);
 		}
 	};
-
-public:
-	static ZigBeeMacId ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& key);
 };
 
 #endif // ZIGBEE_MAC_ID_H

@@ -11,29 +11,36 @@
 template<std::size_t HEX_STRING_LENGTH, typename INTEGER_TYPE>
 INTEGER_TYPE hex_string_to_unsigned_integer(const std::string& hex_string)
 {
-	const uint32_t MAX_HEX_STRING_LENGTH = HEX_STRING_LENGTH;
-	if (MAX_HEX_STRING_LENGTH < hex_string.length())
+	if (0 == hex_string.length())
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
+		BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; zero-length string provided";
+		throw InvalidNumberConversion(std::string("Invalid number conversion performed: zero-length source"));
 	}
-
-	try
+	else if (const uint32_t MAX_HEX_STRING_LENGTH = HEX_STRING_LENGTH; MAX_HEX_STRING_LENGTH < hex_string.length())
 	{
-		auto converted_value = std::stoull(hex_string, nullptr, 16);
-		if (std::numeric_limits<INTEGER_TYPE>::max() < converted_value)
+		BOOST_LOG_TRIVIAL(warning) << L"Received hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
+		throw InvalidNumberConversion(std::string("Invalid number conversion performed: invalid length source"));
+	}
+	else
+	{
+		try
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; too large for destination type";
-			throw InvalidNumberConversion(std::string("Invalid number conversion performed: cannot fit ") + hex_string + std::string(" into ") + typeid(INTEGER_TYPE).name());
-		}
+			auto converted_value = std::stoull(hex_string, nullptr, 16);
+			if (std::numeric_limits<INTEGER_TYPE>::max() < converted_value)
+			{
+				BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; too large for destination type";
+				throw InvalidNumberConversion(std::string("Invalid number conversion performed: cannot fit ") + hex_string + std::string(" into ") + typeid(INTEGER_TYPE).name());
+			}
 
-		return converted_value;
-	}
-	catch (const std::invalid_argument& ex_ia)
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Failed while processing hex string (argument was invalid)";
-		BOOST_LOG_TRIVIAL(debug) << L"Invalid hex string (invalid_argument exception) was: " << hex_string;
-		throw;
-	}
+			return converted_value;
+		}
+		catch (const std::invalid_argument& ex_ia)
+		{
+			BOOST_LOG_TRIVIAL(debug) << L"Failed while processing hex string (argument was invalid)";
+			BOOST_LOG_TRIVIAL(debug) << L"Invalid hex string (invalid_argument exception) was: " << hex_string;
+			throw;
+		}
+	}	
 }
 
 uint64_t hex_string_to_uint64_t(const std::string& hex_string)
@@ -132,39 +139,4 @@ timepoint_from_epoch hex_string_to_timepoint_since_epoch(const std::string& hex_
 	// Convert the duration (which is in seconds) to a time_point offset "that duration" from 01/01/1970.
 	auto duration_since_epoch = std::chrono::duration<uint32_t, std::ratio<1>>(output);
 	return std::chrono::time_point<std::chrono::system_clock>(duration_since_epoch);
-}
-
-bool string_to_bool(const std::string& string, bool default_on_error)
-{
-	const uint32_t MAX_STRING_LENGTH = 1; // "Y" or "N" is the maximum length and content.
-	if (MAX_STRING_LENGTH < string.length())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received boolean string that exceeds expected length - was " << string.length() << "; expected " << MAX_STRING_LENGTH;
-	}
-
-	bool output = default_on_error;
-
-	if (0 == string.length())
-	{
-		BOOST_LOG_TRIVIAL(warning) << L"Received zero-length string value to convert to boolean";
-	}
-	else
-	{
-		switch (std::toupper(string[0]))
-		{
-		case 'Y':
-			output = true;
-			break;
-
-		case 'N':
-			output = false;
-			break;
-
-		default:
-			BOOST_LOG_TRIVIAL(warning) << L"Received invalid string value to convert to boolean";
-			break;
-		}
-	}
-
-	return output;
 }

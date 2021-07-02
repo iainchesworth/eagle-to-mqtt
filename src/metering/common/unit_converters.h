@@ -19,6 +19,4 @@ int8_t unsigned_to_signed(uint8_t value);
 timepoint_from_jan2000 hex_string_to_timepoint_since_jan2000(const std::string& hex_string);
 timepoint_from_epoch hex_string_to_timepoint_since_epoch(const std::string& hex_string);
 
-bool string_to_bool(const std::string& string, bool default_on_error = false);
-
 #endif // UNIT_CONVERTERS_H

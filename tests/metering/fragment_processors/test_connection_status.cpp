@@ -56,12 +56,12 @@ BOOST_AUTO_TEST_CASE(Test_ConnectionStatus)
 	{
 		ConnectionStatus cs_v2(v2_connectionstatus.get_child("rainforest.ConnectionStatus"));
 
-		BOOST_TEST(cs_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000b200"));
-		BOOST_TEST(cs_v2.Meter_MacId() == ZigBeeMacId("0x000781000081fd0b"));
-		BOOST_TEST(cs_v2.ShortAddr() == std::string("0xd291"));
-		BOOST_TEST(cs_v2.Status() == Statuses::StatusTypes::AuthenticatingSuccess);
-		BOOST_TEST(cs_v2.Channel() == std::string("14"));
-		BOOST_TEST(cs_v2.LinkStrength() == 0);
+		BOOST_TEST(cs_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000b200"));
+		BOOST_TEST(cs_v2.Meter_MacId().value() == ZigBeeMacId("0x000781000081fd0b"));
+		BOOST_TEST(cs_v2.ShortAddr().value() == std::string("0xd291"));
+		BOOST_TEST(cs_v2.Status().value() == Statuses::StatusTypes::AuthenticatingSuccess);
+		BOOST_TEST(cs_v2.Channel().value() == std::string("14"));
+		BOOST_TEST(cs_v2.LinkStrength().value() == 0);
 	}
 	catch (const std::exception& ex)
 	{

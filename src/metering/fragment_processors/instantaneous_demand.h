@@ -3,6 +3,9 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <optional>
+#include <string>
+
 #include "interfaces/ifragmentprocessor.h"
 #include "metering/common/timestamps.h"
 #include "metering/fragment_processors/partial_fragment_types/demand.h"
@@ -10,6 +13,9 @@
 
 class InstantaneousDemand : public IFragmentProcessor
 {
+	static const std::string FIELDNAME_METERMACID;
+	static const std::string FIELDNAME_TIMESTAMP;
+
 public:
 	InstantaneousDemand(const boost::property_tree::ptree& node);
 	virtual ~InstantaneousDemand();
@@ -19,7 +25,7 @@ public:
 	timepoint_from_jan2000 Timestamp() const;
 
 private:
-	ZigBeeMacId m_MeterMacId;
+	std::optional<ZigBeeMacId> m_MeterMacId;
 	timepoint_from_jan2000 m_Timestamp;
 	Demand m_Demand;
 };

@@ -56,12 +56,12 @@ BOOST_AUTO_TEST_CASE(Test_NetworkInfo)
 	{
 		NetworkInfo ni_v1(v1_networkinfo.get_child("rainforest.NetworkInfo"));
 
-		BOOST_TEST(ni_v1.DeviceMacId() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
-		BOOST_TEST(ni_v1.CoordinatorZigbeeId() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
-		BOOST_TEST(ni_v1.Status() == Statuses::StatusTypes::JoinSuccess);
-		BOOST_TEST(ni_v1.StatusCode() == 255);
-		BOOST_TEST(ni_v1.Channel() == "00");
-		BOOST_TEST(ni_v1.LinkStrength() == 255);
+		BOOST_TEST(ni_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
+		BOOST_TEST(ni_v1.CoordinatorZigbeeId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
+		BOOST_TEST(ni_v1.Status().value() == Statuses::StatusTypes::JoinSuccess);
+		BOOST_TEST(ni_v1.StatusCode().value() == 255);
+		BOOST_TEST(ni_v1.Channel().value() == "00");
+		BOOST_TEST(ni_v1.LinkStrength().value() == 255);
 	}
 	catch (const std::exception& ex)
 	{

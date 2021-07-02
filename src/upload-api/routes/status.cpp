@@ -11,51 +11,6 @@ boost::beast::http::response<boost::beast::http::string_body> Status(const boost
     boost::json::object response_object;
 	std::stringstream response_stream;
     
-    /*
-    {
-      "bridge": {
-        "":"",
-        "":""
-      },
-      "device_id":{
-        "ZigbeeId":"",
-        "Firmware":"",
-        "Hardware":"",
-        "Model":"",
-        "Stats":{
-          "MessageCount":"",
-          "MissingPayloadFields":"",
-          "ErrorsWhileProcessing":"",
-          "ConnectionStatusCount":"",
-          "CurrentSummationCount":"",
-          "DeviceInfoCount":"",
-          "MessageClusterCount":"",
-          "NetworkInfoCount":"",
-          "PriceClusterCount":""
-        },
-        "PricingTiers":[
-          {
-            "tier_id":{
-              "RateLabel":"",
-              "StartsAt":"",
-              "EndsAt":"",
-              "":""
-            },
-            "tier_id":{
-              "RateLabel":"",
-              "StartsAt":"",
-              "EndsAt":"",
-              "":""
-            }
-          }
-        ]
-      },
-      "device_id":{
-
-      }
-    }
-    */
-
 	// Report the bridge information
 	// response_tree.add_child("bridge", bridge_node);
 

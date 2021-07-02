@@ -21,9 +21,9 @@ double PricingInfo::Price() const
 
 PricingInfo PricingInfo::ExtractFromPayload(const boost::property_tree::ptree& node)
 {
-	auto currency_code = IsOptional<CurrencyCodes>([&node]() -> CurrencyCodes { return node.get<CurrencyCodes>("Currency", CurrencyCodes::PropertyTreeTranslator()); });
-	auto price_as_double = IsEssential<double>([&node]() -> double { return static_cast<double>(GetValue_Int32(node, "Price")); });
-	auto trailing_digits = IsEssential<uint8_t>([&node]() -> uint8_t { return GetValue_UInt8(node, "TrailingDigits"); });
+	auto currency_code = IsOptionalWithDefault<CurrencyCodes>(node, "Currency", CurrencyCodes::ISO4127_CurrencyCodes::NotSpecified);
+	auto price_as_double = static_cast<double>(IsEssential<uint64_t>(node, "Price"));
+	auto trailing_digits = IsEssential<uint8_t>(node, "TrailingDigits");
 
 	for (int i = 0; i < trailing_digits; ++i)
 	{

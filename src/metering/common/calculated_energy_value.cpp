@@ -1,6 +1,8 @@
 #include <boost/log/trivial.hpp>
 
 #include "metering/common/calculated_energy_value.h"
+#include "metering/type_handlers/essential.h"
+#include "metering/type_handlers/integer.h"
 
 CalculatedEnergyValue::CalculatedEnergyValue(uint32_t raw_energy_value, uint32_t multiplier, uint32_t divisor, UnitsOfMeasure units, uint8_t digits_right, uint8_t digits_left, bool suppress_leading_zero)
 {

@@ -3,6 +3,9 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <optional>
+#include <string>
+
 #include "interfaces/ifragmentprocessor.h"
 #include "metering/common/tiers.h"
 #include "metering/common/timestamps.h"
@@ -11,6 +14,10 @@
 
 class PriceCluster : public IFragmentProcessor
 {
+	static const std::string FIELDNAME_METERMACID;
+	static const std::string FIELDNAME_TIMESTAMP;
+	static const std::string FIELDNAME_TIER;
+
 public:
 	PriceCluster(const boost::property_tree::ptree& node);
 	virtual ~PriceCluster();
@@ -20,7 +27,7 @@ public:
 	PricingTier TierPricing() const;
 
 private:
-	ZigBeeMacId m_MeterMacId;
+	std::optional<ZigBeeMacId> m_MeterMacId;
 	timepoint_from_jan2000 m_Timestamp;
 	Tiers m_Tier;
 	PricingTier m_TierPricing;

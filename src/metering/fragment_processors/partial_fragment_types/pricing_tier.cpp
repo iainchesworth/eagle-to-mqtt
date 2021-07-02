@@ -33,11 +33,11 @@ std::chrono::time_point<std::chrono::system_clock> PricingTier::EndsAt() const
 
 PricingTier PricingTier::ExtractFromPayload(const boost::property_tree::ptree& node)
 {
-	auto rate_label = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("RateLabel"); });				   // Optionally present in V1 and V2 payloads
-	auto tier_label = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("TierLabel"); });				   // Optionally present in V1 payloads (note: precludes RateLabel)
+	auto rate_label = IsOptionalWithDefault<std::string>(node, "RateLabel", "");			// Optionally present in V1 and V2 payloads
+	auto tier_label = IsOptionalWithDefault<std::string>(node, "TierLabel", "");			// Optionally present in V1 payloads (note: precludes RateLabel)
 
-	auto start_time = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("StartTime"); }, "0x00000000");  // Does not exist in V1 payloads
-	auto duration = IsOptional<std::string>([&node]() -> std::string { return node.get<std::string>("Duration"); }, "0x0000");		   // Does not exist in V1 payloads
+	auto start_time = IsOptionalWithDefault<uint32_t>(node, "StartTime", 0);  // Does not exist in V1 payloads
+	auto duration = IsOptionalWithDefault<uint16_t>(node, "Duration", 0);	  // Does not exist in V1 payloads
 
 	std::string label;
 
@@ -59,10 +59,10 @@ PricingTier PricingTier::ExtractFromPayload(const boost::property_tree::ptree& n
 		// Neither the tier nor the rate labels are present.
 	}
 
-	auto offset = unsigned_to_signed(hex_string_to_uint32_t(start_time)); // Will default to an offset of "0" if not present.
+	auto dur = std::chrono::minutes(duration);	  // Will default to a duration of "0" if not present.
+	auto offset = unsigned_to_signed(start_time); // Will default to an offset of "0" if not present.
 	auto now = std::chrono::system_clock::now();
 	auto tp = now + std::chrono::duration<int64_t>(offset);
-	auto dur = std::chrono::minutes(hex_string_to_uint16_t(duration));	  // Will default to a duration of "0" if not present.
 
 	return PricingTier(label, PricingInfo::ExtractFromPayload(node), tp, dur);	
 }

@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Test_BillingPeriodList)
 		const auto v2_current_period_start = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x28518880);
 		const auto v2_current_period_end = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x28518880) + std::chrono::minutes(0x3983db9);
 
-		BOOST_TEST(bpl_v2.DeviceMacId() == ZigBeeMacId("0xd8d5b9000000ff7c"));
+		BOOST_TEST(bpl_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000ff7c"));
 		BOOST_TEST(test_tools::within_60_seconds(bpl_v2.CurrentPeriodStart(), v2_current_period_start));
 		BOOST_TEST(test_tools::within_60_seconds(bpl_v2.CurrentPeriodEnd(), v2_current_period_end));
 		BOOST_TEST(bpl_v2.NumberOfPeriods() == 0);

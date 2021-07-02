@@ -6,6 +6,7 @@
 #include "exceptions/missing_message_key.h"
 #include "metering/common/unit_converters.h"
 #include "metering/type_handlers/integer.h"
+#include "metering/type_handlers/optional.h"
 
 //
 // COMMON FUNCTIONS
@@ -14,20 +15,19 @@
 template<typename INTEGER_TYPE>
 INTEGER_TYPE GetValue(const boost::property_tree::ptree& node, const std::string& key, std::function<INTEGER_TYPE(const std::string& value)> converter)
 {
-	boost::optional<std::string> value_as_string;
 	INTEGER_TYPE value;
 
 	if (0 == key.length())
 	{
 		throw std::invalid_argument("Key name is invalid (zero-length string)");
 	}
-	else if (value_as_string = node.get_optional<std::string>(key); !value_as_string.is_initialized())
+	else if (auto value_as_string = IsOptional<std::string>(node, key); !value_as_string.has_value())
 	{
 		throw MissingMessageKey(key);
 	}
 	else
 	{
-		value = converter(value_as_string.get());
+		value = converter(value_as_string.value());
 	}
 
 	return value;

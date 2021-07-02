@@ -13,6 +13,7 @@
 #include "exceptions/not_implemented.h"
 #include "interfaces/iserializable.h"
 #include "metering/common/timestamps.h"
+#include "metering/devices/device_connectivity.h"
 #include "metering/devices/device_energy_usage.h"
 #include "metering/devices/device_stats.h"
 #include "metering/fragment_processors/billing_period_list.h"
@@ -53,17 +54,18 @@ protected:
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
 
 public:
-	DeviceStatistics Statistics() const;
+	DeviceConnectivity Connectivity() const;
 	DeviceEnergyUsage EnergyUsage() const;
+	DeviceStatistics Statistics() const;
 
 protected:
-	DeviceStatistics m_Statistics;
+	DeviceConnectivity m_Connectivity;
 	DeviceEnergyUsage m_EnergyUsage;
+	DeviceStatistics m_Statistics;
 
 protected:
 	EthernetMacId m_EthernetMacId;
 	ZigBeeMacId m_ZigbeeMacId;
-	ZigBeeMacId m_CoordinatorZigbeeMacId;
 
 protected:
 	std::string m_FirmwareVersion;

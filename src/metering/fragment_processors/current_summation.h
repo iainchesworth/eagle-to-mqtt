@@ -3,24 +3,34 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <chrono>
+#include <optional>
+#include <string>
 
 #include "interfaces/ifragmentprocessor.h"
-#include "metering/common/protocol_types.h"
-#include "metering/common/zigbee_mac_id.h"
+#include "metering/common/timestamps.h"
+#include "metering/fragment_processors/partial_fragment_types/summation.h"
+#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
 class CurrentSummation : public IFragmentProcessor
 {
+	static const std::string FIELDNAME_METERMACID;
+	static const std::string FIELDNAME_TIMESTAMP;
+	static const std::string FIELDNAME_SUMMATIONDELIVERED;
+	static const std::string FIELDNAME_SUMMATIONRECEIVED;
+
 public:
 	CurrentSummation(const boost::property_tree::ptree& node);
+	virtual ~CurrentSummation();
+
+public:
+	std::optional<Summation> Delivered() const;
+	std::optional<Summation> Received() const;
 
 private:
-	ZigBeeMacId m_DeviceMacId;
-	ZigBeeMacId m_MeterMacId;
-	std::chrono::time_point<std::chrono::system_clock> m_TimeStamp;
-	double m_SummationDelivered;
-	double m_SummationReceived;
-	ProtocolTypes m_Protocol;
+	std::optional<ZigBeeMacId> m_MeterMacId;
+	std::optional<timepoint_from_jan2000> m_TimeStamp;
+	std::optional<Summation> m_SummationDelivered;
+	std::optional<Summation> m_SummationReceived;
 };
 
 #endif // CURRENT_SUMMATION_H

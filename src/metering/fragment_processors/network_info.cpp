@@ -1,15 +1,56 @@
 #include "metering/fragment_processors/network_info.h"
 
+#include "metering/type_handlers/essential.h"
+#include "metering/type_handlers/integer.h"
+#include "metering/type_handlers/optional.h"
+
+const std::string NetworkInfo::FIELDNAME_COORDMACID{ "CoordMacId" };
+const std::string NetworkInfo::FIELDNAME_STATUS{ "Status" };
+const std::string NetworkInfo::FIELDNAME_DESCRIPTION{ "Description" };
+const std::string NetworkInfo::FIELDNAME_STATUSCODE{ "StatusCode" };
+const std::string NetworkInfo::FIELDNAME_EXTPANID{ "ExtPanId" };
+const std::string NetworkInfo::FIELDNAME_CHANNEL{ "Channel" };
+const std::string NetworkInfo::FIELDNAME_SHORTADDR{ "ShortAddr" };
+const std::string NetworkInfo::FIELDNAME_LINKSTRENGTH{ "LinkStrength" };
+
 NetworkInfo::NetworkInfo(const boost::property_tree::ptree& node) :
-	IFragmentProcessor(),
-	m_DeviceMacId(node.get<std::string>("DeviceMacId")),
-	m_CoordMacId(IFragmentProcessor::ProcessOptionalTag<ZigBeeMacId>(node, "CoordMacId", ZigBeeMacId())),
-	m_Status(IFragmentProcessor::ProcessOptionalStatus(node)),
-	m_Description(IFragmentProcessor::ProcessOptionalTag<std::string>(node, "Description", "")),
-	m_StatusCode(IFragmentProcessor::ProcessOptionalTag<std::string>(node, "StatusCode", "")),
-	m_ExtPanId(IFragmentProcessor::ProcessOptionalTag<ZigBeeMacId>(node, "ExtPanId", ZigBeeMacId())),
-	m_Channel(IFragmentProcessor::ProcessOptionalTag<std::string>(node, "Channel", "")),
-	m_ShortAddr(IFragmentProcessor::ProcessOptionalTag<std::string>(node, "ShortAddr", "")),
-	m_LinkStrength(IFragmentProcessor::ProcessOptionalTag<std::string>(node, "LinkStrength", ""))
+	IFragmentProcessor(node),
+	m_CoordMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_COORDMACID)),
+	m_Status(IsOptional<Statuses>(node, FIELDNAME_STATUS)),
+	m_Description(IsOptional<std::string>(node, FIELDNAME_DESCRIPTION)),
+	m_StatusCode(IsOptional<uint8_t>(node, FIELDNAME_STATUSCODE)),
+	m_ExtPanId(IsOptional<ZigBeeMacId>(node, FIELDNAME_EXTPANID)),
+	m_Channel(IsOptional<std::string>(node, FIELDNAME_CHANNEL)),
+	m_ShortAddr(IsOptional<std::string>(node, FIELDNAME_SHORTADDR)),
+	m_LinkStrength(IsOptional<uint8_t>(node, FIELDNAME_LINKSTRENGTH))
 {
+}
+
+NetworkInfo::~NetworkInfo()
+{
+}
+
+std::optional<ZigBeeMacId> NetworkInfo::CoordinatorZigbeeId() const
+{
+	return m_CoordMacId;
+}
+
+std::optional<Statuses> NetworkInfo::Status() const
+{
+	return m_Status;
+}
+
+std::optional<uint8_t> NetworkInfo::StatusCode() const
+{
+	return m_StatusCode;
+}
+
+std::optional<std::string> NetworkInfo::Channel() const
+{
+	return m_Channel;
+}
+
+std::optional<uint8_t> NetworkInfo::LinkStrength() const
+{
+	return m_LinkStrength;
 }

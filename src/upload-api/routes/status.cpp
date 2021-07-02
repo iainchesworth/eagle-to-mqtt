@@ -1,27 +1,25 @@
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include <boost/json.hpp>
 
+#include "metering/device_registry.h"
+#include "metering/devices/eagle.h"
+#include "serialization/eagle_serializer.h"
 #include "upload-api/responses/response_200.h"
 #include "upload-api/routes/status.h"
 
-namespace pt = boost::property_tree;
-
 boost::beast::http::response<boost::beast::http::string_body> Status(const boost::beast::http::request<boost::beast::http::dynamic_body>& req)
 {
-	pt::ptree root;
-	pt::ptree fruits_node;
+    boost::json::object response_object;
+	std::stringstream response_stream;
+    
+	// Report the bridge information
+	// response_tree.add_child("bridge", bridge_node);
 
-	pt::ptree apple_node;
-	apple_node.put("", "apple");
-	fruits_node.push_back(std::make_pair("", apple_node));
-	pt::ptree orange_node;
-	orange_node.put("", "orange");
-	fruits_node.push_back(std::make_pair("", orange_node));
+	// Report the collection of Eagle devices
+	for (auto device : DeviceRegistry::Get())
+	{
+        response_object[EthernetMacId::ToString(device.first)] = Eagle_Serializer(device.second).Serialize();
+	}
 
-	root.add_child("fruits", fruits_node);
-
-	std::ostringstream oss;
-	boost::property_tree::json_parser::write_json(oss, root);
-
-	return make_200<boost::beast::http::string_body>(req, oss.str(), "text/html");;
+    const auto test_string = boost::json::serialize(response_object);
+	return make_200<boost::beast::http::string_body>(req, boost::json::serialize(response_object), "application/json");
 }

@@ -41,7 +41,7 @@ HttpRouter::HttpResponse HttpRouter::HandleRoute(HttpRequest& req) const
 
 	if (m_Routes.end() == it)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Attempted to match an unsupported route";
+		BOOST_LOG_TRIVIAL(warning) << L"Attempted to match an unsupported route: " << req.target();
 		res = make_400<boost::beast::http::string_body>(req, "Route not supported", "text/html");
 	}
 	else

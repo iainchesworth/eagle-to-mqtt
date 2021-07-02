@@ -2,26 +2,32 @@
 
 #include "metering/fragment_processors/current_summation.h"
 #include "metering/common/unit_converters.h"
+#include "metering/type_handlers/optional.h"
+
+const std::string CurrentSummation::FIELDNAME_METERMACID{ "MeterMacId" };
+const std::string CurrentSummation::FIELDNAME_TIMESTAMP{ "TimeStamp" };
+const std::string CurrentSummation::FIELDNAME_SUMMATIONDELIVERED{ "SummationDelivered" };
+const std::string CurrentSummation::FIELDNAME_SUMMATIONRECEIVED{ "SummationReceived" };
 
 CurrentSummation::CurrentSummation(const boost::property_tree::ptree& node) :
-	IFragmentProcessor(),
-	m_DeviceMacId(node.get<std::string>("DeviceMacId")),
-	m_MeterMacId(node.get<std::string>("MeterMacId")),
-	m_TimeStamp(hex_string_to_timepoint(node.get<std::string>("TimeStamp"))),
-	m_SummationDelivered(0.0f),
-	m_SummationReceived(0.0f),
-	m_Protocol{ IFragmentProcessor::ProcessOptionalProtocol(node) }
+	IFragmentProcessor(node),
+	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
+	m_TimeStamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>(FIELDNAME_TIMESTAMP))),
+	m_SummationDelivered(IsOptional<Summation>(node, FIELDNAME_SUMMATIONDELIVERED)),
+	m_SummationReceived(IsOptional<Summation>(node, FIELDNAME_SUMMATIONRECEIVED))
 {
-	double summation_delivered = hex_string_to_uint64_t(node.get<std::string>("SummationDelivered"));
-	double summation_received = hex_string_to_uint64_t(node.get<std::string>("SummationReceived"));
-	const auto multiplier = hex_string_to_uint32_t(node.get<std::string>("Multiplier"));
-	const auto divisor = hex_string_to_uint32_t(node.get<std::string>("Divisor"));
+}
 
-	summation_delivered *= (0 == multiplier) ? 1 : multiplier;
-	summation_delivered /= (0 == divisor) ? 1 : divisor;
-	m_SummationDelivered = summation_delivered;
+CurrentSummation::~CurrentSummation()
+{
+}
 
-	summation_received *= (0 == multiplier) ? 1 : multiplier;
-	summation_received /= (0 == divisor) ? 1 : divisor;
-	m_SummationReceived = summation_received;
+std::optional<Summation> CurrentSummation::Delivered() const
+{
+	return m_SummationDelivered;
+}
+
+std::optional<Summation> CurrentSummation::Received() const
+{
+	return m_SummationReceived;
 }

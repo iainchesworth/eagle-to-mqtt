@@ -9,9 +9,8 @@
 #include <string>
 
 #include "exceptions/unknown_fragment_type.h"
-#include "interfaces/ieagle.h"
-#include "metering/eagle-200/eagle_200.h"
-#include "metering/rfa-z109/rfa_z109.h"
+#include "metering/device_identifier.h"
+#include "metering/devices/eagle.h"
 #include "upload-api/responses/response_200.h"
 #include "upload-api/responses/response_400.h"
 #include "upload-api/responses/response_500.h"
@@ -30,32 +29,14 @@ boost::beast::http::response<boost::beast::http::string_body> Update(const boost
 
 	try
 	{
-		std::shared_ptr<IEagle> eagle_processor;
-
-		boost::optional<std::string> processor_v1; // <sigh> ... yes, the v1 version string is "undefined" (see RFA-Z109 v6 doco)
-		boost::optional<double> processor_v2;
-
-		const auto rainforest_child = upload_dataset.get_child_optional("rainforest");
-		if (!rainforest_child)
+		std::shared_ptr<Eagle> eagle_processor(IdentifyAndGetDeviceInstance(upload_dataset));
+		if (nullptr == eagle_processor)
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"No version present in the payload; halting processing!";
-		}
-		else if (processor_v1 = rainforest_child.get().get_optional<std::string>("<xmlattr>.version"); processor_v1.is_initialized() && (0 == processor_v1.get().compare("undefined")))
-		{
-			BOOST_LOG_TRIVIAL(debug) << L"Detected RFA-Z109";
-			eagle_processor = std::make_shared<RFA_Z109>();
-			eagle_processor->ProcessPayload(upload_dataset);
-
-		}
-		else if (processor_v2 = rainforest_child.get().get_optional<double>("<xmlattr>.version"); processor_v2.is_initialized() && (2.0 == processor_v2.get()))
-		{
-			BOOST_LOG_TRIVIAL(debug) << L"Detected EAGLE-200";
-			eagle_processor = std::make_shared<Eagle200>();
-			eagle_processor->ProcessPayload(upload_dataset);
+			BOOST_LOG_TRIVIAL(warning) << L"Failed to determine the specific device type reporting data!";
 		}
 		else
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Unknown version present in the payload; halting processing";
+			eagle_processor->ProcessPayload(upload_dataset);
 		}
 	}
 	catch (const UnknownFragmentType& ufte)

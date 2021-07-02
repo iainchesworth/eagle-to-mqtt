@@ -16,6 +16,7 @@ FROM base AS builder
 COPY ./deps /usr/src/eagle-to-mqtt/deps
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg2 
+RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/clang.sh"]
 RUN /usr/src/eagle-to-mqtt/deps/clang.sh
 RUN APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 RUN apt-get update
@@ -26,7 +27,9 @@ RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100 --s
 RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 --slave /usr/bin/c++ c++ /usr/bin/clang++ --slave /usr/bin/ld ld /usr/bin/lld
 
 # Build and install the various dependencies 
+RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/boost.latest.sh"]
 RUN /usr/src/eagle-to-mqtt/deps/boost.latest.sh
+RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/paho.mqtt.sh"]
 RUN /usr/src/eagle-to-mqtt/deps/paho.mqtt.sh
 
 # Build and install the application

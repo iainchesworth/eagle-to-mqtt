@@ -43,6 +43,8 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /usr/src/eagle-to-mqtt/app/app_entrypoint.sh /app_entrypoint.sh
 
+RUN ["chmod", "+x", "/app_entrypoint.sh"]
+
 ENV LD_LIBRARY_PATH /usr/local/lib:${LD_LIBRARY_PATH}
 
 ENTRYPOINT [ "/app_entrypoint.sh" ]

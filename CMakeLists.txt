@@ -33,6 +33,9 @@ if (UNIX)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
 
+    # Fix issues with RPATH when building under _real_ Linux/Unix (i.e. not WSL2)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+
     # Fix issues with dynamic linking for Boost under Linux/Unix
     add_definitions(-DBOOST_LOG_DYN_LINK)
 

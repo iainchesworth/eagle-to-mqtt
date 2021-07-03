@@ -4,7 +4,8 @@
 FROM ubuntu:20.04 AS base
 
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libssl1.1
+RUN DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libssl1.1 libicu66
 
 # The first stage will install build dependencies on top of the
 # runtime dependencies, and then compile

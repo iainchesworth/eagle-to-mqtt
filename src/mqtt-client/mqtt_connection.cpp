@@ -1,11 +1,36 @@
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/action-listeners/connect_action_listener.h"
+#include "mqtt-client/mqtt-messages/mqtt_bridgekeepalive.h"
+#include "notifications/notification_manager.h"
+#include "notifications/notification_publishkeepalive.h"
+#include "notifications/notification_publishpayload.h"
 
 MqttConnection::MqttConnection(boost::asio::io_context& ioc, mqtt::async_client_ptr client_ptr, mqtt::connect_options_ptr connect_options_ptr) :
 	m_IOContext(ioc),
 	m_ClientPtr(client_ptr),
 	m_ConnectOptionsPtr(connect_options_ptr)
 {
+	NotificationManagerSingleton()->RegisterCallback<Notification_PublishPayload>(
+		[this]() 
+		{
+			BOOST_LOG_TRIVIAL(debug) << L"Notification_PayloadToPublish() -> Notification received by MQTT Connection";
+
+			if (m_ClientPtr->is_connected())
+			{
+				///TODO
+			}
+		});
+
+	NotificationManagerSingleton()->RegisterCallback<Notification_PublishKeepAlive>(
+		[this]()
+		{
+			BOOST_LOG_TRIVIAL(debug) << L"Notification_PublishKeepAlive() -> Notification received by MQTT Connection";
+			
+			if (m_ClientPtr->is_connected())
+			{
+				Publish(std::make_unique<Mqtt_BridgeKeepAlive>());
+			}
+		});
 }
 
 void MqttConnection::Start()
@@ -38,7 +63,7 @@ void MqttConnection::Connect()
 
 }
 
-void MqttConnection::Publish()
+void MqttConnection::Publish(std::unique_ptr<MqttMessage> message)
 {
 	auto self = shared_from_this();
 

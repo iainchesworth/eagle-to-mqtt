@@ -2,11 +2,10 @@
 
 #include "metering/device_registry.h"
 
-DeviceRegistry& DeviceRegistry::Get()
+DeviceRegistry::DeviceRegistry() :
+	m_Registry()
 {
-	static DeviceRegistry instance;
-	// volatile int dummy{};
-	return instance;
+	BOOST_LOG_TRIVIAL(debug) << L"Initialising the DeviceRegistry";
 }
 
 void DeviceRegistry::Add(const EthernetMacId device_ethernet_mac_id, std::shared_ptr<Eagle> device)
@@ -30,9 +29,4 @@ std::shared_ptr<Eagle> DeviceRegistry::Find(const EthernetMacId device_ethernet_
 		BOOST_LOG_TRIVIAL(trace) << L"Successfully located a device with a matching Ethernet MAC address";
 		return it->second;
 	}
-}
-
-DeviceRegistry::DeviceRegistry() :
-	m_Registry()
-{
 }

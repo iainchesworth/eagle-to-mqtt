@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+#include "mqtt-client/mqtt-messages/mqtt_message.h"
+
 class MqttConnection : public std::enable_shared_from_this<MqttConnection>, public virtual mqtt::callback
 {
 public:
@@ -19,7 +21,7 @@ public:
 
 private:
 	void Connect();
-	void Publish();
+	void Publish(std::unique_ptr<MqttMessage> message);
 
 public:
 	void connection_lost(const std::string& cause) override;

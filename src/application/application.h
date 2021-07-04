@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 
+#include "interfaces/ibridge.h"
 #include "interfaces/ilistener.h"
 #include "interfaces/ipublisher.h"
 #include "options/options.h"
@@ -14,13 +15,14 @@ public:
 	Application& operator=(const Application&) = delete;
 
 public:
-	explicit Application(boost::asio::io_context& ioc, const Options& options, ListenerSet&& listener_set, PublisherSet&& publisher_set);
+	explicit Application(boost::asio::io_context& ioc, const Options& options, IBridge& bridge, ListenerSet&& listener_set, PublisherSet&& publisher_set);
 
 public:
 	void Run();
 
 private:
 	const Options& m_Options;
+	IBridge& m_Bridge;
 	ListenerSet m_Listeners;
 	PublisherSet m_Publishers;
 

@@ -11,6 +11,7 @@
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
 Eagle::Eagle() :
+	ISerializable(),
 	m_Connectivity(),
 	m_EnergyUsage(),
 	m_Statistics(),

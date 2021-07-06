@@ -12,14 +12,14 @@ NotificationManager::NotificationManager() :
 
 void NotificationManager::Dispatch(std::shared_ptr<INotification> notification)
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Dispatching notification";
+	BOOST_LOG_TRIVIAL(trace) << L"Dispatching notification";
 	std::lock_guard<std::mutex> guard(m_GuardMutex);
 	m_Queue.push(notification);
 }
 
 void NotificationManager::Poll()
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Triggering " << m_Queue.size() << L" notifications";
+	BOOST_LOG_TRIVIAL(trace) << L"Triggering " << m_Queue.size() << L" notifications";
 
 	std::lock_guard<std::mutex> guard(m_GuardMutex);
 

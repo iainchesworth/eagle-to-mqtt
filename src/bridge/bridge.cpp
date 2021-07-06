@@ -6,12 +6,14 @@
 #include "bridge/bridge.h"
 #include "bridge/bridge_registry.h"
 #include "notifications/notification_manager.h"
+#include "notifications/notification_bridgestatuschanged.h"
 #include "notifications/notification_publishkeepalive.h"
 
 Bridge::Bridge(boost::asio::io_context& ioc) :
 	IBridge(ioc),
 	m_UptimeStart(std::chrono::steady_clock::now()),
 	m_KeepAliveTimer(ioc),
+	m_Status(BridgeStatus::BridgeStatusTypes::Offline),
 	m_Statistics()
 {
 	BOOST_LOG_TRIVIAL(debug) << L"Initialising the Bridge";
@@ -29,12 +31,26 @@ Bridge::~Bridge()
 
 void Bridge::Run()
 {
+	m_Status = BridgeStatus::BridgeStatusTypes::Online;
+	TriggerBridgeStatusChanged();
+
 	TriggerKeepAlive();
 }
 
 void Bridge::Stop()
 {
 	m_KeepAliveTimer.cancel();
+
+	m_Status = BridgeStatus::BridgeStatusTypes::Offline;
+	TriggerBridgeStatusChanged();
+}
+
+void Bridge::TriggerBridgeStatusChanged()
+{
+	auto status_changed = std::make_shared<Notification_BridgeStatusChanged>(m_Status);
+
+	NotificationManagerSingleton()->Dispatch(status_changed);
+	NotificationManagerSingleton()->Poll();
 }
 
 void Bridge::TriggerKeepAlive()
@@ -58,7 +74,9 @@ void Bridge::TriggerKeepAlive()
 				{
 					BOOST_LOG_TRIVIAL(debug) << L"Sending keep-alive notification to all publishers";
 
-					NotificationManagerSingleton()->Dispatch(std::make_shared<Notification_PublishKeepAlive>());
+					auto keep_alive = std::make_shared<Notification_PublishKeepAlive>(Uptime());
+
+					NotificationManagerSingleton()->Dispatch(keep_alive);
 					NotificationManagerSingleton()->Poll();
 
 					TriggerKeepAlive();

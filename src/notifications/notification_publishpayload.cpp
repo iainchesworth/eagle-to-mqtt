@@ -1,6 +1,7 @@
 #include "notifications/notification_publishpayload.h"
 
-Notification_PublishPayload::Notification_PublishPayload()
+Notification_PublishPayload::Notification_PublishPayload() :
+	NotificationBase()
 {
 }
 

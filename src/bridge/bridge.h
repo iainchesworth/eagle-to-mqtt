@@ -6,6 +6,7 @@
 #include <chrono>
 
 #include "bridge/bridge_stats.h"
+#include "bridge/bridge_status.h"
 #include "interfaces/ibridge.h"
 #include "interfaces/iserializable.h"
 
@@ -22,6 +23,7 @@ public:
 	virtual void Stop() final;
 
 private:
+	void TriggerBridgeStatusChanged();
 	void TriggerKeepAlive();
 
 public:
@@ -31,6 +33,7 @@ public:
 private:
 	const std::chrono::time_point<std::chrono::steady_clock> m_UptimeStart;	
 	boost::asio::steady_timer m_KeepAliveTimer;
+	BridgeStatus m_Status;
 	BridgeStatistics m_Statistics;
 };
 

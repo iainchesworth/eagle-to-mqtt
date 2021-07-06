@@ -4,14 +4,15 @@
 #include "mqtt-client/mqtt_client.h"
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/mqtt_qos.h"
+#include "mqtt-client/mqtt-messages/mqtt_bridgestatuschanged.h"
 
 MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 	IPublisher(ioc),
 	m_Options(options),
-	m_Client(std::make_shared<mqtt::async_client>(MakeConnectionString(), MakeClientId())),
+	m_Client(std::make_shared<mqtt::async_client>(MakeConnectionString(), MakeClientId(), mqtt::create_options(MQTTVERSION_DEFAULT))),
 	m_ConnectOptions(),
 	m_Connection(),
-	m_LWT(mqtt::message("eagle/bridge/status", "offline", 7, static_cast<int>(MqttQosLevels::AtLeastOnce), true))
+	m_LWT(Mqtt_BridgeStatusChanged(m_Options.MqttTopic(), BridgeStatus::BridgeStatusTypes::Offline).Message())
 {
 	BOOST_LOG_TRIVIAL(info) << L"Starting MQTT client";
 
@@ -20,9 +21,12 @@ MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 	try
 	{
 		auto options_builder = mqtt::connect_options_builder()
+			.automatic_reconnect(std::chrono::milliseconds(10), std::chrono::milliseconds(10000))
 			.clean_session()
-			.keep_alive_interval(std::chrono::seconds(1))
-			.will(m_LWT);
+			.connect_timeout(std::chrono::seconds(60))
+			.keep_alive_interval(std::chrono::seconds(10))
+			.mqtt_version(MQTTVERSION_DEFAULT)
+			.will(std::move(*m_LWT));
 
 		if (m_Options.MqttUseTls())
 		{
@@ -36,7 +40,7 @@ MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 		}
 
 		m_ConnectOptions = std::make_shared<mqtt::connect_options>(options_builder.finalize());
-		m_Connection = std::make_shared<MqttConnection>(m_IOContext, m_Client, m_ConnectOptions);
+		m_Connection = std::make_shared<MqttConnection>(m_IOContext, m_Options, m_Client, m_ConnectOptions);
 	}
 	catch (const mqtt::exception& exc)
 	{

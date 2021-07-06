@@ -86,6 +86,6 @@ bool Priorities::operator==(const Priorities& other) const
 
 std::ostream& operator<<(std::ostream& os, const Priorities& priority)
 {
-	os << priority.ToString(priority.m_Priority);
+	os << Priorities::ToString(priority.m_Priority);
 	return os;
 }

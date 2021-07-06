@@ -1,4 +1,4 @@
-#include "notifications/notification_bridgestatuschanged.h"
+#include "notifications/bridge/notification_bridgestatuschanged.h"
 
 Notification_BridgeStatusChanged::Notification_BridgeStatusChanged(const BridgeStatus status) : 
 	NotificationBase(),

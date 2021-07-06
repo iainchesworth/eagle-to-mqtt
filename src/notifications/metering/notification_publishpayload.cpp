@@ -1,4 +1,4 @@
-#include "notifications/notification_publishpayload.h"
+#include "notifications/metering/notification_publishpayload.h"
 
 Notification_PublishPayload::Notification_PublishPayload() :
 	NotificationBase()

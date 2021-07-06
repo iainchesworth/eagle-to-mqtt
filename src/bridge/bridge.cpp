@@ -6,8 +6,8 @@
 #include "bridge/bridge.h"
 #include "bridge/bridge_registry.h"
 #include "notifications/notification_manager.h"
-#include "notifications/notification_bridgestatuschanged.h"
-#include "notifications/notification_publishkeepalive.h"
+#include "notifications/bridge/notification_bridgestatuschanged.h"
+#include "notifications/bridge/notification_publishkeepalive.h"
 
 Bridge::Bridge(boost::asio::io_context& ioc) :
 	IBridge(ioc),

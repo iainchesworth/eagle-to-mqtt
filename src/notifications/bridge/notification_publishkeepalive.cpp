@@ -1,4 +1,4 @@
-#include "notifications/notification_publishkeepalive.h"
+#include "notifications/bridge/notification_publishkeepalive.h"
 
 Notification_PublishKeepAlive::Notification_PublishKeepAlive(const std::chrono::seconds uptime) :
 	NotificationBase(),

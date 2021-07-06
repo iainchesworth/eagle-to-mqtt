@@ -3,9 +3,9 @@
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/action-listeners/connect_action_listener.h"
 #include "notifications/notification_manager.h"
-#include "notifications/notification_bridgestatuschanged.h"
-#include "notifications/notification_publishkeepalive.h"
-#include "notifications/notification_publishpayload.h"
+#include "notifications/bridge/notification_bridgestatuschanged.h"
+#include "notifications/bridge/notification_publishkeepalive.h"
+#include "notifications/metering/notification_publishpayload.h"
 
 MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& options, mqtt::async_client_ptr client_ptr, mqtt::connect_options_ptr connect_options_ptr) :
 	m_IOContext(ioc),

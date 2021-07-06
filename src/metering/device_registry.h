@@ -28,6 +28,10 @@ private:
 	DeviceRegistryMap m_Registry;
 };
 
+struct DeviceRegistrySingleton : public Singleton<DeviceRegistry, DeviceRegistrySingleton>
+{
+};
+
 template<class DEVICE_TYPE>
 std::shared_ptr<Eagle> CheckRegistryAndGetOrCreate(EthernetMacId device_mac_id)
 {
@@ -40,9 +44,5 @@ std::shared_ptr<Eagle> CheckRegistryAndGetOrCreate(EthernetMacId device_mac_id)
 
 	return device;
 }
-
-struct DeviceRegistrySingleton : public Singleton<DeviceRegistry, DeviceRegistrySingleton>
-{
-};
 
 #endif // DEVICE_REGISTRY_H

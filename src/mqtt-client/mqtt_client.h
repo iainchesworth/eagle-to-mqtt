@@ -31,7 +31,7 @@ private:
 	mqtt::async_client_ptr m_Client;
 	mqtt::connect_options_ptr m_ConnectOptions;
 	std::shared_ptr<MqttConnection> m_Connection;
-	const mqtt::message m_LWT;
+	mqtt::message_ptr m_LWT;
 };
 
 #endif // EAGLE_MQTT_CLIENT_H

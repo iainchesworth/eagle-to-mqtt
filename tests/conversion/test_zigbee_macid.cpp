@@ -1,8 +1,8 @@
 #include <boost/test/unit_test.hpp>
 
-#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
+#include <exception>
 
-#include "test_tools/test_tools_zigbee_mac_id.h"
+#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
 BOOST_AUTO_TEST_SUITE(Conversion);
 
@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(Test_ZigBeeMacId_ToString)
 		BOOST_TEST(ZigBeeMacId::ToString(test_validhexstring) == "AA:BB:CC:DD:EE:FF:11:22");
 		BOOST_TEST(ZigBeeMacId::ToString(test_validintstring) == "12:34:56:78:90:12:34:56");
 	}
-	catch (const std::exception ex)
+	catch (const std::exception& ex)
 	{
 		BOOST_ERROR(std::string("Unexpected exception while performing test: ") + ex.what());
 	}

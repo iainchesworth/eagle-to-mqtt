@@ -1,6 +1,8 @@
 #include <boost/log/trivial.hpp>
 
 #include "metering/devices/eagle.h"
+#include "notifications/notification_manager.h"
+#include "notifications/metering/notification_energyusage.h"
 
 void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
@@ -10,4 +12,9 @@ void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 
 	m_EnergyUsage.Now = instantaneous_demand.Now();
 	m_EnergyUsage.History.insert(energy_history_elem);
+
+	auto energy_usage = std::make_shared<Notification_EnergyUsage>(m_EthernetMacId);
+	energy_usage->InstantaneousDemand(m_EnergyUsage.Now);
+
+	NotificationManagerSingleton()->Dispatch(energy_usage);
 }

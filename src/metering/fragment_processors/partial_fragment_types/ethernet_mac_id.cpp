@@ -24,3 +24,9 @@ std::size_t EthernetMacId::EthernetMacId_Hasher::operator()(const EthernetMacId&
 {
 	return boost::hash_range(key.m_DeviceMacId.begin(), key.m_DeviceMacId.end());
 }
+
+std::ostream& operator<<(std::ostream& os, const EthernetMacId& ethernet_macid)
+{
+	os << EthernetMacId::ToString(ethernet_macid);
+	return os;
+}

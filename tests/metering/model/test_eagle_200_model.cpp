@@ -2,6 +2,8 @@
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/test/unit_test.hpp>
 
+#include <exception>
+
 #include "metering/common/unit_converters.h"
 #include "metering/device_registry.h"
 #include "metering/devices/eagle-200/eagle_200.h"
@@ -66,7 +68,7 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 		BOOST_TEST(4096 == test_device->EnergyUsage().History.find(element_4)->second.EnergyValue());
 		BOOST_TEST(65536 == test_device->EnergyUsage().History.find(element_5)->second.EnergyValue());
 	}
-	catch (const std::exception ex)
+	catch (const std::exception& ex)
 	{
 		BOOST_ERROR(std::string("Unexpected exception while performing test: ") + ex.what());
 	}

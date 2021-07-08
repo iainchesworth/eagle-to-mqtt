@@ -5,9 +5,11 @@
 #include <stdexcept>
 
 #include "application/application.h"
+#include "bridge/bridge.h"
 
-Application::Application(boost::asio::io_context& ioc, const Options& options, ListenerSet&& listener_set, PublisherSet&& publisher_set) :
+Application::Application(boost::asio::io_context& ioc, const Options& options, IBridge& bridge, ListenerSet&& listener_set, PublisherSet&& publisher_set) :
 	m_Options(options),
+	m_Bridge(bridge),
 	m_Listeners(std::move(listener_set)),
 	m_Publishers(std::move(publisher_set)),
 	m_IOContext(ioc),
@@ -30,6 +32,9 @@ Application::Application(boost::asio::io_context& ioc, const Options& options, L
 			// operations. Once all operations have finished the io_context::run()
 			// call will exit.
 
+			BOOST_LOG_TRIVIAL(debug) << L"Stopping Bridge async handlers";
+			m_Bridge.Stop();
+
 			BOOST_LOG_TRIVIAL(debug) << L"Stopping Listener async handlers";
 			for (auto& listener : m_Listeners)
 			{
@@ -42,6 +47,7 @@ Application::Application(boost::asio::io_context& ioc, const Options& options, L
 				publisher->Stop();
 			}
 
+			BOOST_LOG_TRIVIAL(trace) << L"Stopping ASIO io_context";
 			m_IOContext.stop();
 		});
 }
@@ -50,11 +56,9 @@ void Application::Run()
 {
 	try
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Starting Listener async handlers";
-		for (auto& listener : m_Listeners)
-		{
-			listener->Run();
-		}
+		// Start the publishers before the listeners as the listeners will
+		// effectively trigger the publishers if/when an update comes in
+		// and is successfully processed.
 
 		BOOST_LOG_TRIVIAL(debug) << L"Starting Publisher async handlers";
 		for (auto& publisher : m_Publishers)
@@ -62,6 +66,16 @@ void Application::Run()
 			publisher->Run();
 		}
 
+		BOOST_LOG_TRIVIAL(debug) << L"Starting Listener async handlers";
+		for (auto& listener : m_Listeners)
+		{
+			listener->Run();
+		}
+
+		BOOST_LOG_TRIVIAL(debug) << L"Starting Bridge async handlers";
+		m_Bridge.Run();
+
+		BOOST_LOG_TRIVIAL(trace) << L"Starting ASIO io_context";
 		m_IOContext.run();
 	}
 	catch (const std::runtime_error& ex)

@@ -1,4 +1,5 @@
 #include <boost/log/trivial.hpp>
+#include <date/date.h>
 
 #include <chrono>
 
@@ -19,12 +20,17 @@ void MqttConnection::NotificationHandler_PublishKeepAlive(const std::chrono::sec
 	}
 	else
 	{
+		using namespace date; // Leverage Howard Hinnant's date library to get the iostream support.
+
 		const std::string TOPIC{ m_Options.MqttTopic() + "/bridge/uptime" };
+
+		std::ostringstream oss;
+		oss << uptime;
 
 		Publish(
 			mqtt::message_ptr_builder()
 			.topic(TOPIC)
-			.payload(std::to_string(uptime.count()))
+			.payload(oss.str())
 			.qos(static_cast<int>(MqttQosLevels::AtMostOnce))
 			.retained(false)
 			.finalize()

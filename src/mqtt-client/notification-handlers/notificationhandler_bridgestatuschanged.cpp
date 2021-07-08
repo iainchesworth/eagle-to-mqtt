@@ -2,12 +2,24 @@
 
 #include "bridge/bridge_status.h"
 #include "mqtt-client/mqtt_connection.h"
-#include "mqtt-client/mqtt-messages/mqtt_bridgestatuschanged.h"
+#include "mqtt-client/mqtt_qos.h"
+#include "notifications/bridge/notification_bridgestatuschanged.h"
 
 void MqttConnection::NotificationHandler_BridgeStatusChange(const BridgeStatus& bridge_status)
 {
 	BOOST_LOG_TRIVIAL(trace) << L"Notification_BridgeStatusChange() -> Notification received by MQTT Connection";
-	auto message = std::make_shared<Mqtt_BridgeStatusChanged>(m_Options.MqttTopic(), bridge_status);
+
+	const std::string TOPIC{ m_Options.MqttTopic() + "/bridge/status" }; 
+	
+	std::ostringstream payload_oss;
+	payload_oss << bridge_status;
+
+	auto message = mqtt::message_ptr_builder()
+		.topic(TOPIC)
+		.payload(payload_oss.str())
+		.qos(static_cast<int>(MqttQosLevels::AtMostOnce))
+		.retained(false)
+		.finalize();
 
 	if (nullptr == m_ClientPtr)
 	{
@@ -18,7 +30,7 @@ void MqttConnection::NotificationHandler_BridgeStatusChange(const BridgeStatus& 
 		BOOST_LOG_TRIVIAL(debug) << L"MQTT client is not connected; cannot send BridgeStatusChange message to broker";
 
 		std::lock_guard<std::mutex> guard(m_QueuedSendOnConnectMutex);
-		m_QueuedSendOnConnect[typeid(Mqtt_BridgeStatusChanged)] = message;
+		m_QueuedSendOnConnect[typeid(Notification_BridgeStatusChanged)] = message;
 	}
 	else
 	{

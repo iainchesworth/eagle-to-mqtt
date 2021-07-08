@@ -1,7 +1,9 @@
 #include <boost/log/trivial.hpp>
 
+#include <chrono>
+
 #include "mqtt-client/mqtt_connection.h"
-#include "mqtt-client/mqtt-messages/mqtt_bridgekeepalive.h"
+#include "mqtt-client/mqtt_qos.h"
 
 void MqttConnection::NotificationHandler_PublishKeepAlive(const std::chrono::seconds& uptime)
 {
@@ -17,6 +19,15 @@ void MqttConnection::NotificationHandler_PublishKeepAlive(const std::chrono::sec
 	}
 	else
 	{
-		Publish(std::make_shared<Mqtt_BridgeKeepAlive>(m_Options.MqttTopic(), uptime));
+		const std::string TOPIC{ m_Options.MqttTopic() + "/bridge/uptime" };
+
+		Publish(
+			mqtt::message_ptr_builder()
+			.topic(TOPIC)
+			.payload(std::to_string(uptime.count()))
+			.qos(static_cast<int>(MqttQosLevels::AtMostOnce))
+			.retained(false)
+			.finalize()
+		);
 	}
 }

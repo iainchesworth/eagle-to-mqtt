@@ -4,6 +4,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/optional.hpp>
 
+#include <sstream>
 #include <string>
 
 #include "metering/fragment_processors/partial_fragment_types/mac_id.h"
@@ -27,6 +28,9 @@ public:
 			return external_type(value);
 		}
 	};
+
+public:
+	friend std::ostream& operator<<(std::ostream& os, const ZigBeeMacId& zigbee_macid);
 };
 
 #endif // ZIGBEE_MAC_ID_H

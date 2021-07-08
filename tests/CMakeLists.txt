@@ -4,6 +4,7 @@ set(TEST_TARGET "eagle-to-mqtt-tests")
 add_executable(${TEST_TARGET} ${PROJECT_TEST_SOURCES})
 
 target_include_directories(${TEST_TARGET} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
+target_include_directories(${TEST_TARGET} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/deps/date/include") # Support 3rd-party dependencies
 target_include_directories(${TEST_TARGET} PRIVATE "${CMAKE_SOURCE_DIR}/src")
 target_include_directories(${TEST_TARGET} PRIVATE "${CMAKE_SOURCE_DIR}/tests")
 target_link_directories(${TEST_TARGET} PRIVATE ${Boost_LIBRARY_DIRS} ${CMAKE_THREAD_LIBS_INIT})

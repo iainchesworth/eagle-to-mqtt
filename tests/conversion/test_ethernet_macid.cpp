@@ -4,8 +4,6 @@
 
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 
-#include "test_tools/test_tools_ethernet_mac_id.h"
-
 BOOST_AUTO_TEST_SUITE(Conversion);
 
 BOOST_AUTO_TEST_CASE(Test_EthernetMacId_ToString)

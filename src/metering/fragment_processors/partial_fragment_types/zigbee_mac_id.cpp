@@ -11,3 +11,9 @@ ZigBeeMacId::ZigBeeMacId(const std::string& zigbee_mac_id) :
 	MacId(zigbee_mac_id)
 {
 }
+
+std::ostream& operator<<(std::ostream& os, const ZigBeeMacId& zigbee_macid)
+{
+	os << ZigBeeMacId::ToString(zigbee_macid);
+	return os;
+}

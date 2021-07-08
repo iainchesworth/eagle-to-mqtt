@@ -4,15 +4,14 @@
 #include "mqtt-client/mqtt_client.h"
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/mqtt_qos.h"
-#include "mqtt-client/mqtt-messages/mqtt_bridgestatuschanged.h"
 
 MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 	IPublisher(ioc),
 	m_Options(options),
 	m_Client(std::make_shared<mqtt::async_client>(MakeConnectionString(), MakeClientId(), mqtt::create_options(MQTTVERSION_DEFAULT))),
 	m_ConnectOptions(),
-	m_Connection(),
-	m_LWT(Mqtt_BridgeStatusChanged(m_Options.MqttTopic(), BridgeStatus::BridgeStatusTypes::Offline).Message())
+	m_Connection()
+	// m_LWT()
 {
 	BOOST_LOG_TRIVIAL(info) << L"Starting MQTT client";
 
@@ -21,12 +20,12 @@ MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 	try
 	{
 		auto options_builder = mqtt::connect_options_builder()
-			.automatic_reconnect(std::chrono::milliseconds(10), std::chrono::milliseconds(10000))
+			.automatic_reconnect(std::chrono::milliseconds(100), std::chrono::milliseconds(1000))
 			.clean_session()
 			.connect_timeout(std::chrono::seconds(60))
 			.keep_alive_interval(std::chrono::seconds(10))
-			.mqtt_version(MQTTVERSION_DEFAULT)
-			.will(std::move(*m_LWT));
+			.mqtt_version(MQTTVERSION_DEFAULT);
+			// .will(std::move(*m_LWT));
 
 		if (m_Options.MqttUseTls())
 		{

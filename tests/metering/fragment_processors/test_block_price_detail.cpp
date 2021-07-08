@@ -12,7 +12,6 @@
 
 #include "test_tools/test_tools_fragment_generator.h"
 #include "test_tools/test_tools_time.h"
-#include "test_tools/test_tools_zigbee_mac_id.h"
 
 BOOST_AUTO_TEST_SUITE(FragmentProcessors);
 

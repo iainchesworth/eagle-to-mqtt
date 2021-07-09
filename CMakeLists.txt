@@ -3,7 +3,13 @@
 # Project + versions
 #-----------------------------------------------------------------------------------------------------------------------
 
-project (eagle-to-mqtt VERSION 0.0.1)
+project(
+    eagle-to-mqtt 
+    VERSION 0.0.1 
+    DESCRIPTION "Listens for Rainforest Automation EAGLE-200 messages and forwards them to an MQTT broker." 
+    HOMEPAGE_URL "https://github.com/iainchesworth/eagle-to-mqtt" 
+    LANGUAGES CXX
+)
 
 # CMake options
 #-----------------------------------------------------------------------------------------------------------------------
@@ -73,10 +79,21 @@ find_package(OpenSSL REQUIRED)
 find_package(PahoMqttCpp CONFIG REQUIRED)
 find_package(Threads REQUIRED)
 
+# Template the git commit information prior to building the application.
+set(GIT_FAIL_IF_NONZERO_EXIT false)
+set(PRE_CONFIGURE_FILE "src/versions/versions_git.constants.cpp.in")
+set(POST_CONFIGURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/versions_git.constants.cpp")
+include(cmake/GitWatcher.cmake)
+
+# Template the versioning information prior to building the application. 
+set(VERSION_CMAKE_SOURCE_FILE "src/versions/versions_cmake.constants.cpp.in")
+set(VERSION_CMAKE_DEST_FILE "${CMAKE_CURRENT_BINARY_DIR}/versions_cmake.constants.cpp")
+configure_file(${VERSION_CMAKE_SOURCE_FILE} ${VERSION_CMAKE_DEST_FILE})
+
 file(GLOB_RECURSE PROJECT_SOURCES "src/*/*.cpp")
 
 set(LIBRARY_TARGET "eagle-to-mqtt-core")
-add_library(${LIBRARY_TARGET} STATIC ${PROJECT_SOURCES})
+add_library(${LIBRARY_TARGET} STATIC ${PROJECT_SOURCES} ${POST_CONFIGURE_FILE} ${VERSION_CMAKE_DEST_FILE})
 target_compile_definitions(${LIBRARY_TARGET} PRIVATE -DPAHO_MQTTPP_VERSIONS)
 target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
 target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/deps/date/include") # Support 3rd-party dependencies

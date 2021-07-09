@@ -9,6 +9,8 @@
 
 #include "options/options.h"
 #include "options/option_validators.h"
+#include "versions/versions_cmake.h"
+#include "versions/versions_git.h"
 
 Options::Options(int argc, char* argv[]) :
 	m_HttpInterface(),
@@ -42,7 +44,8 @@ Options::Options(int argc, char* argv[]) :
 			("debug,d", boost::program_options::bool_switch()->default_value(false)->notifier(set_debug_logging), "Enable debugging")
 			("quiet,q", boost::program_options::bool_switch()->default_value(false)->notifier(set_fatal_logging), "Don't output any status messages")
 			("help,h", "Prints this message")
-			("verbose,v", boost::program_options::bool_switch()->default_value(false)->notifier(set_trace_logging), "Verbose output");
+			("verbose,v", boost::program_options::bool_switch()->default_value(false)->notifier(set_trace_logging), "Verbose output")
+			("version", "Prints version information");
 
 		boost::program_options::options_description options_httpuploader("HTTP Uploader API Options");
 		options_httpuploader.add_options()
@@ -67,9 +70,34 @@ Options::Options(int argc, char* argv[]) :
 
 		if (vm.count("help"))
 		{
-			std::cout << "Listens for Rainforest Automation EAGLE-200 messages and forwards them to an MQTT broker." << std::endl;
+			std::cout << VersionInfo::ProjectName() << ": " << VersionInfo::ProjectDescription() << std::endl;
 			std::cout << cmdline_options;
-			exit(0);
+			std::exit(EXIT_SUCCESS);
+		}
+		else if (vm.count("version"))
+		{
+			std::cout << VersionInfo::ProjectName() << " v" << VersionInfo::ProjectVersion();
+			
+			if (GitMetadata::Populated())
+			{
+				std::cout << " (" << GitMetadata::Describe() << ": " << GitMetadata::CommitDate() << ")" << std::endl << std::endl;
+
+				std::cout << "Commit " << GitMetadata::CommitSHA1() << " (HEAD)" << std::endl;
+				std::cout << "Author: " << GitMetadata::AuthorName() << " <" << GitMetadata::AuthorEmail() << ">" << std::endl;
+
+				if (GitMetadata::AnyUncommittedChanges())
+				{
+					std::cerr << "WARNING: there were uncommitted changes at build-time" << std::endl;
+					std::exit(EXIT_FAILURE);
+				}
+			}
+			else
+			{
+				std::cout << " (" << "No git commit information found" << ")" << std::endl;
+			}
+
+			std::cout << std::endl;
+			std::exit(EXIT_SUCCESS);
 		}
 		else
 		{

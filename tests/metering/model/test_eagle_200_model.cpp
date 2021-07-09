@@ -9,13 +9,17 @@
 #include "metering/devices/eagle-200/eagle_200.h"
 
 #include "test_tools/test_tools_fragment_generator.h"
+#include "test_tools/test_tools_time.h"
 
 BOOST_AUTO_TEST_SUITE(Eagle200_DataModel);
 
 BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 {
+	using namespace test_tools;
+
 	try
 	{
+
 		static const std::string TIMEPOINT_1 = "0x00000001";
 		static const std::string TIMEPOINT_2 = "0x00000002";
 		static const std::string TIMEPOINT_3 = "0x00000003";
@@ -39,13 +43,12 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		BOOST_TEST(test_device->EnergyUsage().History.size() == 3);
 
-		auto it_1 = test_device->EnergyUsage().History.find(hex_string_to_timepoint_since_jan2000(TIMEPOINT_1));
-		auto it_2 = test_device->EnergyUsage().History.find(hex_string_to_timepoint_since_jan2000(TIMEPOINT_2));
-		auto it_3 = test_device->EnergyUsage().History.find(hex_string_to_timepoint_since_jan2000(TIMEPOINT_3));
-
-		BOOST_TEST(1 == (*it_1).second.EnergyValue());
-		BOOST_TEST(16 == (*it_2).second.EnergyValue());
-		BOOST_TEST(256 == (*it_3).second.EnergyValue());
+		BOOST_TEST(hex_string_to_timepoint_since_jan2000(TIMEPOINT_1) == test_device->EnergyUsage().History[0].first);
+		BOOST_TEST(1 == test_device->EnergyUsage().History[0].second.EnergyValue());
+		BOOST_TEST(hex_string_to_timepoint_since_jan2000(TIMEPOINT_2) == test_device->EnergyUsage().History[1].first);
+		BOOST_TEST(16 == test_device->EnergyUsage().History[1].second.EnergyValue());
+		BOOST_TEST(hex_string_to_timepoint_since_jan2000(TIMEPOINT_3) == test_device->EnergyUsage().History[2].first);
+		BOOST_TEST(256 == test_device->EnergyUsage().History[2].second.EnergyValue());
 
 		{
 			// NOTE THAT THESE ELEMENTS ARE DELIBERATELY OUT OF ORDER
@@ -62,11 +65,12 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		BOOST_TEST(test_device->EnergyUsage().History.size() == 5);
 
-		timepoint_from_jan2000 element_4 = hex_string_to_timepoint_since_jan2000(TIMEPOINT_4);
-		timepoint_from_jan2000 element_5 = hex_string_to_timepoint_since_jan2000(TIMEPOINT_5);
+		// NOTE THAT THE TESTED ELEMENTS ARE DELIBERATELY OUT OF ORDER
 
-		BOOST_TEST(4096 == test_device->EnergyUsage().History.find(element_4)->second.EnergyValue());
-		BOOST_TEST(65536 == test_device->EnergyUsage().History.find(element_5)->second.EnergyValue());
+		BOOST_TEST(hex_string_to_timepoint_since_jan2000(TIMEPOINT_4) == test_device->EnergyUsage().History[4].first);
+		BOOST_TEST(4096 == test_device->EnergyUsage().History[4].second.EnergyValue());
+		BOOST_TEST(hex_string_to_timepoint_since_jan2000(TIMEPOINT_5) == test_device->EnergyUsage().History[3].first);
+		BOOST_TEST(65536 == test_device->EnergyUsage().History[3].second.EnergyValue());
 	}
 	catch (const std::exception& ex)
 	{

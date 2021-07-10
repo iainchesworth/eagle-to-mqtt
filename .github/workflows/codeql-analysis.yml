@@ -76,16 +76,16 @@ jobs:
         sudo apt-get -qq -y --no-install-recommends install \
                 libicu66 \
                 libssl1.1
-        sudo bash eagle-to-mqtt/deps/paho.mqtt.sh
+        sudo bash /home/runner/work/eagle-to-mqtt/eagle-to-mqtt/deps/paho.mqtt.sh
 
     - name: Install 3rd-party source dependencies
       run: |
         sudo apt -qq -y --no-install-recommends install \
-                eagle-to-mqtt/deps/boost/boost-build_1.76.0_amd64.deb
+                /home/runner/work/eagle-to-mqtt/eagle-to-mqtt/deps/boost/boost-build_1.76.0_amd64.deb
 
     - name: Build eagle-to-mqtt
       run: |
-        cd eagle-to-mqtt
+        cd /home/runner/work/eagle-to-mqtt/eagle-to-mqtt
         cmake -Bbuild -H. && cmake --build build/ --target install
 
     - name: Perform CodeQL Analysis

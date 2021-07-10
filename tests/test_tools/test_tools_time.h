@@ -5,14 +5,6 @@
 #include <iomanip>
 #include <ostream>
 
-namespace boost::test_tools::tt_detail::impl
-{
-
-std::ostream& boost_test_print_type(std::ostream& os, std::chrono::time_point<std::chrono::system_clock> const& time_point);
-
-}
-// namespace boost::test_tools::tt_detail::impl
-
 namespace test_tools
 {
 

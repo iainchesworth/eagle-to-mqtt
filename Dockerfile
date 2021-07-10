@@ -33,19 +33,23 @@ RUN /usr/src/eagle-to-mqtt/deps/boost.latest.sh
 RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/paho.mqtt.sh"]
 RUN /usr/src/eagle-to-mqtt/deps/paho.mqtt.sh
 
+# The second stage ....
+#-----------------------------------------------------------------------------------------------------------------------
+
+FROM builder as appbuilder
+
 # Build and install the application
 COPY . /usr/src/eagle-to-mqtt
 RUN cd /usr/src/eagle-to-mqtt && cmake -Bbuild -H. && cmake --build build/ --target install
 
-# The second stage will already contain all dependencies, just copy
-# the compiled executables
+# The third stage ....
 #-----------------------------------------------------------------------------------------------------------------------
 
 FROM base AS runtime
 
-COPY --from=builder /usr/local/bin /usr/local/bin
-COPY --from=builder /usr/local/lib /usr/local/lib
-COPY --from=builder /usr/src/eagle-to-mqtt/app/app_entrypoint.sh /app_entrypoint.sh
+COPY --from=appbuilder /usr/local/bin /usr/local/bin
+COPY --from=appbuilder /usr/local/lib /usr/local/lib
+COPY --from=appbuilder /usr/src/eagle-to-mqtt/app/app_entrypoint.sh /app_entrypoint.sh
 
 RUN ["chmod", "+x", "/app_entrypoint.sh"]
 

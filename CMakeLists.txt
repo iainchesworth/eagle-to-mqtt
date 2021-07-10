@@ -127,6 +127,22 @@ target_link_libraries(
 enable_testing()
 add_subdirectory(tests)
 
+# Installation
+#-----------------------------------------------------------------------------------------------------------------------
+
+include(GNUInstallDirs)
+
+install(TARGETS ${APPLICATION_TARGET} DESTINATION bin)
+
+set(APPS \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/${APPLICATION_TARGET}${CMAKE_EXECUTABLE_SUFFIX})     # paths to executables
+set(LIBS "")
+set(DIRS ${CMAKE_CURRENT_BINARY_DIR})                                                                    # directories to search for prerequisites
+
+install (CODE "
+    include(BundleUtilities)
+    fixup_bundle(\"${APPS}\" \"${LIBS}\" \"${DIRS}\")
+" OPTIONAL)
+
 # Packaging and distribution
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -141,11 +157,10 @@ elseif(UNIX)
 	endif()
 endif()
 
+set(CPACK_PACKAGE_CHECKSUM SHA512)
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+
 include(CPack)
 
-# Installation
-#-----------------------------------------------------------------------------------------------------------------------
-
-include(GNUInstallDirs)
-
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+# Add a custom target to enable CPack to be run under Visual Studio
+add_custom_target(bundle COMMAND "${CMAKE_CPACK_COMMAND}" "-C" "$<CONFIGURATION>" "--config" "${CMAKE_BINARY_DIR}/CPackConfig.cmake" COMMENT "Running CPack. Please wait...")

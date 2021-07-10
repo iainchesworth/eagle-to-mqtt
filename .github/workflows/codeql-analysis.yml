@@ -23,7 +23,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     permissions:
       actions: read
       contents: read
@@ -74,10 +74,9 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get -qq -y --no-install-recommends install \
-                libpaho-mqtt-dev \
-                libpaho-mqttpp-dev \
                 libicu66 \
                 libssl1.1
+        sudo bash eagle-to-mqtt/deps/paho.mqtt.sh
 
     - name: Install 3rd-party source dependencies
       run: |

@@ -16,7 +16,7 @@ FROM base AS builder
 # Prepare for building of the application and its dependencies
 COPY ./deps /usr/src/eagle-to-mqtt/deps
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg2 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg2 file
 RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/clang.sh"]
 RUN /usr/src/eagle-to-mqtt/deps/clang.sh
 RUN APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -

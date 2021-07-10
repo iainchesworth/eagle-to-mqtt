@@ -30,7 +30,7 @@ public:
 
 private:
 	std::optional<ZigBeeMacId> m_MeterMacId;
-	timepoint_from_jan2000 m_Timestamp;
+	std::optional<ZigbeeTimepoint> m_Timestamp;
 	uint8_t m_NumberOfPeriods;
 	std::chrono::time_point<std::chrono::system_clock> m_Start;
 	std::chrono::minutes m_Duration;

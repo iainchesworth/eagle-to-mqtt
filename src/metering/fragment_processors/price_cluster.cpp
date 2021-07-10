@@ -10,7 +10,7 @@ const std::string PriceCluster::FIELDNAME_TIER{ "Tier" };
 PriceCluster::PriceCluster(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
 	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
-	m_Timestamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>(FIELDNAME_TIMESTAMP))),
+	m_Timestamp(IsEssential<ZigbeeTimepoint>(node, FIELDNAME_TIMESTAMP)),
 	m_Tier(IsEssential<Tiers>(node, FIELDNAME_TIER)),
 	m_TierPricing(PricingTier::ExtractFromPayload(node))
 {

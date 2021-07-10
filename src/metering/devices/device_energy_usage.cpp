@@ -4,7 +4,7 @@ DeviceEnergyUsage::DeviceEnergyUsage() :
 	TotalDelivered(0, 0, 0, 0, 0, false),
 	TotalReceived(0, 0, 0, 0, 0, false),
 	Now(0, 0, 0, 0, 0, false),
-	History()
+	History(HISTORY_DURATION)
 {
 }
 

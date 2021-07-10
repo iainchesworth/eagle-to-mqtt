@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 
+#include "metering/common/timestamps.h"
 #include "metering/devices/device_stats.h"
 #include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
 #include "notifications/metering/notification_publishpayload.h"
@@ -19,7 +20,7 @@ public:
 	Notification_DeviceStats& DeviceStats(const DeviceStatistics& statistics);
 
 public:
-	Notification_DeviceStats& LastMessageTimestamp(const timepoint_from_epoch& timestamp);
+	Notification_DeviceStats& LastMessageTimestamp(const UnixTimepoint& timestamp);
 	Notification_DeviceStats& MissingPayloadFields(const uint64_t& missing_payload_fields);
 	Notification_DeviceStats& ErrorsWhileProcessing(const uint64_t& errors_while_processing);
 	Notification_DeviceStats& BillingPeriodCount(const uint64_t& billing_period_count);

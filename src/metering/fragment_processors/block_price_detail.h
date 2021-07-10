@@ -9,6 +9,7 @@
 
 #include "interfaces/ifragmentprocessor.h"
 #include "metering/common/currency_codes.h"
+#include "metering/common/timestamps.h"
 #include "metering/fragment_processors/partial_fragment_types/block_period.h"
 #include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
@@ -27,7 +28,7 @@ public:
 
 private:
 	std::optional<ZigBeeMacId> m_MeterMacId;
-	timepoint_from_jan2000 m_Timestamp;
+	std::optional<ZigbeeTimepoint> m_Timestamp;
 	BlockPeriod m_CurrentBlock;
 	CurrencyCodes m_Currency;
 };

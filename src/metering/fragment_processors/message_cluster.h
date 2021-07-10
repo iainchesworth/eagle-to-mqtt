@@ -9,6 +9,7 @@
 
 #include "interfaces/ifragmentprocessor.h"
 #include "metering/common/queues.h"
+#include "metering/common/timestamps.h"
 #include "metering/fragment_processors/partial_fragment_types/meter_message.h"
 #include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
 
@@ -23,13 +24,13 @@ public:
 	virtual ~MessageCluster();
 
 public:
-	timepoint_from_jan2000 Timestamp() const;
+	ZigbeeTimepoint Timestamp() const;
 	MeterMessage Message() const;
 	Queues Queue() const;
 
 public:
 	std::optional<ZigBeeMacId> m_MeterMacId;
-	timepoint_from_jan2000 m_Timestamp;
+	ZigbeeTimepoint m_Timestamp;
 	MeterMessage m_MeterMessage;
 	Queues m_Queue;
 };

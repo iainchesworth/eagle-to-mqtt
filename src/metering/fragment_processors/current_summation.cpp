@@ -12,7 +12,7 @@ const std::string CurrentSummation::FIELDNAME_SUMMATIONRECEIVED{ "SummationRecei
 CurrentSummation::CurrentSummation(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
 	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
-	m_TimeStamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>(FIELDNAME_TIMESTAMP))),
+	m_TimeStamp(IsOptional<ZigbeeTimepoint>(node, FIELDNAME_TIMESTAMP)),
 	m_SummationDelivered(IsOptional<Summation>(node, FIELDNAME_SUMMATIONDELIVERED)),
 	m_SummationReceived(IsOptional<Summation>(node, FIELDNAME_SUMMATIONRECEIVED))
 {

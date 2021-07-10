@@ -26,7 +26,7 @@ Notification_DeviceStats& Notification_DeviceStats::DeviceStats(const DeviceStat
 	return *this;
 }
 
-Notification_DeviceStats& Notification_DeviceStats::LastMessageTimestamp(const timepoint_from_epoch& timestamp)
+Notification_DeviceStats& Notification_DeviceStats::LastMessageTimestamp(const UnixTimepoint& timestamp)
 {
 	m_ElementsMap.insert(std::make_pair("last_message_timestamp", timestamp));
 	return *this;

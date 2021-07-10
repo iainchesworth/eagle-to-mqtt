@@ -13,7 +13,7 @@ class DeviceStatistics_Serializer;
 struct DeviceStatistics : public ISerializable
 {
 public:
-	timepoint_from_epoch LastMessageTimestamp;
+	UnixTimepoint LastMessageTimestamp;
 
 	// Generic statistics
 	uint64_t MessageCount;

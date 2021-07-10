@@ -14,6 +14,8 @@ BOOST_AUTO_TEST_SUITE(Eagle200_DataModel);
 
 BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 {
+	using namespace test_tools;
+
 	try
 	{
 		static const std::string TIMEPOINT_1 = "0x00000001";
@@ -39,13 +41,9 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		BOOST_TEST(test_device->EnergyUsage().History.size() == 3);
 
-		auto it_1 = test_device->EnergyUsage().History.find(hex_string_to_timepoint_since_jan2000(TIMEPOINT_1));
-		auto it_2 = test_device->EnergyUsage().History.find(hex_string_to_timepoint_since_jan2000(TIMEPOINT_2));
-		auto it_3 = test_device->EnergyUsage().History.find(hex_string_to_timepoint_since_jan2000(TIMEPOINT_3));
-
-		BOOST_TEST(1 == (*it_1).second.EnergyValue());
-		BOOST_TEST(16 == (*it_2).second.EnergyValue());
-		BOOST_TEST(256 == (*it_3).second.EnergyValue());
+		BOOST_TEST(1 == test_device->EnergyUsage().History[0].second.EnergyValue());
+		BOOST_TEST(16 == test_device->EnergyUsage().History[1].second.EnergyValue());
+		BOOST_TEST(256 == test_device->EnergyUsage().History[2].second.EnergyValue());
 
 		{
 			// NOTE THAT THESE ELEMENTS ARE DELIBERATELY OUT OF ORDER
@@ -62,11 +60,10 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		BOOST_TEST(test_device->EnergyUsage().History.size() == 5);
 
-		timepoint_from_jan2000 element_4 = hex_string_to_timepoint_since_jan2000(TIMEPOINT_4);
-		timepoint_from_jan2000 element_5 = hex_string_to_timepoint_since_jan2000(TIMEPOINT_5);
+		// NOTE THAT THE TESTED ELEMENTS ARE DELIBERATELY OUT OF ORDER
 
-		BOOST_TEST(4096 == test_device->EnergyUsage().History.find(element_4)->second.EnergyValue());
-		BOOST_TEST(65536 == test_device->EnergyUsage().History.find(element_5)->second.EnergyValue());
+		BOOST_TEST(4096 == test_device->EnergyUsage().History[4].second.EnergyValue());
+		BOOST_TEST(65536 == test_device->EnergyUsage().History[3].second.EnergyValue());
 	}
 	catch (const std::exception& ex)
 	{

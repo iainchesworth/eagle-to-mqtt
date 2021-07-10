@@ -11,7 +11,7 @@ void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 	auto energy_history_elem = std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now());
 
 	m_EnergyUsage.Now = instantaneous_demand.Now();
-	m_EnergyUsage.History.insert(energy_history_elem);
+	m_EnergyUsage.History.push_back(energy_history_elem);
 
 	auto energy_usage = std::make_shared<Notification_EnergyUsage>(m_EthernetMacId);
 	energy_usage->InstantaneousDemand(m_EnergyUsage.Now);

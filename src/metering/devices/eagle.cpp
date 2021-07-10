@@ -182,7 +182,7 @@ void Eagle::ProcessHeaderAttributes(const boost::property_tree::ptree& header_at
 	}
 	else
 	{
-		const auto message_timestamp = hex_string_to_timepoint_since_epoch(timestamp.get());
+		auto message_timestamp = UnixTimepoint(timestamp.get());
 
 		if (message_timestamp < m_Statistics.LastMessageTimestamp)
 		{

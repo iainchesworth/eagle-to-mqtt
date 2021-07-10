@@ -11,7 +11,7 @@ const std::string BillingPeriodList::FIELDNAME_CURRENTDURATION{ "CurrentDuration
 BillingPeriodList::BillingPeriodList(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
 	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
-	m_Timestamp(hex_string_to_timepoint_since_jan2000(node.get<std::string>(FIELDNAME_TIMESTAMP))),
+	m_Timestamp(IsOptional<ZigbeeTimepoint>(node, FIELDNAME_TIMESTAMP)),
 	m_NumberOfPeriods(IsOptionalWithDefault<uint8_t>(node, FIELDNAME_NUMBEROFPERIODS, 0)),
 	m_Start(),
 	m_Duration()

@@ -1,7 +1,9 @@
 #ifndef DEVICE_ENERGY_USAGE_H
 #define DEVICE_ENERGY_USAGE_H
 
-#include <map>
+#include <boost/circular_buffer.hpp>
+
+#include <utility>
 
 #include "interfaces/iserializable.h"
 #include "metering/common/timestamps.h"
@@ -13,6 +15,8 @@ class DeviceEnergyUsage_Serializer;
 
 class DeviceEnergyUsage : public ISerializable
 {
+	static constexpr uint32_t HISTORY_DURATION{ (24 * 60 * 60) / 8 };
+	
 public:
 	DeviceEnergyUsage();
 	virtual ~DeviceEnergyUsage();
@@ -23,7 +27,11 @@ public:
 
 public:
 	Demand Now;
-	std::map<timepoint_from_jan2000, Demand> History;
+
+public:
+	using HistoryElement = std::pair<ZigbeeTimepoint, Demand>;
+	using HistoryBuffer = boost::circular_buffer<HistoryElement>;
+	HistoryBuffer History;
 
 public:
 	friend class DeviceStatistics_Serializer;

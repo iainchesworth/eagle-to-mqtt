@@ -86,6 +86,7 @@ jobs:
     - name: Build eagle-to-mqtt
       run: |
         cd /home/runner/work/eagle-to-mqtt/eagle-to-mqtt
+        git submodule update --init --recursive --jobs 8
         cmake -Bbuild -H. && cmake --build build/ --target install
 
     - name: Perform CodeQL Analysis

@@ -27,7 +27,7 @@ boost::json::object DeviceEnergyUsage_Serializer::Serialize() const
 		const auto& usage_datetime = energy_history_elem.first;
 		const auto& demand_in_watts = energy_history_elem.second.EnergyValue(UnitsOfMeasure::Watts);
 
-		history.insert({ {Timestamps::ToString(usage_datetime), static_cast<std::int64_t>(demand_in_watts)} });
+		history.insert({ {ZigbeeTimepoint::ToString(usage_datetime), static_cast<std::int64_t>(demand_in_watts)} });
 	}
 
 	device_stats["History"] = std::move(history);

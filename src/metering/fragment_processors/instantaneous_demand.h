@@ -22,11 +22,11 @@ public:
 
 public:
 	Demand Now() const;
-	timepoint_from_jan2000 Timestamp() const;
+	ZigbeeTimepoint Timestamp() const;
 
 private:
 	std::optional<ZigBeeMacId> m_MeterMacId;
-	timepoint_from_jan2000 m_Timestamp;
+	ZigbeeTimepoint m_Timestamp;
 	Demand m_Demand;
 };
 

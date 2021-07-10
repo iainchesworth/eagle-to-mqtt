@@ -28,7 +28,7 @@ public:
 
 private:
 	std::optional<ZigBeeMacId> m_MeterMacId;
-	timepoint_from_jan2000 m_Timestamp;
+	ZigbeeTimepoint m_Timestamp;
 	Tiers m_Tier;
 	PricingTier m_TierPricing;
 };

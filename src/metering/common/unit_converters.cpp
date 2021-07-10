@@ -104,13 +104,8 @@ int8_t unsigned_to_signed(uint8_t value)
 	return unsigned_to_signed<int8_t, uint8_t>(value);
 }
 
-timepoint_from_jan2000 hex_string_to_timepoint_since_jan2000(const std::string& hex_string)
+std::chrono::time_point<std::chrono::system_clock> hex_string_to_timepoint(const std::string& hex_string)
 {
-	std::tm tm = {};
-	std::stringstream ss("Jan 1 2000 00:00:00");
-	ss >> std::get_time(&tm, "%b %d %Y %H:%M:%S");
-	auto tp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
-
 	const uint32_t MAX_HEX_STRING_LENGTH = 10; // 0x12345678 is the maximum length
 	if (MAX_HEX_STRING_LENGTH < hex_string.length())
 	{
@@ -121,22 +116,5 @@ timepoint_from_jan2000 hex_string_to_timepoint_since_jan2000(const std::string& 
 	uint32_t output;
 	input >> std::hex >> output;
 
-	return (tp + std::chrono::seconds(output));
-}
-
-timepoint_from_epoch hex_string_to_timepoint_since_epoch(const std::string& hex_string)
-{
-	const uint32_t MAX_HEX_STRING_LENGTH = 11; // 1234567890s is the maximum length
-	if (MAX_HEX_STRING_LENGTH < hex_string.length())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received timestamp hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
-	}
-
-	std::istringstream input(std::string(hex_string.substr(0, hex_string.length() - 1))); // Trim the "s" from the end and pass that back into the input.
-	uint32_t output;
-	input >> std::hex >> output;
-
-	// Convert the duration (which is in seconds) to a time_point offset "that duration" from 01/01/1970.
-	auto duration_since_epoch = std::chrono::duration<uint32_t, std::ratio<1>>(output);
-	return std::chrono::time_point<std::chrono::system_clock>(duration_since_epoch);
+	return std::chrono::time_point<std::chrono::system_clock>(std::chrono::seconds(output));
 }

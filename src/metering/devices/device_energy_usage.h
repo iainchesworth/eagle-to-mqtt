@@ -29,10 +29,9 @@ public:
 	Demand Now;
 
 public:
-	using HistoryElement = std::pair<timepoint_from_jan2000, Demand>;
+	using HistoryElement = std::pair<ZigbeeTimepoint, Demand>;
 	using HistoryBuffer = boost::circular_buffer<HistoryElement>;
 	HistoryBuffer History;
-	// std::map<timepoint_from_jan2000, Demand> History;
 
 public:
 	friend class DeviceStatistics_Serializer;

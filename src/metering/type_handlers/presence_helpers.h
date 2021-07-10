@@ -22,6 +22,7 @@ class Statuses;
 class Summation;
 class Tiers;
 class ZigBeeMacId;
+class ZigbeeTimepoint;
 
 namespace PresenseHelpers
 {
@@ -102,6 +103,8 @@ template<>
 Tiers RetrieveValue<Tiers>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 ZigBeeMacId RetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field);
+template<>
+ZigbeeTimepoint RetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field);
 
 //=====================================================================================================================
 //
@@ -180,6 +183,8 @@ template<>
 std::optional<Tiers> TryAndRetrieveValue<Tiers>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 std::optional<ZigBeeMacId> TryAndRetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field);
+template<>
+std::optional<ZigbeeTimepoint> TryAndRetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field);
 
 }
 // namespace PresenseHelpers

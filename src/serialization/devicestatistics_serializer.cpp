@@ -14,7 +14,7 @@ boost::json::object DeviceStatistics_Serializer::Serialize() const
 
 	BOOST_LOG_TRIVIAL(debug) << L"Serializing DeviceStatistics";
 
-	device_stats["LastMessageTimestamp"] = Timestamps::ToString(ds_ptr->LastMessageTimestamp);
+	device_stats["LastMessageTimestamp"] = UnixTimepoint::ToString(ds_ptr->LastMessageTimestamp);
 	device_stats["MessageCount"] = ds_ptr->MessageCount;
 	device_stats["MissingPayloadFields"] = ds_ptr->MissingPayloadFields;
 	device_stats["ErrorsWhileProcessing"] = ds_ptr->ErrorsWhileProcessing;

@@ -28,7 +28,7 @@ public:
 
 private:
 	std::optional<ZigBeeMacId> m_MeterMacId;
-	std::optional<timepoint_from_jan2000> m_TimeStamp;
+	std::optional<ZigbeeTimepoint> m_TimeStamp;
 	std::optional<Summation> m_SummationDelivered;
 	std::optional<Summation> m_SummationReceived;
 };

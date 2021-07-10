@@ -3,6 +3,7 @@
 #include "metering/common/protocols.h"
 #include "metering/common/queues.h"
 #include "metering/common/statuses.h"
+#include "metering/common/timestamps.h"
 #include "metering/type_handlers/boolean.h"
 #include "metering/type_handlers/integer.h"
 #include "metering/type_handlers/presence_helpers.h"
@@ -116,6 +117,11 @@ ZigBeeMacId PresenseHelpers::RetrieveValue<ZigBeeMacId>(const boost::property_tr
 {
 	return RetrieveValue<ZigBeeMacId>([&node, &field]() { return node.get<ZigBeeMacId>(field, ZigBeeMacId::PropertyTreeTranslator()); });
 }
+template<>
+ZigbeeTimepoint PresenseHelpers::RetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field)
+{
+	return RetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromString(node.get<std::string>(field)); });
+}
 
 //=====================================================================================================================
 //
@@ -221,4 +227,9 @@ template<>
 std::optional<ZigBeeMacId> PresenseHelpers::TryAndRetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field)
 {
 	return TryAndRetrieveValue<ZigBeeMacId>([&node, &field]() { return node.get<ZigBeeMacId>(field, ZigBeeMacId::PropertyTreeTranslator()); });
+}
+template<>
+std::optional<ZigbeeTimepoint> PresenseHelpers::TryAndRetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field)
+{
+	return TryAndRetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromString(node.get<std::string>(field)); });
 }

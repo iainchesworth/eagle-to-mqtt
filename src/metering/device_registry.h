@@ -1,48 +1,88 @@
 #ifndef DEVICE_REGISTRY_H
 #define DEVICE_REGISTRY_H
 
+#include <boost/log/trivial.hpp>
+
 #include <memory>
 #include <unordered_map>
 
+#include "interfaces/idevice.h"
 #include "metering/device_factory.h"
-#include "metering/devices/eagle.h"
-#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "utils/singleton.h"
 
 class DeviceRegistry
 {
-	using DeviceRegistryMap = std::unordered_map<EthernetMacId, std::shared_ptr<Eagle>, EthernetMacId::EthernetMacId_Hasher>;
+	using device_key = EthernetMacId;
+	using device_hash = EthernetMacId::EthernetMacId_Hasher;
+	using device_registry = std::unordered_map<device_key, std::shared_ptr<IDevice>, device_hash>;
 
 public:
 	DeviceRegistry();
 
 public:
-	void Add(const EthernetMacId device_ethernet_mac_id, std::shared_ptr<Eagle> device);
-	std::shared_ptr<Eagle> Find(const EthernetMacId device_ethernet_mac_id);
+    template<typename DEVICE_TYPE>
+    std::shared_ptr<IDevice> GetOrCreate(const EthernetMacId& device_ethernet_mac_id)
+    {
+        if (auto device = GetExisting(device_ethernet_mac_id); nullptr == device)
+        {
+			BOOST_LOG_TRIVIAL(debug) << L"No existing device with matching Ethernet MAC id...creating a new one";
+            return CreateNew<DEVICE_TYPE>(device_ethernet_mac_id);
+        }
+        else
+        {
+			BOOST_LOG_TRIVIAL(debug) << L"Existing device with matching Ethernet MAC id";
+            return device;
+        }
+    }
 
 public:
-	DeviceRegistryMap::const_iterator begin() { return m_Registry.begin(); }
-	DeviceRegistryMap::const_iterator end() { return m_Registry.end(); }
+	std::shared_ptr<IDevice> GetExisting(const EthernetMacId& device_ethernet_mac_id) const
+	{
+		if (auto it = m_Registry.find(device_ethernet_mac_id); m_Registry.end() == it)
+		{
+			BOOST_LOG_TRIVIAL(trace) << L"Failed to find device with matching Ethernet MAC id";
+			return nullptr;
+		}
+		else
+		{
+			BOOST_LOG_TRIVIAL(trace) << L"Found device with matching Ethernet MAC id";
+		    return it->second;
+		}
+	}
+
+public:
+	template<typename DEVICE_TYPE>
+	std::shared_ptr<IDevice> CreateNew(const EthernetMacId& device_ethernet_mac_id)
+	{
+		try
+		{
+			if (auto result = m_Registry.insert(std::make_pair(device_ethernet_mac_id, DeviceFactory::CreateDevice<DEVICE_TYPE>())); !result.second)
+			{
+				BOOST_LOG_TRIVIAL(warning) << L"Attempted to add multiple devices with the same Ethernet MAC address";
+				throw;
+			}
+			else
+			{
+				return GetExisting(device_ethernet_mac_id);
+			}
+		}
+		catch (...)
+		{
+			throw;
+		}
+	}
+
+public:
+    device_registry::iterator begin() { return m_Registry.begin(); }
+    device_registry::iterator end() { return m_Registry.end(); }
 
 private:
-	DeviceRegistryMap m_Registry;
+    device_registry m_Registry;
 };
 
 struct DeviceRegistrySingleton : public Singleton<DeviceRegistry, DeviceRegistrySingleton>
 {
 };
-
-template<class DEVICE_TYPE>
-std::shared_ptr<Eagle> CheckRegistryAndGetOrCreate(EthernetMacId device_mac_id)
-{
-	auto device = DeviceRegistrySingleton()->Find(device_mac_id);
-	if (!device)
-	{
-		device = DeviceFactory::CreateDevice<DEVICE_TYPE>();
-		DeviceRegistrySingleton()->Add(device_mac_id, device);
-	}
-
-	return device;
-}
 
 #endif // DEVICE_REGISTRY_H

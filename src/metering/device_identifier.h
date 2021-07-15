@@ -5,8 +5,10 @@
 
 #include <memory>
 
-#include "metering/devices/eagle.h"
+// Forward declarations
+class IDevice;
 
-std::shared_ptr<Eagle> IdentifyAndGetDeviceInstance(boost::property_tree::ptree& device_payload);
+std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(boost::property_tree::ptree& device_payload);
+std::shared_ptr<IDevice> IdentifyAndGetSymoInstance(boost::property_tree::ptree& device_payload);
 
 #endif // DEVICE_IDENTIFIER_H

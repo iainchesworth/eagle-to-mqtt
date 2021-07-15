@@ -8,7 +8,7 @@
 #include <string>
 
 #include "metering/common/protocols.h"
-#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
 
 class IFragmentProcessor
 {

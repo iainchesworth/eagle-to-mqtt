@@ -2,7 +2,7 @@
 
 #include <exception>
 
-#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
 
 BOOST_AUTO_TEST_SUITE(Conversion);
 

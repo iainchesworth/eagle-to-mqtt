@@ -4,17 +4,19 @@
 #include <boost/log/trivial.hpp>
 
 #include <memory>
+#include <type_traits>
 
 #include "exceptions/not_implemented.h"
-#include "metering/devices/eagle.h"
-#include "metering/devices/eagle-200/eagle_200.h"
-#include "metering/devices/rfa-z109/rfa_z109.h"
+#include "interfaces/idevice.h"
 
 namespace DeviceFactory
 {
-	template<typename T> std::shared_ptr<Eagle> CreateDevice();
-	template<> std::shared_ptr<Eagle> CreateDevice<Eagle200>();
-	template<> std::shared_ptr<Eagle> CreateDevice<RFA_Z109>();
+	template<typename DEVICE_TYPE, typename std::enable_if<std::is_base_of<IDevice, DEVICE_TYPE>::value>::type* = nullptr>
+	std::unique_ptr<DEVICE_TYPE> CreateDevice()
+	{
+		// BOOST_LOG_TRIVIAL(warning) << L"Attempted to create an instance of an unknown device type";
+		return std::make_unique<DEVICE_TYPE>();
+	}
 };
 
 #endif // DEVICE_FACTORY_H

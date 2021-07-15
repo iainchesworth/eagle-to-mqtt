@@ -1,14 +1,23 @@
 # Rainforest Eagle-to-MQTT bridge
-This application listens to your Rainforest Automation RFA-Z109 or EAGLE-200 device and translates publishes its data to
+This application listens to your various home electricial generation or monitoring devices and translates publishes their data to
 MQTT.  This enables direct integration with MQTT-capable services/software such as HomeKit via [mqttthing-homebridge] 
 (https://github.com/arachnetech/homebridge-mqttthing), [HomeAssistant] (https://www.home-assistant.io/), and many others.  
 Releases are available as Docker containers on [Docker Hub] (https://hub.docker.com/r/ichesworth/eagle-to-mqtt).
+
+## Supported Devices
+
+Rainforest Automation RFA-Z109 or EAGLE-200 (smart meter monitor)
+Fronius Symo (solar power inverter)
 
 ## Configuring and Running
 
 TODO
 
-### Configuring Your EAGLE with a Custom Upload destination
+### Configuring Your Fronius Symo with a Push Service destination
+
+TODO
+
+### Configuring Your Rainforest Automation EAGLE with a Custom Upload destination
 
 Before anything will work, you need to connect your Rainforest Automation device's uploader to connect and publish to the
 application or container.  This is done via the device's UI or Rainforest Automation's website. If you want to tweak any
@@ -24,7 +33,7 @@ or by using CURL.  An example payload can be found below:
       "format":"XML:RAW",
       "hostname":"192.168.1.173",
       "port":3000,
-      "url":"/upload",
+      "url":"/upload/rainforest",
       "uploadSize":0,
       "uploadPeriod":0,
       "protocol":"http",

@@ -9,7 +9,8 @@
 #include "upload-api/upload_api.h"
 #include "upload-api/routes/root.h"
 #include "upload-api/routes/status.h"
-#include "upload-api/routes/update.h"
+#include "upload-api/routes/update-fronius.h"
+#include "upload-api/routes/update-rainforest.h"
 
 UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options) :
 	IListener(ioc),
@@ -24,7 +25,8 @@ UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options) :
 
 	m_ApiRouter.Get("^/$", Root);
 	m_ApiRouter.Get("^/status[/]??$", Status);
-	m_ApiRouter.Post("^/upload[/]??$", Update);
+	m_ApiRouter.Post("^/upload/fronius[/]??$", Update_Fronius);
+	m_ApiRouter.Post("^/upload/rainforest[/]??$", Update_Rainforest);
 }
 
 UploaderAPI::~UploaderAPI()
@@ -37,7 +39,7 @@ void UploaderAPI::Run()
 {
 	try
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Listening for Eagle-200 Uploader connections on " << m_Options.HttpInterface() << L":" << m_Options.HttpPort();
+		BOOST_LOG_TRIVIAL(debug) << L"Listening for data uploader connections on " << m_Options.HttpInterface() << L":" << m_Options.HttpPort();
 
 		m_Acceptor.async_accept(m_Socket, [&](boost::beast::error_code ec)
 			{

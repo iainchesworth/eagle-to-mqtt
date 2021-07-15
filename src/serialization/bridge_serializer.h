@@ -8,10 +8,10 @@
 #include "interfaces/iserializer.h"
 #include "bridge/bridge.h"
 
-class Bridge_Serializer : public ISerializer
+class Bridge_Serializer : public ISerializer<Bridge>
 {
 public:
-	Bridge_Serializer(std::shared_ptr<Bridge> bridge_ptr);
+	Bridge_Serializer(const Bridge& bridge);
 
 public:
 	virtual boost::json::object Serialize() const final;

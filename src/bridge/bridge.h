@@ -35,6 +35,9 @@ private:
 	boost::asio::steady_timer m_KeepAliveTimer;
 	BridgeStatus m_Status;
 	BridgeStatistics m_Statistics;
+
+public:
+	virtual boost::json::object Serialize() const;
 };
 
 #endif // BRIDGE_H

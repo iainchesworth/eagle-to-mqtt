@@ -6,7 +6,7 @@ Notification_DeviceStats::Notification_DeviceStats(EthernetMacId device_id) :
 {
 }
 
-Notification_DeviceStats& Notification_DeviceStats::DeviceStats(const DeviceStatistics& statistics)
+Notification_DeviceStats& Notification_DeviceStats::DeviceStats(const Rainforest::DeviceStatistics& statistics)
 {
 	LastMessageTimestamp(statistics.LastMessageTimestamp);
 	MissingPayloadFields(statistics.MissingPayloadFields);

@@ -8,7 +8,7 @@
 
 #include "metering/common/unit_converters.h"
 #include "metering/common/units_of_measure.h"
-#include "metering/type_handlers/essential.h"
+#include "metering/types/essential.h"
 
 class CalculatedEnergyValue
 {

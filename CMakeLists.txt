@@ -5,7 +5,7 @@
 
 project(
     eagle-to-mqtt 
-    VERSION 0.0.1 
+    VERSION 0.0.2 
     DESCRIPTION "Listens for Rainforest Automation EAGLE-200 messages and forwards them to an MQTT broker." 
     HOMEPAGE_URL "https://github.com/iainchesworth/eagle-to-mqtt" 
     LANGUAGES CXX
@@ -69,6 +69,7 @@ if (WIN32)
 
     # Silence MSVC warnings about features that are deprecated in C++17 (notably in Boost headers)
     add_definitions(-D_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS)
+
 endif ()
 
 # Main application

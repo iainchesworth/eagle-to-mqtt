@@ -7,8 +7,8 @@
 #include <string>
 
 #include "metering/common/timestamps.h"
-#include "metering/devices/device_stats.h"
-#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
+#include "metering/devices/rainforest/common/device_stats.h"
+#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "notifications/metering/notification_publishpayload.h"
 
 class Notification_DeviceStats : public Notification_PublishPayload
@@ -17,7 +17,7 @@ public:
 	Notification_DeviceStats(EthernetMacId device_id);
 
 public:
-	Notification_DeviceStats& DeviceStats(const DeviceStatistics& statistics);
+	Notification_DeviceStats& DeviceStats(const Rainforest::DeviceStatistics& statistics);
 
 public:
 	Notification_DeviceStats& LastMessageTimestamp(const UnixTimepoint& timestamp);

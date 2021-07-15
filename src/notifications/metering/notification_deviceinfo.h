@@ -5,8 +5,8 @@
 
 #include <string>
 
-#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
-#include "metering/fragment_processors/partial_fragment_types/zigbee_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
 #include "notifications/metering/notification_publishpayload.h"
 
 class Notification_DeviceInfo : public Notification_PublishPayload

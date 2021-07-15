@@ -3,9 +3,7 @@
 
 #include "bridge/bridge_registry.h"
 #include "metering/device_registry.h"
-#include "metering/devices/eagle.h"
 #include "serialization/bridge_serializer.h"
-#include "serialization/eagle_serializer.h"
 #include "upload-api/responses/response_200.h"
 #include "upload-api/routes/status.h"
 
@@ -22,13 +20,21 @@ boost::beast::http::response<boost::beast::http::string_body> Status(const boost
 	}
 	else
 	{
-		response_object["bridge"] = Bridge_Serializer(bridge).Serialize();
+		response_object["bridge"] = Bridge_Serializer(*bridge).Serialize();
 	}
 
 	// Report the collection of Eagle devices
 	for (auto device : *DeviceRegistrySingleton())
 	{
-        response_object[EthernetMacId::ToString(device.first)] = Eagle_Serializer(device.second).Serialize();
+		if (!device.second)
+		{
+			BOOST_LOG_TRIVIAL(debug) << L"Cannot serialize device - object is not initialized in registry";
+		}
+		else
+		{
+            BOOST_LOG_TRIVIAL(debug) << L"Serialising device object";
+			response_object[EthernetMacId::ToString(device.first)] = device.second->Serialize();
+		}
 	}
 
     const auto test_string = boost::json::serialize(response_object);

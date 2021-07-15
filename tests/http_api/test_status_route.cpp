@@ -5,8 +5,8 @@
 #include <exception>
 
 #include "metering/device_registry.h"
-#include "metering/devices/eagle-200/eagle_200.h"
-#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
+#include "metering/devices/rainforest/eagle-200/eagle_200.h"
+#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "upload-api/routes/status.h"
 
 #include "test_tools/test_tools_fragment_generator.h"
@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(Test_StatusRoute)
 {
 	try
 	{
-		auto test_device = CheckRegistryAndGetOrCreate<Eagle200>(EthernetMacId("0x19F95BEA87DE"));
+		auto test_device = DeviceRegistrySingleton()->GetOrCreate<Eagle200>(EthernetMacId("0x19F95BEA87DE"));
 		auto raw_payload = test_tools::FragmentGenerator(test_tools::FragmentGenerator::FragmentVersions::V2)
 			.AddFragment_ConnectionStatus()
 			.AddFragment_CurrentSummation()

@@ -6,7 +6,7 @@
 
 #include "metering/common/unit_converters.h"
 #include "metering/device_registry.h"
-#include "metering/devices/eagle-200/eagle_200.h"
+#include "metering/devices/rainforest/eagle-200/eagle_200.h"
 
 #include "test_tools/test_tools_fragment_generator.h"
 
@@ -24,7 +24,8 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 		static const std::string TIMEPOINT_4 = "0x00000004";
 		static const std::string TIMEPOINT_5 = "0x00000005";
 
-		auto test_device = CheckRegistryAndGetOrCreate<Eagle200>(EthernetMacId("0xF57625CDDBF7"));
+		auto base_device = DeviceRegistrySingleton()->GetOrCreate<Eagle200>(EthernetMacId("0xF57625CDDBF7"));
+		auto test_device = std::dynamic_pointer_cast<Eagle200>(base_device);
 
 		{
 			auto raw_payload = test_tools::FragmentGenerator(test_tools::FragmentGenerator::FragmentVersions::V2)

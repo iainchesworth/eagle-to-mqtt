@@ -1,8 +1,8 @@
 #ifndef METER_DATA_H
 #define METER_DATA_H
 
-#include "metering/fragment_processors/device_info.h"
-#include "metering/fragment_processors/instantaneous_demand.h"
+#include "metering/devices/rainforest/messages/device_info.h"
+#include "metering/devices/rainforest/messages/instantaneous_demand.h"
 
 struct CurrentSummation
 {

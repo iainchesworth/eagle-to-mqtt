@@ -17,7 +17,7 @@ boost::json::object DeviceEnergyUsage_Serializer::Serialize() const
 
 	device_stats["TotalDelivered_kWh"] = static_cast<std::int64_t>(m_Serializable.TotalDelivered.EnergyValue());
 	device_stats["TotalReceived_kWh"] = static_cast<std::int64_t>(m_Serializable.TotalReceived.EnergyValue());
-	device_stats["InstantaneousDemand_Watts"] = static_cast<std::int64_t>(m_Serializable.Now.EnergyValue(UnitsOfMeasure::Watts));
+	device_stats["InstantaneousDemand_Watts"] = static_cast<std::int64_t>(m_Serializable.Now.EnergyValue(UnitsOfMeasure::Units::Watts));
 
 	BOOST_LOG_TRIVIAL(trace) << L"Serializing " << m_Serializable.History.size() << L" history elements";
 
@@ -26,7 +26,7 @@ boost::json::object DeviceEnergyUsage_Serializer::Serialize() const
 	for (const auto& energy_history_elem : m_Serializable.History)
 	{
 		const auto& usage_datetime = energy_history_elem.first;
-		const auto& demand_in_watts = energy_history_elem.second.EnergyValue(UnitsOfMeasure::Watts);
+		const auto& demand_in_watts = energy_history_elem.second.EnergyValue(UnitsOfMeasure::Units::Watts);
 
 		history.insert({ {ZigbeeTimepoint::ToString(usage_datetime), static_cast<std::int64_t>(demand_in_watts)} });
 	}

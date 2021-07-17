@@ -15,7 +15,7 @@ public:
 	Demand(uint32_t raw_demand, uint32_t multiplier, uint32_t divisor, uint8_t digits_right, uint8_t digits_left, bool suppress_leading_zero);
 
 public:
-	virtual double EnergyValue(UnitsOfMeasure units = UnitsOfMeasure::Kilowatts) const final;
+	virtual double EnergyValue(UnitsOfMeasure units = UnitsOfMeasure::Units::Kilowatts) const final;
 
 public:
 	static Demand ExtractFromPayload(const boost::property_tree::ptree& node, const std::string& raw_value_key = "Demand");

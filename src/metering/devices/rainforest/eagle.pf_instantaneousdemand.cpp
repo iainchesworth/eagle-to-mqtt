@@ -6,7 +6,7 @@
 
 void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
-	BOOST_LOG_TRIVIAL(info) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue(UnitsOfMeasure::Watts) << L"W)";
+	BOOST_LOG_TRIVIAL(info) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().EnergyValue(UnitsOfMeasure::Units::Watts) << L"W)";
 
 	auto energy_history_elem = std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now());
 

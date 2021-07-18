@@ -1,4 +1,10 @@
+language: cpp
+compiler:
+- clang
+
 dist: focal
+os:
+- linux
 
 addons:
   sonarcloud:
@@ -6,13 +12,15 @@ addons:
     token:
       secure: "V/QwdjxXzAfsbPqKWdEbaCyH2Yq5qysj9IrDFXx+LMMp5WLEMDdqrrBCWVkzUQGNQ+SF/KfKZh3Dh8krI18sn2wT8OH8vZLK7QR8s8yGnzivtWII7vQdroay75RvhI0usvoloZtxHztjY4LCNUHXldA0NUvjzn/V9X3zd7YVdgNZ+KNXuuI4X2v82H927Q4eD2w8zFlpJ4WhDpruYnmmrIeb2alppvhTUZ7I/Wy/GRCCUXXFry8dZagFElfJdcc0/FVrnDz14Uypvgm1DpLcDbQZXuBPXSfGWCf0VHbd8WBBIQoOK1Sjz2OftKTO6HKA+q+TGOJWoWqHTPxw2QcxWao59NjJuP0I6z1msEFJ5pNN18FJSroWbBUVJybO7P+jyHh0UYBlO5sZOTFGH755JogEkKfPo/RAMrF3Pk/U1FVqPY+38/ov/1kekQ5hvVr09SVqxYiborv2tUBWvK5U7pAdrIzbtFaRMOuPVSZcBUFSMEVJ3iIWQeKSgqzasU77t/N3XZjzZQgVKhB1Ws/q/Lmp/XT8YlTLo+26Wk5VV0FHlqrk9WWsoAw/rL4LECtF5saM1XHcmo01cNl4a/Y9EBivujfopYCDcQqsycjBmk+IFSzm2aLcuw5JkjxYTF4jnYEv2/Watv1CJ8Gi1Sbo1yP3Ph2M0lcG+71TyCdSqyw="
 
-script:
+before_install:
   # Prepare the build system
   - apt-get update
   - apt-get -qq -y --no-install-recommends install libicu66 libssl1.1
   - bash deps/paho.mqtt.sh
   - apt -qq -y --no-install-recommends install deps/boost/boost-build_1.76.0_amd64.deb
   - git submodule update --init --recursive --jobs 8
+
+script:
   - cmake -Bbuild -H. && cmake --build build/ --target eagle-to-mqtt
   - NUMBER_OF_PROCESSORS=$(nproc --all)
   # Wraps the compilation with the Build Wrapper to generate configuration (used

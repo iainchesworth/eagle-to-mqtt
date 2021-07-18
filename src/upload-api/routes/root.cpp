@@ -8,10 +8,6 @@ ApiRoute_Root::ApiRoute_Root() :
 {
 }
 
-ApiRoute_Root::~ApiRoute_Root()
-{
-}
-
 HttpResponse ApiRoute_Root::Handler(const HttpRequest& request)
 {
 	return make_200<boost::beast::http::string_body>(request, "", "text/html");

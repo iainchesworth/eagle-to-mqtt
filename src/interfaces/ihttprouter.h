@@ -6,10 +6,6 @@
 class IHttpRouter
 {
 public:
-	IHttpRouter();
-	virtual ~IHttpRouter();
-
-public:
 	virtual HttpResponse HandleRoute(const HttpRequest& req) const = 0;
 };
 

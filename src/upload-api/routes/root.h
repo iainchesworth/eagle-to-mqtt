@@ -10,7 +10,6 @@ class ApiRoute_Root : public IApiRoute
 
 public:
 	ApiRoute_Root();
-	virtual ~ApiRoute_Root();
 
 public:
 	HttpResponse Handler(const HttpRequest& request);

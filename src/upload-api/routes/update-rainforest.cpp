@@ -25,10 +25,6 @@ ApiRoute_Rainforest::ApiRoute_Rainforest() :
 {
 }
 
-ApiRoute_Rainforest::~ApiRoute_Rainforest()
-{
-}
-
 HttpResponse ApiRoute_Rainforest::Handler(const HttpRequest& request)
 {
 	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Rainforest) Payload: " << std::endl << boost::beast::make_printable(request.body().data());

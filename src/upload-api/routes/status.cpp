@@ -14,10 +14,6 @@ ApiRoute_Status::ApiRoute_Status() :
 {
 }
 
-ApiRoute_Status::~ApiRoute_Status()
-{
-}
-
 HttpResponse ApiRoute_Status::Handler(const HttpRequest& request)
 {
     boost::json::object response_object;

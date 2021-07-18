@@ -7,7 +7,7 @@
 class UnknownFragmentType : public std::runtime_error
 {
 public:
-	UnknownFragmentType(const std::string& unknown_fragment);
+	explicit UnknownFragmentType(const std::string& unknown_fragment);
 
 public:
 	const std::string Fragment() const;

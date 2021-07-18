@@ -27,127 +27,103 @@ SymoMessages::SymoMessages(const boost::property_tree::ptree& node) :
 {
 }
 
+SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_1(const boost::property_tree::ptree& node)
+{
+	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
+
+	const auto query_node = node.get_optional<std::string>("Head.RequestArguments.Query");
+	if (!query_node.is_initialized())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot find query node";
+	}
+	else if ("Inverter" == query_node.get())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Inverter";
+		message_type = SymoMessageTypes::SolarAPI_CurrentData_Inverter;
+	}
+	else if ("Meter" == query_node.get())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Meter";
+		message_type = SymoMessageTypes::SolarAPI_CurrentData_Meter;
+	}
+	else if ("Inverter+SensorCard+Meter" == query_node.get())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - LogData - Data";
+		message_type = SymoMessageTypes::SolarAPI_LogData_Data;
+	}
+	else if ("Errors+Events" == query_node.get())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - Errors And Events";
+		message_type = SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents;
+	}
+	else
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot determine message type";
+	}
+
+	return message_type;
+}
+
+SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_2(const boost::property_tree::ptree& node)
+{
+	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
+
+	const auto device_class_node = node.get_optional<std::string>("Head.RequestArguments.DeviceClass");
+	if (!device_class_node.is_initialized())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot find device class node";
+	}
+	else if ("SensorCard" == device_class_node.get())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - SensorCard";
+		message_type = SymoMessageTypes::SolarAPI_CurrentData_SensorCard;
+	}
+	else if ("StringControl" == device_class_node.get())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - StringControl";
+		message_type = SymoMessageTypes::SolarAPI_CurrentData_StringControl;
+	}
+	else
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot determine message type";
+	}
+
+	return message_type;
+}
+
+SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_3(const boost::property_tree::ptree& node)
+{
+	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
+
+	const auto body_inverters_node = node.get_child_optional("Body.Inverters");
+	if (!body_inverters_node.is_initialized())
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_3 - cannot find body.inverters node";
+	}
+	else
+	{
+		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - PowerFlow";
+		message_type = SymoMessageTypes::SolarAPI_CurrentData_PowerFlow;
+	}
+
+	return message_type;
+}
+
 SymoMessages::SymoMessageTypes SymoMessages::FromPayload(const boost::property_tree::ptree& node)
 {
-	//---------------------------------------------------------------------------------------------
-	//
-	// MESSAGE CHECK 1
-	//
-	//---------------------------------------------------------------------------------------------
-
-	auto message_check_1 = [](const boost::property_tree::ptree& node) -> SymoMessageTypes
-	{
-		SymoMessageTypes message_type = SymoMessageTypes::Unknown;
-
-		const auto query_node = node.get_optional<std::string>("Head.RequestArguments.Query");
-		if (!query_node.is_initialized())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot find query node";
-		}
-		else if ("Inverter" == query_node.get())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Inverter";
-			message_type = SymoMessageTypes::SolarAPI_CurrentData_Inverter;
-		}
-		else if ("Meter" == query_node.get())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Meter";
-			message_type = SymoMessageTypes::SolarAPI_CurrentData_Meter;
-		}
-		else if ("Inverter+SensorCard+Meter" == query_node.get())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - LogData - Data";
-			message_type = SymoMessageTypes::SolarAPI_LogData_Data;
-		}
-		else if ("Errors+Events" == query_node.get())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - Errors And Events";
-			message_type = SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents;
-		}
-		else
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot determine message type";
-		}
-
-		return message_type;
-	};
-
-	//---------------------------------------------------------------------------------------------
-	//
-	// MESSAGE CHECK 2
-	//
-	//---------------------------------------------------------------------------------------------
-
-	auto message_check_2 = [](const boost::property_tree::ptree& node) -> SymoMessageTypes
-	{
-		SymoMessageTypes message_type = SymoMessageTypes::Unknown;
-
-		const auto device_class_node = node.get_optional<std::string>("Head.RequestArguments.DeviceClass");
-		if (!device_class_node.is_initialized())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot find device class node";
-		}
-		else if ("SensorCard" == device_class_node.get())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - SensorCard";
-			message_type = SymoMessageTypes::SolarAPI_CurrentData_SensorCard;
-		}
-		else if ("StringControl" == device_class_node.get())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - StringControl";
-			message_type = SymoMessageTypes::SolarAPI_CurrentData_StringControl;
-		}
-		else
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot determine message type";
-		}
-
-		return message_type;
-	};
-
-	//---------------------------------------------------------------------------------------------
-	//
-	// MESSAGE CHECK 3
-	//
-	//---------------------------------------------------------------------------------------------
-
-	auto message_check_3 = [](const boost::property_tree::ptree& node) -> SymoMessageTypes
-	{
-		SymoMessageTypes message_type = SymoMessageTypes::Unknown;
-
-		const auto body_inverters_node = node.get_child_optional("Body.Inverters");
-		if (!body_inverters_node.is_initialized())
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_3 - cannot find body.inverters node";
-		}
-		else
-		{
-			BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - PowerFlow";
-			message_type = SymoMessageTypes::SolarAPI_CurrentData_PowerFlow;
-		}
-
-		return message_type;
-	};
-
-	//---------------------------------------------------------------------------------------------
-	//
-	// Checking for the message type
-	//
-	//---------------------------------------------------------------------------------------------
-	
 	const auto scope_node = node.get_optional<std::string>("Head.RequestArguments.Scope");
 	if ((!scope_node.is_initialized()) || "System" != scope_node.get())
 	{
 		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot find scope node";
 
 		// Check for message payloads that don't have anything in the header.requestarguments...
-		return message_check_3(node);
+		return MessageCheck_3(node);
 	}
-	else if (auto message_type = message_check_1(node); SymoMessageTypes::Unknown != message_type)
+	else if (auto message_type = MessageCheck_1(node); SymoMessageTypes::Unknown != message_type)
 	{
 		return message_type;
 	}
-	else if (auto message_type = message_check_2(node); SymoMessageTypes::Unknown != message_type)
+	else if (auto message_type = MessageCheck_2(node); SymoMessageTypes::Unknown != message_type)
 	{
 		return message_type;
 	}

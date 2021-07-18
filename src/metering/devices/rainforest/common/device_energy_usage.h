@@ -19,7 +19,6 @@ class DeviceEnergyUsage : public ISerializable
 
 public:
 	DeviceEnergyUsage();
-	virtual ~DeviceEnergyUsage();
 
 public:
 	Summation TotalDelivered;

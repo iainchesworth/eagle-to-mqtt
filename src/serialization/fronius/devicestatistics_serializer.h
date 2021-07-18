@@ -14,7 +14,7 @@ namespace Fronius
 class DeviceStatistics_Serializer : public ISerializer<DeviceStatistics>
 {
 public:
-	DeviceStatistics_Serializer(const DeviceStatistics& ds);
+	explicit DeviceStatistics_Serializer(const DeviceStatistics& ds);
 
 public:
 	virtual boost::json::object Serialize() const final;

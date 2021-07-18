@@ -29,8 +29,8 @@ public:
 
 public:
 	UnitsOfMeasure();
-	UnitsOfMeasure(Units units);
-	UnitsOfMeasure(const std::string& units);
+	explicit UnitsOfMeasure(Units units);
+	explicit UnitsOfMeasure(const std::string& units);
 
 private:
 	Units m_Units;

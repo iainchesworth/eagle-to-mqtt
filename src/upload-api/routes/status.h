@@ -10,7 +10,6 @@ class ApiRoute_Status : public IApiRoute
 
 public:
 	ApiRoute_Status();
-	virtual ~ApiRoute_Status();
 
 public:
 	HttpResponse Handler(const HttpRequest& request);

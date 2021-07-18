@@ -15,7 +15,6 @@ class CalculatedEnergyValue : public BaseEnergyValue
 {
 public:
 	CalculatedEnergyValue(uint32_t raw_summation, uint32_t multiplier, uint32_t divisor, UnitsOfMeasure units, uint8_t digits_right, uint8_t digits_left, bool suppress_leading_zero);
-	virtual ~CalculatedEnergyValue();
 
 protected:
 	template<typename ENERGY_VALUE>

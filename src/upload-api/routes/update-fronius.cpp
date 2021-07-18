@@ -22,10 +22,6 @@ ApiRoute_Fronius::ApiRoute_Fronius() :
 {
 }
 
-ApiRoute_Fronius::~ApiRoute_Fronius()
-{
-}
-
 HttpResponse ApiRoute_Fronius::Handler(const HttpRequest& request)
 {
 	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Fronius) Payload: " << std::endl << boost::beast::make_printable(request.body().data());

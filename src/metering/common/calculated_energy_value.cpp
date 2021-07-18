@@ -28,7 +28,3 @@ CalculatedEnergyValue::CalculatedEnergyValue(uint32_t raw_energy_value, uint32_t
 		break;
 	}
 }
-
-CalculatedEnergyValue::~CalculatedEnergyValue()
-{
-}

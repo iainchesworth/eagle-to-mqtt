@@ -15,7 +15,7 @@ class ZigBeeMacId : public MacId<ZIGBEE_MAC_ID_LENGTH_IN_PAIRS> // Is 8 elements
 {
 public:
 	ZigBeeMacId();
-	ZigBeeMacId(const std::string& zigbee_mac_id);
+	explicit ZigBeeMacId(const std::string& zigbee_mac_id);
 
 public:
 	struct PropertyTreeTranslator

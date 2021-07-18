@@ -8,7 +8,7 @@
 class InvalidPriorityValue : public InvalidValue
 {
 public:
-	InvalidPriorityValue(const std::string& reason_for_invalid_value);
+	explicit InvalidPriorityValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_PRIORITY_VALUE_H

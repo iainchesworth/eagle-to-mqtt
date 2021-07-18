@@ -8,7 +8,7 @@
 class InvalidStatusValue : public InvalidValue
 {
 public:
-	InvalidStatusValue(const std::string& reason_for_invalid_value);
+	explicit InvalidStatusValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_STATUS_VALUE_H

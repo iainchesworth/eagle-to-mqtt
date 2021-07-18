@@ -11,7 +11,7 @@
 class Symo_Serializer : public ISerializer<Symo>
 {
 public:
-	Symo_Serializer(const Symo& symo);
+	explicit Symo_Serializer(const Symo& symo);
 
 public:
 	virtual boost::json::object Serialize() const final;

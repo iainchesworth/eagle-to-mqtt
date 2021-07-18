@@ -11,10 +11,6 @@ DeviceEnergyUsage::DeviceEnergyUsage() :
 {
 }
 
-DeviceEnergyUsage::~DeviceEnergyUsage()
-{
-}
-
 boost::json::object DeviceEnergyUsage::Serialize() const
 {
 	return DeviceEnergyUsage_Serializer(*this).Serialize();

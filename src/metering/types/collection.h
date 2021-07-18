@@ -39,7 +39,7 @@ NamedCollection<FIELD_TYPE> Collection(const boost::property_tree::ptree& node, 
 		NamedCollection<FIELD_TYPE> collection;
 
 		auto X = node.get<std::string>(field_units);
-		collection.Units = UnitsOfMeasure::FromString(X);
+		collection.Units = UnitsOfMeasure(UnitsOfMeasure::FromString(X));
 
 		for (const boost::property_tree::ptree::value_type& elem : node.get_child(field_values))
 		{

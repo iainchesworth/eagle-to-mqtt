@@ -11,7 +11,7 @@
 class Bridge_Serializer : public ISerializer<Bridge>
 {
 public:
-	Bridge_Serializer(const Bridge& bridge);
+	explicit Bridge_Serializer(const Bridge& bridge);
 
 public:
 	virtual boost::json::object Serialize() const final;

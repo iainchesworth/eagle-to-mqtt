@@ -8,10 +8,6 @@ DeviceStatistics::DeviceStatistics() :
 {
 }
 
-DeviceStatistics::~DeviceStatistics()
-{
-}
-
 boost::json::object DeviceStatistics::Serialize() const
 {
 	return DeviceStatistics_Serializer(*this).Serialize();

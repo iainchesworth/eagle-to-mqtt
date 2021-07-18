@@ -7,7 +7,18 @@
 #include "upload-api/responses/response_200.h"
 #include "upload-api/routes/status.h"
 
-boost::beast::http::response<boost::beast::http::string_body> Status(const boost::beast::http::request<boost::beast::http::dynamic_body>& req)
+const std::string ApiRoute_Status::APIROUTE_REGEX{ "^/status[/]??$" };
+
+ApiRoute_Status::ApiRoute_Status() :
+	IApiRoute(boost::beast::http::verb::get, APIROUTE_REGEX)
+{
+}
+
+ApiRoute_Status::~ApiRoute_Status()
+{
+}
+
+HttpResponse ApiRoute_Status::Handler(const HttpRequest& request)
 {
     boost::json::object response_object;
 	std::stringstream response_stream;
@@ -38,5 +49,5 @@ boost::beast::http::response<boost::beast::http::string_body> Status(const boost
 	}
 
     const auto test_string = boost::json::serialize(response_object);
-	return make_200<boost::beast::http::string_body>(req, boost::json::serialize(response_object), "application/json");
+	return make_200<boost::beast::http::string_body>(request, boost::json::serialize(response_object), "application/json");
 }

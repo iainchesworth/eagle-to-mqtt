@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(Test_StatusRoute)
 		test_device->ProcessPayload(payload);
 
 		boost::beast::http::request<boost::beast::http::dynamic_body> req;
-		auto res = Status(req);
+		auto res = ApiRoute_Status().Handler(req);
 	}
 	catch (const std::exception& ex)
 	{

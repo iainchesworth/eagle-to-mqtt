@@ -15,11 +15,22 @@
 
 namespace pt = boost::property_tree;
 
-boost::beast::http::response<boost::beast::http::string_body> Update_Fronius(const boost::beast::http::request<boost::beast::http::dynamic_body>& req)
-{
-	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Fronius) Payload: " << std::endl << boost::beast::make_printable(req.body().data());
+const std::string ApiRoute_Fronius::APIROUTE_REGEX{ "^/upload/fronius[/]??$" };
 
-	std::istringstream iss(boost::beast::buffers_to_string(req.body().data()));
+ApiRoute_Fronius::ApiRoute_Fronius() :
+	IApiRoute(boost::beast::http::verb::post, APIROUTE_REGEX)
+{
+}
+
+ApiRoute_Fronius::~ApiRoute_Fronius()
+{
+}
+
+HttpResponse ApiRoute_Fronius::Handler(const HttpRequest& request)
+{
+	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Fronius) Payload: " << std::endl << boost::beast::make_printable(request.body().data());
+
+	std::istringstream iss(boost::beast::buffers_to_string(request.body().data()));
 
 	pt::ptree upload_dataset;
 	pt::read_json(iss, upload_dataset);
@@ -39,8 +50,8 @@ boost::beast::http::response<boost::beast::http::string_body> Update_Fronius(con
 	catch (const pt::ptree_error& pte)
 	{
 		BOOST_LOG_TRIVIAL(warning) << L"Failed to parse XML in upload payload; exception was: " << pte.what();
-		return make_400<boost::beast::http::string_body>(req, "Cannot find top-level upload data element; payload is malformed", "text/html");
+		return make_400<boost::beast::http::string_body>(request, "Cannot find top-level upload data element; payload is malformed", "text/html");
 	}
 
-	return make_200<boost::beast::http::string_body>(req, "", "text/html");;
+	return make_200<boost::beast::http::string_body>(request, "", "text/html");;
 }

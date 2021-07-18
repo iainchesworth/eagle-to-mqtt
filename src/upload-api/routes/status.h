@@ -1,8 +1,19 @@
 #ifndef ROUTESTATUS_H
 #define ROUTESTATUS_H
 
-#include <boost/beast/http.hpp>
+#include "interfaces/iapiroute.h"
+#include "upload-api/http_types.h"
 
-boost::beast::http::response<boost::beast::http::string_body> Status(const boost::beast::http::request<boost::beast::http::dynamic_body>& req);
+class ApiRoute_Status : public IApiRoute
+{
+	static const std::string APIROUTE_REGEX;
+
+public:
+	ApiRoute_Status();
+	virtual ~ApiRoute_Status();
+
+public:
+	HttpResponse Handler(const HttpRequest& request);
+};
 
 #endif // ROUTESTATUS_H

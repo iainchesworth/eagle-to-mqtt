@@ -47,6 +47,12 @@ Options::Options(int argc, char* argv[]) :
 			("verbose,v", boost::program_options::bool_switch()->default_value(false)->notifier(set_trace_logging), "Verbose output")
 			("version", "Prints version information");
 
+		boost::program_options::options_description options_integrations("Integrations");
+		options_integrations.add_options()
+			("disable-fronius", boost::program_options::bool_switch(&m_DisableFroniusIntegration)->default_value(false), "Disables Fronius Symo (SOLAR API v1) support"),
+			("disable-rainforest", boost::program_options::bool_switch(&m_DisableRainforestIntegration)->default_value(false), "Disables Rainforest Automation RFA-Z109 and EAGLE-200 support"),
+			("disable-statistics", boost::program_options::bool_switch(&m_DisableStatisticsReporting)->default_value(false), "Disables the capture and reporting of statistics via the HTTP interface");
+
 		boost::program_options::options_description options_httpuploader("HTTP Uploader API Options");
 		options_httpuploader.add_options()
 			("http-host", boost::program_options::value<std::string>(&m_HttpInterface)->default_value(HTTP_DEFAULT_INTERFACE), "Interface that the HTTP server should listen on")
@@ -62,7 +68,11 @@ Options::Options(int argc, char* argv[]) :
 			("mqtt-use-tls", boost::program_options::bool_switch(&m_MqttUseTls)->default_value(false), "Enable MQTT client TLS support")
 			("mqtt-username", boost::program_options::value<std::string>(&m_MqttUsername)->notifier(enable_authentication), "USername for the MQTT server user");
 
-		cmdline_options.add(options_app).add(options_httpuploader).add(options_mqttclient);
+		cmdline_options
+			.add(options_app)
+			.add(options_integrations)
+			.add(options_httpuploader)
+			.add(options_mqttclient);
 
 		boost::program_options::variables_map vm;
 		boost::program_options::parsed_options intermediate = boost::program_options::parse_command_line(argc, argv, cmdline_options);
@@ -128,6 +138,24 @@ Options::Options(int argc, char* argv[]) :
 		std::cerr << cmdline_options;
 		exit(-1);
 	}
+}
+
+bool Options::FroniusIntegrationIsEnabled() const
+{
+	// Inverted boolean --> return value
+	return (!m_DisableFroniusIntegration);
+}
+
+bool Options::RainforestIntegrationIsEnabled() const
+{
+	// Inverted boolean --> return value
+	return (!m_DisableRainforestIntegration);
+}
+
+bool Options::StatisticsReportingIsEnabled() const
+{
+	// Inverted boolean --> return value
+	return (!m_DisableStatisticsReporting);
 }
 
 const std::string& Options::HttpInterface() const

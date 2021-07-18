@@ -18,11 +18,22 @@
 
 namespace pt = boost::property_tree;
 
-boost::beast::http::response<boost::beast::http::string_body> Update_Rainforest(const boost::beast::http::request<boost::beast::http::dynamic_body>& req)
-{
-	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Rainforest) Payload: " << std::endl << boost::beast::make_printable(req.body().data());
+const std::string ApiRoute_Rainforest::APIROUTE_REGEX{ "^/upload/rainforest[/]??$" };
 
-	std::istringstream iss(boost::beast::buffers_to_string(req.body().data()));
+ApiRoute_Rainforest::ApiRoute_Rainforest() :
+	IApiRoute(boost::beast::http::verb::post, APIROUTE_REGEX)
+{
+}
+
+ApiRoute_Rainforest::~ApiRoute_Rainforest()
+{
+}
+
+HttpResponse ApiRoute_Rainforest::Handler(const HttpRequest& request)
+{
+	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Rainforest) Payload: " << std::endl << boost::beast::make_printable(request.body().data());
+
+	std::istringstream iss(boost::beast::buffers_to_string(request.body().data()));
 
 	pt::ptree upload_dataset;
 	pt::read_xml(iss, upload_dataset);
@@ -44,15 +55,15 @@ boost::beast::http::response<boost::beast::http::string_body> Update_Rainforest(
 		BOOST_LOG_TRIVIAL(warning) << L"Failed to match fragment type to known value - fragment: " << ufte.Fragment();
 
 		// If the requested path ("rainforest") cannot be resolved, get_child throws...
-		return make_500<boost::beast::http::string_body>(req, "Error while processing XML fragments: unknown fragment type", "text/html");
+		return make_500<boost::beast::http::string_body>(request, "Error while processing XML fragments: unknown fragment type", "text/html");
 	}
 	catch (const pt::ptree_error& pte)
 	{
 		BOOST_LOG_TRIVIAL(warning) << L"Failed to parse XML in upload payload; exception was: " << pte.what();
 
 		// If the requested path ("rainforest") cannot be resolved, get_child throws...
-		return make_400<boost::beast::http::string_body>(req, "Cannot find top-level upload data element; payload is malformed", "text/html");
+		return make_400<boost::beast::http::string_body>(request, "Cannot find top-level upload data element; payload is malformed", "text/html");
 	}
 
-	return make_200<boost::beast::http::string_body>(req, "", "text/html");;
+	return make_200<boost::beast::http::string_body>(request, "", "text/html");;
 }

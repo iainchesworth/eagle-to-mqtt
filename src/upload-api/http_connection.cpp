@@ -5,7 +5,7 @@
 #include "upload-api/responses/response_400.h"
 #include "upload-api/responses/response_500.h"
 
-HttpConnection::HttpConnection(boost::asio::ip::tcp::socket socket, const HttpRouter& api_router) :
+HttpConnection::HttpConnection(boost::asio::ip::tcp::socket socket, const IHttpRouter& api_router) :
 	m_Socket(std::move(socket)),
 	m_ApiRouter(api_router)
 {

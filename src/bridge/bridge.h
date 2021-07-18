@@ -15,7 +15,7 @@ class Bridge : public IBridge, public ISerializable
 	static constexpr std::chrono::seconds KEEPALIVE_DURATION{ 5 };
 
 public:
-	Bridge(boost::asio::io_context& ioc);
+	explicit Bridge(boost::asio::io_context& ioc);
 	virtual ~Bridge();
 
 public:

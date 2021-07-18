@@ -8,7 +8,7 @@
 class InvalidUnitsOfMeasureValue : public InvalidValue
 {
 public:
-	InvalidUnitsOfMeasureValue(std::string reason_for_invalid_value);
+	explicit InvalidUnitsOfMeasureValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_UNITSOFMEASURE_VALUE_H

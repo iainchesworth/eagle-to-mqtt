@@ -67,10 +67,10 @@ MeterMessage MeterMessage::ExtractFromPayload(const boost::property_tree::ptree&
 	{
 		priority = raw_priority.value();
 	}
-	else if (auto raw_priority = IsOptional<Priorities>(node, "PRI"); raw_priority.has_value())
+	else if (auto raw_pri = IsOptional<Priorities>(node, "PRI"); raw_pri.has_value())
 	{
 		BOOST_LOG_TRIVIAL(warning) << L"Eagle Bug: Priority field uses incorrect field name \"PRI\" (refer to EAGLE-200 API documentation, section 4.6.1)";
-		priority = raw_priority.value();
+		priority = raw_pri.value();
 	}
 	else
 	{

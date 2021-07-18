@@ -8,7 +8,7 @@
 class InvalidBridgeStatusValue : public InvalidValue
 {
 public:
-	InvalidBridgeStatusValue(std::string reason_for_invalid_value);
+	InvalidBridgeStatusValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_BRIDGE_STATUS_VALUE_H

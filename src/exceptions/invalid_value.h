@@ -7,7 +7,7 @@
 class InvalidValue : public std::runtime_error
 {
 public:
-	InvalidValue(std::string reason_for_invalid_value);
+	explicit InvalidValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_VALUE_H

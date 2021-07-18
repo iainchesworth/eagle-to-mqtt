@@ -9,7 +9,7 @@
 class InvalidMessageValue : public InvalidValue
 {
 public:
-	InvalidMessageValue(std::string missing_key);
+	InvalidMessageValue(const std::string& missing_key);
 
 public:
 	const std::string InvalidValueKey() const;

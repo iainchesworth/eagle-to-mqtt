@@ -8,7 +8,7 @@
 class InvalidCurrencyValue : public InvalidValue
 {
 public:
-	InvalidCurrencyValue(std::string reason_for_invalid_value);
+	InvalidCurrencyValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_CURRENCY_VALUE_H

@@ -49,8 +49,8 @@ Options::Options(int argc, char* argv[]) :
 
 		boost::program_options::options_description options_integrations("Integrations");
 		options_integrations.add_options()
-			("disable-fronius", boost::program_options::bool_switch(&m_DisableFroniusIntegration)->default_value(false), "Disables Fronius Symo (SOLAR API v1) support"),
-			("disable-rainforest", boost::program_options::bool_switch(&m_DisableRainforestIntegration)->default_value(false), "Disables Rainforest Automation RFA-Z109 and EAGLE-200 support"),
+			("disable-fronius", boost::program_options::bool_switch(&m_DisableFroniusIntegration)->default_value(false), "Disables Fronius Symo (SOLAR API v1) support")
+			("disable-rainforest", boost::program_options::bool_switch(&m_DisableRainforestIntegration)->default_value(false), "Disables Rainforest Automation RFA-Z109 and EAGLE-200 support")
 			("disable-statistics", boost::program_options::bool_switch(&m_DisableStatisticsReporting)->default_value(false), "Disables the capture and reporting of statistics via the HTTP interface");
 
 		boost::program_options::options_description options_httpuploader("HTTP Uploader API Options");

@@ -10,8 +10,6 @@
 
 bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string& key)
 {
-	bool value;
-
 	if (0 == key.length())
 	{
 		throw std::invalid_argument("Key name is invalid (zero-length string)");
@@ -45,7 +43,8 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 
 		if (0 == uppercase_value_as_string.length())
 		{
-
+			BOOST_LOG_TRIVIAL(warning) << L"Zero-length string value provided to boolean converter...cannot convert";
+			throw InvalidValue("Zero-length string value provided to boolean converter");
 		}
 		else if (
 			(0 == uppercase_value_as_string.compare(TRUE_ENCODING_1)) ||
@@ -53,7 +52,7 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 			(0 == uppercase_value_as_string.compare(TRUE_ENCODING_3)) ||
 			(0 == uppercase_value_as_string.compare(TRUE_ENCODING_4)))
 		{
-			value = true;
+			return true;
 		}
 		else if (
 			(0 == uppercase_value_as_string.compare(FALSE_ENCODING_1)) ||
@@ -61,7 +60,7 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 			(0 == uppercase_value_as_string.compare(FALSE_ENCODING_3)) ||
 			(0 == uppercase_value_as_string.compare(FALSE_ENCODING_4)))
 		{
-			value = false;
+			return false;
 		}
 		else
 		{
@@ -71,5 +70,5 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 		}
 	}
 
-	return value;
+	// Cannot reach here -> either throws or returns.
 }

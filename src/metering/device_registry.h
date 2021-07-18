@@ -6,6 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
+#include "exceptions/duplicate_device_insertion.h"
 #include "interfaces/idevice.h"
 #include "metering/device_factory.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
@@ -60,16 +61,16 @@ public:
 			if (auto result = m_Registry.insert(std::make_pair(device_ethernet_mac_id, DeviceFactory::CreateDevice<DEVICE_TYPE>())); !result.second)
 			{
 				BOOST_LOG_TRIVIAL(warning) << L"Attempted to add multiple devices with the same Ethernet MAC address";
-				throw;
+				throw DuplicateDeviceInsertion();
 			}
 			else
 			{
 				return GetExisting(device_ethernet_mac_id);
 			}
 		}
-		catch (...)
+		catch (const std::exception& ex)
 		{
-			throw;
+			BOOST_LOG_TRIVIAL(warning) << L"Exception occurred: " << ex.what();
 		}
 	}
 

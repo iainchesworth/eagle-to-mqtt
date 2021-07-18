@@ -10,7 +10,7 @@ addons:
   sonarcloud:
     organization: "iainchesworth"
     token:
-      secure: "V/QwdjxXzAfsbPqKWdEbaCyH2Yq5qysj9IrDFXx+LMMp5WLEMDdqrrBCWVkzUQGNQ+SF/KfKZh3Dh8krI18sn2wT8OH8vZLK7QR8s8yGnzivtWII7vQdroay75RvhI0usvoloZtxHztjY4LCNUHXldA0NUvjzn/V9X3zd7YVdgNZ+KNXuuI4X2v82H927Q4eD2w8zFlpJ4WhDpruYnmmrIeb2alppvhTUZ7I/Wy/GRCCUXXFry8dZagFElfJdcc0/FVrnDz14Uypvgm1DpLcDbQZXuBPXSfGWCf0VHbd8WBBIQoOK1Sjz2OftKTO6HKA+q+TGOJWoWqHTPxw2QcxWao59NjJuP0I6z1msEFJ5pNN18FJSroWbBUVJybO7P+jyHh0UYBlO5sZOTFGH755JogEkKfPo/RAMrF3Pk/U1FVqPY+38/ov/1kekQ5hvVr09SVqxYiborv2tUBWvK5U7pAdrIzbtFaRMOuPVSZcBUFSMEVJ3iIWQeKSgqzasU77t/N3XZjzZQgVKhB1Ws/q/Lmp/XT8YlTLo+26Wk5VV0FHlqrk9WWsoAw/rL4LECtF5saM1XHcmo01cNl4a/Y9EBivujfopYCDcQqsycjBmk+IFSzm2aLcuw5JkjxYTF4jnYEv2/Watv1CJ8Gi1Sbo1yP3Ph2M0lcG+71TyCdSqyw="
+      secure: "OZ+JPlwWew1cZHdgijtH7GmNVhtt3f/J5SERwmK79E7uHyfRxWkYm+WUBdQQs8AtNUD5Hi5Y3wxP7Jpi6lF7++iW0BPq7uxa2gvSGEdrkCCQuY4SMTD2oziyb4nmVEBPlTdY5Hc5lrrKbnZhYKywIwZR3gt1zTYGwAAMtXMIdQU5np5iWmWE3z5iZgWONLveWQkWUOAmtSZq4LqWDO+G/woBSgNVMcPJzklMCLqQDYFLlNWKx+yqyGDKVUAe2stxmjMF+QgZTGggVMZ9TRAvGzLFqOzTjeV6F4sYzW9PYQdsCvsRurJhXxVEPrGY52OOPModHZKDVbDS+tOY6jQWEOUrOYfnQIOIvYCreG5MR4eqcjfBITF6n6gNMYBu0pwu7+Sj/Rq56JpMMPD0KnIZ+Kd/zrKLECnk4aCp57Jv/t9xUlI3uaHXM8CC9EseVUxBpXxhjzZLV3kyCeBRqiKnEIps0JzL63Ocdq3XNkeEwa6PvsktpVdF4r0JZnJTCk8+bImqwDuM11Fb/3JVMHJdodjV1C2dXh3t//b2gO8Y+WgwPShKcxav0yKVV4+uiXkTGntgGEHZHOYoSLx+7AIzvI1sTczJ2mKzNq5lLtg+a3dq/InKU6GinJI7c8ElWGM4EodxJw+WHz6QLbNCwJEgn8ryoNXqJN0ddtBu9XhkIzM="
 
 before_install:
   # Prepare the build system
@@ -21,16 +21,16 @@ before_install:
   - git submodule update --init --recursive --jobs 8
 
 script:
-  - cmake -Bbuild -H. && cmake --build build/ --target eagle-to-mqtt
-
-after_success:
-  - NUMBER_OF_PROCESSORS=$(nproc --all)
+  - cmake -Bbuild -H.
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarQube Scanner) into the "bw-output" folder
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
+
+after_success:
+  - NUMBER_OF_PROCESSORS=$(nproc --all)
   # And finally run the SonarQube analysis - read the "sonar-project.properties"
   # file to see the specific configuration
-  - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
+  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
 
 cache:
   directories:

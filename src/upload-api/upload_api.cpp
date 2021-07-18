@@ -1,30 +1,22 @@
 #include <boost/beast/core.hpp>
 #include <boost/log/trivial.hpp>
 
+#include <initializer_list>
 #include <memory>
 #include <stdexcept>
 #include <utility>
 
 #include "upload-api/http_connection.h"
 #include "upload-api/upload_api.h"
-#include "upload-api/routes/root.h"
-#include "upload-api/routes/status.h"
-#include "upload-api/routes/update.h"
 
-UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options) :
+UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options, const IHttpRouter& http_router) :
 	IListener(ioc),
 	m_Options(options),
 	m_Acceptor{ m_IOContext, {boost::asio::ip::make_address(m_Options.HttpInterface()), m_Options.HttpPort() } },
 	m_Socket{ m_IOContext },
-	m_ApiRouter()
+	m_ApiRouter{ http_router }
 {
 	BOOST_LOG_TRIVIAL(info) << L"Starting Uploader API";
-
-	BOOST_LOG_TRIVIAL(debug) << L"Configuring supported API routes";
-
-	m_ApiRouter.Get("^/$", Root);
-	m_ApiRouter.Get("^/status[/]??$", Status);
-	m_ApiRouter.Post("^/upload[/]??$", Update);
 }
 
 UploaderAPI::~UploaderAPI()
@@ -37,7 +29,7 @@ void UploaderAPI::Run()
 {
 	try
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Listening for Eagle-200 Uploader connections on " << m_Options.HttpInterface() << L":" << m_Options.HttpPort();
+		BOOST_LOG_TRIVIAL(debug) << L"Listening for data uploader connections on " << m_Options.HttpInterface() << L":" << m_Options.HttpPort();
 
 		m_Acceptor.async_accept(m_Socket, [&](boost::beast::error_code ec)
 			{

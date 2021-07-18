@@ -7,7 +7,7 @@
 class InvalidNumberConversion : public std::runtime_error
 {
 public:
-	InvalidNumberConversion(std::string reason_for_invalid_conversion);
+	explicit InvalidNumberConversion(const std::string& reason_for_invalid_conversion);
 };
 
 #endif // INVALID_NUMBER_CONVERSION_H

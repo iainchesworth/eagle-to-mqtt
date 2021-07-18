@@ -9,12 +9,12 @@
 #include <chrono>
 #include <memory>
 
-#include "upload-api/http_router.h"
+#include "interfaces/ihttprouter.h"
 
 class HttpConnection : public std::enable_shared_from_this<HttpConnection>
 {
 public:
-	HttpConnection(boost::asio::ip::tcp::socket socket, const HttpRouter& api_router);
+	HttpConnection(boost::asio::ip::tcp::socket socket, const IHttpRouter& api_router);
 
 public:
 	void Start();
@@ -33,7 +33,7 @@ private:
 	boost::asio::steady_timer m_Deadline{ m_Socket.get_executor(), std::chrono::seconds(60) };
 
 private:
-	const HttpRouter& m_ApiRouter;
+	const IHttpRouter& m_ApiRouter;
 };
 
 #endif // HTTP_CONNECTION_H

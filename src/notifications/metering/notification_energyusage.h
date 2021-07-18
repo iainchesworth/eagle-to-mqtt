@@ -3,9 +3,9 @@
 
 #include <boost/signals2/signal.hpp>
 
-#include "metering/fragment_processors/partial_fragment_types/demand.h"
-#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
-#include "metering/fragment_processors/partial_fragment_types/summation.h"
+#include "metering/devices/rainforest/messages/partial_message_types/demand.h"
+#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/summation.h"
 #include "notifications/metering/notification_publishpayload.h"
 
 class Notification_EnergyUsage : public Notification_PublishPayload

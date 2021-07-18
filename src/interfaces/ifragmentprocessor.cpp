@@ -1,5 +1,5 @@
 #include "interfaces/ifragmentprocessor.h"
-#include "metering/type_handlers/optional.h"
+#include "metering/types/optional.h"
 
 IFragmentProcessor::IFragmentProcessor(const boost::property_tree::ptree& node):
 	m_DeviceMacId(IsOptional<ZigBeeMacId>(node, "DeviceMacId")),

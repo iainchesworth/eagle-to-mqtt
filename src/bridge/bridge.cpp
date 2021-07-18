@@ -8,6 +8,7 @@
 #include "notifications/notification_manager.h"
 #include "notifications/bridge/notification_bridgestatuschanged.h"
 #include "notifications/bridge/notification_publishkeepalive.h"
+#include "serialization/bridge_serializer.h"
 
 Bridge::Bridge(boost::asio::io_context& ioc) :
 	IBridge(ioc),
@@ -94,4 +95,9 @@ std::chrono::seconds Bridge::Uptime() const
 {
 	auto uptime = (std::chrono::steady_clock::now() - m_UptimeStart);
 	return std::chrono::duration_cast<std::chrono::seconds>(uptime);
+}
+
+boost::json::object Bridge::Serialize() const
+{
+	return Bridge_Serializer(*this).Serialize();
 }

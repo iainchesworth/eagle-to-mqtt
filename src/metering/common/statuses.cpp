@@ -135,6 +135,6 @@ bool Statuses::operator==(const Statuses& other) const
 
 std::ostream& operator<<(std::ostream& os, const Statuses& status)
 {
-	os << status.ToString(status.m_Status);
+	os << Statuses::ToString(status.m_Status);
 	return os;
 }

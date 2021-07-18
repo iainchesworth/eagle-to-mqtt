@@ -3,8 +3,8 @@
 #include "exceptions/invalid_pricing_tier_value.h"
 #include "metering/common/tiers.h"
 #include "metering/common/unit_converters.h"
-#include "metering/type_handlers/essential.h"
-#include "metering/type_handlers/integer.h"
+#include "metering/types/essential.h"
+#include "metering/types/integer.h"
 
 const std::string Tiers::NOT_SPECIFIED{ "Not Specified" };
 const std::string Tiers::TIER_1{ "Tier 1" };
@@ -101,7 +101,7 @@ bool Tiers::operator==(const Tiers& other) const
 
 std::ostream& operator<<(std::ostream& os, const Tiers& pricing_tier)
 {
-	os << pricing_tier.ToString(pricing_tier.m_PricingTier);
+	os << Tiers::ToString(pricing_tier.m_PricingTier);
 	return os;
 }
 

@@ -7,7 +7,7 @@
 class MissingMessageKey : public std::runtime_error
 {
 public:
-	MissingMessageKey(std::string missing_key);
+	MissingMessageKey(const std::string& missing_key);
 
 public:
 	const std::string MissingKey() const;

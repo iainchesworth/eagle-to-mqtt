@@ -10,6 +10,11 @@ public:
 	Options(int argc, char* argv[]);
 
 public:
+	bool FroniusIntegrationIsEnabled() const;
+	bool RainforestIntegrationIsEnabled() const;
+	bool StatisticsReportingIsEnabled() const;
+
+public:
 	// Uploader API options
 	const std::string& HttpInterface() const;
 	uint16_t HttpPort() const;
@@ -34,6 +39,9 @@ private:
 	const std::string MQTT_DEFAULT_USERNAME{ "" };
 
 private:
+	bool m_DisableFroniusIntegration;
+	bool m_DisableRainforestIntegration;
+	bool m_DisableStatisticsReporting;
 	std::string m_HttpInterface;
 	uint16_t m_HttpPort;
 	bool m_HttpUseTls;

@@ -1,8 +1,19 @@
 #ifndef ROUTEROOT_H
 #define ROUTEROOT_H
 
-#include <boost/beast/http.hpp>
+#include "interfaces/iapiroute.h"
+#include "upload-api/http_types.h"
 
-boost::beast::http::response<boost::beast::http::string_body> Root(const boost::beast::http::request<boost::beast::http::dynamic_body>& req);
+class ApiRoute_Root : public IApiRoute
+{
+	static const std::string APIROUTE_REGEX;
+
+public:
+	ApiRoute_Root();
+	virtual ~ApiRoute_Root();
+
+public:
+	HttpResponse Handler(const HttpRequest& request);
+};
 
 #endif // ROUTEROOT_H

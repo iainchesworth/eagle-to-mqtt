@@ -8,7 +8,7 @@
 class InvalidPricingTierValue : public InvalidValue
 {
 public:
-	InvalidPricingTierValue(std::string reason_for_invalid_value);
+	InvalidPricingTierValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_PRICING_TIER_VALUE_H

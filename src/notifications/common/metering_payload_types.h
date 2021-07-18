@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include "metering/fragment_processors/partial_fragment_types/ethernet_mac_id.h"
+#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 
 struct streamable_any : private std::any
 {

@@ -11,7 +11,7 @@
 class Eagle_Serializer : public ISerializer<Eagle>
 {
 public:
-	Eagle_Serializer(const Eagle& eagle);
+	explicit Eagle_Serializer(const Eagle& eagle);
 
 public:
 	virtual boost::json::object Serialize() const final;

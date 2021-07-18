@@ -10,10 +10,6 @@ BaseEnergyValue::BaseEnergyValue(double energy_value) :
 {
 }
 
-BaseEnergyValue::~BaseEnergyValue()
-{
-}
-
 double BaseEnergyValue::EnergyValue() const
 {
 	return m_EnergyValue;

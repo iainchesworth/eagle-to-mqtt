@@ -15,7 +15,7 @@ class EthernetMacId : public MacId<ETHERNET_MAC_ID_LENGTH_IN_PAIRS> // Is 6 elem
 {
 public:
 	EthernetMacId();
-	EthernetMacId(const std::string& ethernet_mac_id);
+	explicit EthernetMacId(const std::string& ethernet_mac_id);
 
 public:
 	// Define the various operators required to support use in std::unordered_map

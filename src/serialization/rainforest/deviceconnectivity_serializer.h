@@ -14,7 +14,7 @@ namespace Rainforest
 class DeviceConnectivity_Serializer : public ISerializer<DeviceConnectivity>
 {
 public:
-	DeviceConnectivity_Serializer(const DeviceConnectivity& dc);
+	explicit DeviceConnectivity_Serializer(const DeviceConnectivity& dc);
 
 public:
 	virtual boost::json::object Serialize() const final;

@@ -8,7 +8,7 @@
 class InvalidQueueValue : public InvalidValue
 {
 public:
-	InvalidQueueValue(const std::string& reason_for_invalid_value);
+	explicit InvalidQueueValue(const std::string& reason_for_invalid_value);
 };
 
 #endif // INVALID_QUEUE_VALUE_H

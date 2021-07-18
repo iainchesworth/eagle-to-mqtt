@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(Test_Inverter, *boost::unit_test::tolerance(0.00001)) // To
     {
         SolarApi_CurrentData_Inverter sacdi_v1(v1_inverter);
 
-        BOOST_TEST(sacdi_v1.Power_AC().Units == UnitsOfMeasure::Units::Watts);
+        BOOST_TEST(sacdi_v1.Power_AC().Units == UnitsOfMeasure(UnitsOfMeasure::Units::Watts));
         BOOST_TEST(3 == sacdi_v1.Power_AC().Values.size());
         BOOST_TEST(1 == sacdi_v1.Power_AC().Values[0].first);
         BOOST_TEST(0 == sacdi_v1.Power_AC().Values[0].second);
@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Test_Inverter, *boost::unit_test::tolerance(0.00001)) // To
         BOOST_TEST(3 == sacdi_v1.Power_AC().Values[2].first);
         BOOST_TEST(0 == sacdi_v1.Power_AC().Values[2].second);
 
-        BOOST_TEST(sacdi_v1.GeneratedEnergy_Day().Units == UnitsOfMeasure::Units::WattHours);
+        BOOST_TEST(sacdi_v1.GeneratedEnergy_Day().Units == UnitsOfMeasure(UnitsOfMeasure::Units::WattHours));
         BOOST_TEST(3 == sacdi_v1.GeneratedEnergy_Day().Values.size());
         BOOST_TEST(1 == sacdi_v1.GeneratedEnergy_Day().Values[0].first);
         BOOST_TEST(14868.0f == sacdi_v1.GeneratedEnergy_Day().Values[0].second);
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_CASE(Test_Inverter, *boost::unit_test::tolerance(0.00001)) // To
         BOOST_TEST(3 == sacdi_v1.GeneratedEnergy_Day().Values[2].first);
         BOOST_TEST(54321.0f == sacdi_v1.GeneratedEnergy_Day().Values[2].second);
 
-        BOOST_TEST(sacdi_v1.GeneratedEnergy_Year().Units == UnitsOfMeasure::Units::Kilowatts);
+        BOOST_TEST(sacdi_v1.GeneratedEnergy_Year().Units == UnitsOfMeasure(UnitsOfMeasure::Units::Kilowatts));
         BOOST_TEST(3 == sacdi_v1.GeneratedEnergy_Year().Values.size());
         BOOST_TEST(1 == sacdi_v1.GeneratedEnergy_Year().Values[0].first);
         BOOST_TEST(6692366.0f == sacdi_v1.GeneratedEnergy_Year().Values[0].second);
@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(Test_Inverter, *boost::unit_test::tolerance(0.00001)) // To
         BOOST_TEST(3 == sacdi_v1.GeneratedEnergy_Year().Values[2].first);
         BOOST_TEST(7654321.0f == sacdi_v1.GeneratedEnergy_Year().Values[2].second);
 
-        BOOST_TEST(sacdi_v1.GeneratedEnergy_AllTime().Units == UnitsOfMeasure::Units::KilowattHours);
+        BOOST_TEST(sacdi_v1.GeneratedEnergy_AllTime().Units == UnitsOfMeasure(UnitsOfMeasure::Units::KilowattHours));
         BOOST_TEST(3 == sacdi_v1.GeneratedEnergy_AllTime().Values.size());
         BOOST_TEST(1 == sacdi_v1.GeneratedEnergy_AllTime().Values[0].first);
         BOOST_TEST(27803902.0f == sacdi_v1.GeneratedEnergy_AllTime().Values[0].second);

@@ -15,7 +15,6 @@ class DeviceStatistics : public ISerializable
 {
 public:
 	DeviceStatistics();
-	virtual ~DeviceStatistics();
 
 public:
 	UnixTimepoint LastMessageTimestamp;

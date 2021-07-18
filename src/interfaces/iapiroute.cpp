@@ -7,10 +7,6 @@ IApiRoute::IApiRoute(const boost::beast::http::verb& method, const std::string& 
 {
 }
 
-IApiRoute::~IApiRoute()
-{
-}
-
 boost::beast::http::verb IApiRoute::Method() const
 {
 	return m_Method;

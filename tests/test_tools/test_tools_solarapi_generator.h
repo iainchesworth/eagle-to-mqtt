@@ -15,7 +15,7 @@ public:
 	};
 
 public:
-	SolarApi_Generator(SolarApiVersions version);
+	explicit SolarApi_Generator(SolarApiVersions version);
 
 public:
 	std::string Generate_CurrentData_Inverter() const;

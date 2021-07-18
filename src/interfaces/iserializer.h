@@ -7,7 +7,7 @@ template<typename SERIALIZABLE_TYPE>
 class ISerializer
 {
 public:
-	ISerializer(const SERIALIZABLE_TYPE& serializable_class) :
+	explicit ISerializer(const SERIALIZABLE_TYPE& serializable_class) :
 		m_Serializable(serializable_class)
 	{
 	}

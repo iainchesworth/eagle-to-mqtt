@@ -7,8 +7,7 @@ protected:
 	BaseEnergyValue();
 
 public:
-	BaseEnergyValue(double energy_value);
-	virtual ~BaseEnergyValue();
+	explicit BaseEnergyValue(double energy_value);
 
 public:
 	virtual double EnergyValue() const;

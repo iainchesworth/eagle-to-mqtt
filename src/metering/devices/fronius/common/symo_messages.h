@@ -34,11 +34,16 @@ public:
 
 public:
 	SymoMessages();
-	SymoMessages(SymoMessageTypes message_type);
-	SymoMessages(const boost::property_tree::ptree& node);
+	explicit SymoMessages(SymoMessageTypes message_type);
+	explicit SymoMessages(const boost::property_tree::ptree& node);
 
 private:
 	SymoMessageTypes m_MessageType;
+
+private:
+	static SymoMessageTypes MessageCheck_1(const boost::property_tree::ptree& node);
+	static SymoMessageTypes MessageCheck_2(const boost::property_tree::ptree& node);
+	static SymoMessageTypes MessageCheck_3(const boost::property_tree::ptree& node);
 
 public:
 	static SymoMessageTypes FromPayload(const boost::property_tree::ptree& node);

@@ -13,7 +13,6 @@ class IApiRoute
 {
 public:
 	IApiRoute(const boost::beast::http::verb& method, const std::string& regex);
-	virtual ~IApiRoute();
 
 public:
 	virtual HttpResponse Handler(const HttpRequest& request) = 0;

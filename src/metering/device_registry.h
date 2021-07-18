@@ -71,6 +71,7 @@ public:
 		catch (const std::exception& ex)
 		{
 			BOOST_LOG_TRIVIAL(warning) << L"Exception occurred: " << ex.what();
+			throw;
 		}
 	}
 

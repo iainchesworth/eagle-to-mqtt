@@ -14,7 +14,7 @@ namespace Rainforest
 class DeviceEnergyUsage_Serializer : public ISerializer<DeviceEnergyUsage>
 {
 public:
-	DeviceEnergyUsage_Serializer(const DeviceEnergyUsage& deu);
+	explicit DeviceEnergyUsage_Serializer(const DeviceEnergyUsage& deu);
 
 public:
 	virtual boost::json::object Serialize() const final;

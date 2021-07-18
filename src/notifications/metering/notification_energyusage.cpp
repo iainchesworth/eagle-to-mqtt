@@ -7,7 +7,7 @@ Notification_EnergyUsage::Notification_EnergyUsage(EthernetMacId device_id) :
 
 Notification_EnergyUsage& Notification_EnergyUsage::InstantaneousDemand(const Demand& now)
 {
-	m_ElementsMap.insert(std::make_pair("instantaneous_watts", now.EnergyValue(UnitsOfMeasure::Units::Watts)));
+	m_ElementsMap.insert(std::make_pair("instantaneous_watts", now.EnergyValue(UnitsOfMeasure(UnitsOfMeasure::Units::Watts))));
 	return *this;
 }
 

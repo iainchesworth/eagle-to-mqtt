@@ -1,3 +1,5 @@
+dist: focal
+
 addons:
   sonarcloud:
     organization: "iainchesworth"
@@ -6,10 +8,10 @@ addons:
 
 script:
   # Prepare the build system
-  - sudo apt-get update
-  - sudo apt-get -qq -y --no-install-recommends install libicu66 libssl1.1
-  - sudo bash deps/paho.mqtt.sh
-  - sudo apt -qq -y --no-install-recommends install deps/boost/boost-build_1.76.0_amd64.deb
+  - apt-get update
+  - apt-get -qq -y --no-install-recommends install libicu66 libssl1.1
+  - bash deps/paho.mqtt.sh
+  - apt -qq -y --no-install-recommends install deps/boost/boost-build_1.76.0_amd64.deb
   - git submodule update --init --recursive --jobs 8
   - cmake -Bbuild -H. && cmake --build build/ --target eagle-to-mqtt
   - NUMBER_OF_PROCESSORS=$(nproc --all)

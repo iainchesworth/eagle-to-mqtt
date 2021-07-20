@@ -46,20 +46,20 @@ struct EnergyTimeUnits {};
 
 struct Watts : EnergyUnits
 {
-	double operator()(double base_value_in_watts) { return base_value_in_watts; }
+	double operator()(double base_value_in_watts) const { return base_value_in_watts; }
 };
 struct Kilowatts : EnergyUnits 
 {
-	double operator()(double base_value_in_watts) { return base_value_in_watts / 1000.f; }
+	double operator()(double base_value_in_watts) const { return base_value_in_watts / 1000.f; }
 };
 
 struct WattHours : EnergyTimeUnits
 {
-	double operator()(double base_value_in_watthours) { return base_value_in_watthours; }
+	double operator()(double base_value_in_watthours) const { return base_value_in_watthours; }
 };
 struct KilowattHours : EnergyTimeUnits
 {
-	double operator()(double base_value_in_watthours) { return base_value_in_watthours / 1000.f; }
+	double operator()(double base_value_in_watthours) const { return base_value_in_watthours / 1000.f; }
 };
 
 //=====================================================================================================================

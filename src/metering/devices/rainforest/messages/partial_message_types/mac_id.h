@@ -90,7 +90,7 @@ public:
 		{
 			char hex_value_buffer[HEX_BUF_STRING_LENGTH] = { 0 };
 
-			std::snprintf(hex_value_buffer, HEX_BUF_STRING_LENGTH, "%.02hX", mac_id.m_DeviceMacId[i]);
+			std::snprintf(hex_value_buffer, HEX_BUF_STRING_LENGTH, "%.2hhX", mac_id.m_DeviceMacId[i]);
 
 			oss << hex_value_buffer;
 

@@ -3,7 +3,8 @@
 
 using namespace Rainforest;
 
-DeviceEnergyUsage::DeviceEnergyUsage()
+DeviceEnergyUsage::DeviceEnergyUsage() :
+	ISerializable()
 {
 }
 

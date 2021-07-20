@@ -36,7 +36,7 @@ BlockPeriod BlockPeriod::ExtractFromPayload(const boost::property_tree::ptree& n
 	auto now = std::chrono::system_clock::now();
 	auto start_time_as_time_point = now + std::chrono::duration<int64_t>(offset);
 	
-	double consumption = static_cast<double>(IsOptionalWithDefault<uint64_t>(node, "BlockPeriodConsumption", 0));
+	auto consumption = static_cast<double>(IsOptionalWithDefault<uint64_t>(node, "BlockPeriodConsumption", 0));
 	auto consumption_muliplier = IsOptionalWithDefault<uint32_t>(node, "BlockPeriodConsumptionMultiplier", 0);
 	auto consumption_divisor = IsOptionalWithDefault<uint32_t>(node, "BlockPeriodConsumptionDivisor", 0);
 

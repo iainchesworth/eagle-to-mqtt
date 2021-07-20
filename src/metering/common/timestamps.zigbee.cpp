@@ -18,10 +18,6 @@ ZigbeeTimepoint::ZigbeeTimepoint(const std::chrono::time_point<std::chrono::syst
 {
 }
 
-ZigbeeTimepoint::~ZigbeeTimepoint()
-{
-}
-
 ZigbeeTimepoint ZigbeeTimepoint::FromString(const std::string& zigbee_timepoint_string)
 {
 	std::chrono::time_point<std::chrono::system_clock> timepoint_without_offset = hex_string_to_timepoint(zigbee_timepoint_string);
@@ -31,7 +27,7 @@ ZigbeeTimepoint ZigbeeTimepoint::FromString(const std::string& zigbee_timepoint_
 	return ZigbeeTimepoint(timepoint_with_offset);
 }
 
-std::string ZigbeeTimepoint::ToString(const ZigbeeTimepoint zigbee_timepoint)
+std::string ZigbeeTimepoint::ToString(const ZigbeeTimepoint& zigbee_timepoint)
 {
 	std::ostringstream oss;
 

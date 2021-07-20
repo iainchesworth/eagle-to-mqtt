@@ -6,10 +6,6 @@ BridgeStatistics::BridgeStatistics() :
 {
 }
 
-BridgeStatistics::~BridgeStatistics()
-{
-}
-
 boost::json::object BridgeStatistics::Serialize() const
 {
 	return BridgeStatistics_Serializer(*this).Serialize();

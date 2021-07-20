@@ -45,7 +45,7 @@ Tiers::SupportedTiers Tiers::FromString(const std::string& pricing_tier_string)
 		break;
 
 	case V2_LENGTH:		// Format: '0x12'
-		tier_as_int = std::stoul(pricing_tier_string, nullptr, 16);
+		tier_as_int = static_cast<uint8_t>(std::stoul(pricing_tier_string, nullptr, 16));
 		break;
 
 	default:

@@ -12,7 +12,7 @@ public:
 	explicit InvalidMessageValue(const std::string& missing_key);
 
 public:
-	const std::string InvalidValueKey() const;
+	std::string InvalidValueKey() const;
 
 private:
 	const std::string m_InvalidValueKey;

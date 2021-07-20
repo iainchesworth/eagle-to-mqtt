@@ -17,10 +17,6 @@ MessageCluster::MessageCluster(const boost::property_tree::ptree& node) :
 {
 }
 
-MessageCluster::~MessageCluster()
-{
-}
-
 ZigbeeTimepoint MessageCluster::Timestamp() const
 {
 	return m_Timestamp;

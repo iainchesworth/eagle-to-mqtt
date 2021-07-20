@@ -16,7 +16,7 @@
 #include "notifications/common/metering_payload_types.h"
 #include "options/options.h"
 
-class MqttConnection : public std::enable_shared_from_this<MqttConnection>, public virtual mqtt::callback
+class MqttConnection : public std::enable_shared_from_this<MqttConnection>, public mqtt::callback
 {
 	static const uint32_t MAXIMUM_RETRY_ATTEMPTS{ 2 };
 
@@ -42,14 +42,14 @@ private:
 	void RetryConnect();
 
 private:
-	virtual void connected(const std::string& cause) override;
-	virtual void connection_lost(const std::string& cause) override;
-	virtual void delivery_complete(mqtt::delivery_token_ptr tok) override;
-	virtual void message_arrived(mqtt::const_message_ptr msg) override;
+	void connected(const std::string& cause) override;
+	void connection_lost(const std::string& cause) override;
+	void delivery_complete(mqtt::delivery_token_ptr tok) override;
+	void message_arrived(mqtt::const_message_ptr msg) override;
 
 private:
-	void disconnected(const mqtt::properties& properties, mqtt::ReasonCode reason);
-	bool update_connection_handler(mqtt::connect_data& connect_data);
+	void disconnected(const mqtt::properties& properties, mqtt::ReasonCode reason) const;
+	bool update_connection_handler(mqtt::connect_data& connect_data) const;
 
 private:
 	boost::asio::io_context& m_IOContext;
@@ -58,7 +58,7 @@ private:
 private:
 	mqtt::async_client_ptr m_ClientPtr;
 	mqtt::connect_options_ptr m_ConnectOptionsPtr;
-	uint32_t m_ConnectionRetryAttempt;
+	uint32_t m_ConnectionRetryAttempt{ 0 };
 
 private:
 	using QueuedMessageMap = std::unordered_map<std::type_index, mqtt::message_ptr>;

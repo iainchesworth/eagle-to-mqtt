@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string_view>
 
+#include "exceptions/missing_rainforest_node.h"
 #include "exceptions/unknown_fragment_type.h"
 #include "metering/devices/rainforest/eagle.h"
 #include "metering/devices/rainforest/messages/fragment_types.h"
@@ -14,22 +15,7 @@
 #include "serialization/rainforest/eagle_serializer.h"
 
 Eagle::Eagle() :
-	IDevice(),
-	m_Connectivity(),
-	m_EnergyUsage(),
-	m_Statistics(),
-	m_EthernetMacId(),
-	m_ZigbeeMacId(),
-	m_FirmwareVersion(),
-	m_HardwareVersion(),
-	m_ModelId(),
-	m_MeterMessages {
-		// Instantiate the various available meter messages queues.
-		std::make_pair(Queues::QueueTypes::NotSpecified, MeterMessageQueue()),
-		std::make_pair(Queues::QueueTypes::Active, MeterMessageQueue()),
-		std::make_pair(Queues::QueueTypes::CancelPending, MeterMessageQueue()),
-		std::make_pair(Queues::QueueTypes::Unknown, MeterMessageQueue())
-	}
+	IDevice()
 {
 }
 
@@ -40,7 +26,7 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 		const auto rainforest_node = node.get_child_optional("rainforest");
 		if (!rainforest_node.is_initialized())
 		{
-			throw std::runtime_error("FailedToFindRainforestNode");
+			throw MissingRainforestNode();
 		}
 		else
 		{
@@ -155,12 +141,14 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 	catch (const UnknownFragmentType& ufte)
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"Unknown fragment type while processing payload...capturing error and re-throwing";
+		BOOST_LOG_TRIVIAL(trace) << L"Exception details: " << ufte.what();
 		++m_Statistics.ErrorsWhileProcessing;
 		throw;
 	}
 	catch (const boost::property_tree::ptree_error& pte)
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"Missing payload field while processing payload...capturing error and re-throwing";
+		BOOST_LOG_TRIVIAL(trace) << L"Exception details: " << pte.what();
 		++m_Statistics.MissingPayloadFields;
 		++m_Statistics.ErrorsWhileProcessing;
 		throw;
@@ -168,6 +156,7 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 	catch (const std::exception& ex)
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"General error occurred while processing payload...capturing error and re-throwing";
+		BOOST_LOG_TRIVIAL(trace) << L"Exception details: " << ex.what();
 		++m_Statistics.ErrorsWhileProcessing;
 		throw;
 	}
@@ -176,8 +165,7 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 void Eagle::ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes)
 {
 	// Capture the timestamp for this device payload
-	const auto timestamp = header_attributes.get_optional<std::string>("timestamp");
-	if (!timestamp.is_initialized())
+	if (const auto timestamp = header_attributes.get_optional<std::string>("timestamp"); !timestamp.is_initialized())
 	{
 		BOOST_LOG_TRIVIAL(warning) << L"Missing expected field (timestamp) from payload";
 	}

@@ -6,12 +6,12 @@
 
 void MqttConnection::NotificationHandler_PublishPayload(const std::string& topic_prefix, const MeteringPayload& metering_payload)
 {
-	for (auto& element : metering_payload.second)
+	for (auto& [key, value] : metering_payload.second)
 	{
-		auto topic = topic_prefix + element.first;
+		auto topic = topic_prefix + key;
 
 		std::ostringstream payload_oss;
-		payload_oss << element.second;
+		payload_oss << value;
 
 		Publish(
 			mqtt::message_ptr_builder()

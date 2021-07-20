@@ -16,11 +16,11 @@ class Bridge : public IBridge, public ISerializable
 
 public:
 	explicit Bridge(boost::asio::io_context& ioc);
-	virtual ~Bridge();
+	virtual ~Bridge() = default;
 
 public:
-	virtual void Run() final;
-	virtual void Stop() final;
+	void Run() final;
+	void Stop() final;
 
 private:
 	void TriggerBridgeStatusChanged();
@@ -31,13 +31,13 @@ public:
 	std::chrono::seconds Uptime() const;
 
 private:
-	const std::chrono::time_point<std::chrono::steady_clock> m_UptimeStart;	
+	const std::chrono::time_point<std::chrono::steady_clock> m_UptimeStart{ std::chrono::steady_clock::now() };
 	boost::asio::steady_timer m_KeepAliveTimer;
-	BridgeStatus m_Status;
+	BridgeStatus m_Status{ BridgeStatus::BridgeStatusTypes::Offline };
 	BridgeStatistics m_Statistics;
 
 public:
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const final;
 };
 
 #endif // BRIDGE_H

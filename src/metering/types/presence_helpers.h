@@ -19,8 +19,8 @@ class Priorities;
 class Protocols;
 class Queues;
 class Statuses;
-class Summation;
 class Tiers;
+class Usage;
 class ZigBeeMacId;
 class ZigbeeTimepoint;
 
@@ -98,9 +98,9 @@ Queues RetrieveValue<Queues>(const boost::property_tree::ptree& node, const std:
 template<>
 Statuses RetrieveValue<Statuses>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
-Summation RetrieveValue<Summation>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
 Tiers RetrieveValue<Tiers>(const boost::property_tree::ptree& node, const std::string& field);
+template<>
+Usage RetrieveValue<Usage>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 ZigBeeMacId RetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
@@ -178,9 +178,9 @@ std::optional<Queues> TryAndRetrieveValue<Queues>(const boost::property_tree::pt
 template<>
 std::optional<Statuses> TryAndRetrieveValue<Statuses>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
-std::optional<Summation> TryAndRetrieveValue<Summation>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
 std::optional<Tiers> TryAndRetrieveValue<Tiers>(const boost::property_tree::ptree& node, const std::string& field);
+template<>
+std::optional<Usage> TryAndRetrieveValue<Usage>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 std::optional<ZigBeeMacId> TryAndRetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field);
 template<>

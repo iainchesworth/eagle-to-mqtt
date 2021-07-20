@@ -6,7 +6,7 @@ InvalidMessageValue::InvalidMessageValue(const std::string& invalid_value_key) :
 {
 }
 
-const std::string InvalidMessageValue::InvalidValueKey() const
+std::string InvalidMessageValue::InvalidValueKey() const
 {
 	return m_InvalidValueKey;
 }

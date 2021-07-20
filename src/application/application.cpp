@@ -36,13 +36,13 @@ Application::Application(boost::asio::io_context& ioc, const Options& options, I
 			m_Bridge.Stop();
 
 			BOOST_LOG_TRIVIAL(debug) << L"Stopping Listener async handlers";
-			for (auto& listener : m_Listeners)
+			for (auto listener : m_Listeners)
 			{
 				listener->Stop();
 			}
 
 			BOOST_LOG_TRIVIAL(debug) << L"Stopping Publisher async handlers";
-			for (auto& publisher : m_Publishers)
+			for (auto publisher : m_Publishers)
 			{
 				publisher->Stop();
 			}
@@ -61,13 +61,13 @@ void Application::Run()
 		// and is successfully processed.
 
 		BOOST_LOG_TRIVIAL(debug) << L"Starting Publisher async handlers";
-		for (auto& publisher : m_Publishers)
+		for (auto publisher : m_Publishers)
 		{
 			publisher->Run();
 		}
 
 		BOOST_LOG_TRIVIAL(debug) << L"Starting Listener async handlers";
-		for (auto& listener : m_Listeners)
+		for (auto listener : m_Listeners)
 		{
 			listener->Run();
 		}

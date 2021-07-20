@@ -42,9 +42,9 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		BOOST_TEST(test_device->EnergyUsage().History.size() == 3);
 
-		BOOST_TEST(1 == test_device->EnergyUsage().History[0].second.EnergyValue());
-		BOOST_TEST(16 == test_device->EnergyUsage().History[1].second.EnergyValue());
-		BOOST_TEST(256 == test_device->EnergyUsage().History[2].second.EnergyValue());
+		BOOST_TEST(1 == test_device->EnergyUsage().History[0].second.ValueIn<Watts>());
+		BOOST_TEST(16 == test_device->EnergyUsage().History[1].second.ValueIn<Watts>());
+		BOOST_TEST(256 == test_device->EnergyUsage().History[2].second.ValueIn<Watts>());
 
 		{
 			// NOTE THAT THESE ELEMENTS ARE DELIBERATELY OUT OF ORDER
@@ -63,8 +63,8 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		// NOTE THAT THE TESTED ELEMENTS ARE DELIBERATELY OUT OF ORDER
 
-		BOOST_TEST(4096 == test_device->EnergyUsage().History[4].second.EnergyValue());
-		BOOST_TEST(65536 == test_device->EnergyUsage().History[3].second.EnergyValue());
+		BOOST_TEST(4096 == test_device->EnergyUsage().History[4].second.ValueIn<Watts>());
+		BOOST_TEST(65536 == test_device->EnergyUsage().History[3].second.ValueIn<Watts>());
 	}
 	catch (const std::exception& ex)
 	{

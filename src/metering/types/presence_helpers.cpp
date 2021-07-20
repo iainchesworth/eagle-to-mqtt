@@ -1,4 +1,5 @@
 #include "metering/common/currency_codes.h"
+#include "metering/common/energy_value.h"
 #include "metering/common/priorities.h"
 #include "metering/common/protocols.h"
 #include "metering/common/queues.h"
@@ -9,7 +10,6 @@
 #include "metering/types/presence_helpers.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/devices/rainforest/messages/partial_message_types/pricing_tier.h"
-#include "metering/devices/rainforest/messages/partial_message_types/summation.h"
 #include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
 
 //=====================================================================================================================
@@ -103,14 +103,14 @@ Statuses PresenseHelpers::RetrieveValue<Statuses>(const boost::property_tree::pt
 	return RetrieveValue<Statuses>([&node, &field]() { return Statuses::FromString(node.get<std::string>(field)); });
 }
 template<>
-Summation PresenseHelpers::RetrieveValue<Summation>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return RetrieveValue<Summation>([&node, &field]() { return Summation::ExtractFromPayload(node, field); });
-}
-template<>
 Tiers PresenseHelpers::RetrieveValue<Tiers>(const boost::property_tree::ptree& node, const std::string& field)
 {
 	return RetrieveValue<Tiers>([&node, &field]() { return Tiers::FromString(node.get<std::string>(field)); });
+}
+template<>
+Usage PresenseHelpers::RetrieveValue<Usage>(const boost::property_tree::ptree& node, const std::string& field)
+{
+	return RetrieveValue<Usage>([&node, &field]() { return Energy::ExtractFromPayload<Usage>(node, field); });
 }
 template<>
 ZigBeeMacId PresenseHelpers::RetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field)
@@ -214,14 +214,14 @@ std::optional<Statuses> PresenseHelpers::TryAndRetrieveValue<Statuses>(const boo
 	return TryAndRetrieveValue<Statuses>([&node, &field]() { return Statuses::FromString(node.get<std::string>(field)); });
 }
 template<>
-std::optional<Summation> PresenseHelpers::TryAndRetrieveValue<Summation>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return TryAndRetrieveValue<Summation>([&node, &field]() { return Summation::ExtractFromPayload(node, field); });
-}
-template<>
 std::optional<Tiers> PresenseHelpers::TryAndRetrieveValue<Tiers>(const boost::property_tree::ptree& node, const std::string& field)
 {
 	return TryAndRetrieveValue<Tiers>([&node, &field]() { return Tiers::FromString(node.get<std::string>(field)); });
+}
+template<>
+std::optional<Usage> PresenseHelpers::TryAndRetrieveValue<Usage>(const boost::property_tree::ptree& node, const std::string& field)
+{
+	return TryAndRetrieveValue<Usage>([&node, &field]() { return Energy::ExtractFromPayload<Usage>(node, field); });
 }
 template<>
 std::optional<ZigBeeMacId> PresenseHelpers::TryAndRetrieveValue<ZigBeeMacId>(const boost::property_tree::ptree& node, const std::string& field)

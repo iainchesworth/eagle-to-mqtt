@@ -6,9 +6,8 @@
 #include <utility>
 
 #include "interfaces/iserializable.h"
+#include "metering/common/energy_value.h"
 #include "metering/common/timestamps.h"
-#include "metering/devices/rainforest/messages/partial_message_types/demand.h"
-#include "metering/devices/rainforest/messages/partial_message_types/summation.h"
 
 namespace Rainforest
 {
@@ -21,19 +20,19 @@ public:
 	DeviceEnergyUsage();
 
 public:
-	Summation TotalDelivered;
-	Summation TotalReceived;
+	Usage TotalDelivered{ 0, 0, 0, 0, 0, false };
+	Usage TotalReceived{ 0, 0, 0, 0, 0, false };
 
 public:
-	Demand Now;
+	Power Now{ 0, 0, 0, 0, 0, false };
 
 public:
-	using HistoryElement = std::pair<ZigbeeTimepoint, Demand>;
+	using HistoryElement = std::pair<ZigbeeTimepoint, Power>;
 	using HistoryBuffer = boost::circular_buffer<HistoryElement>;
-	HistoryBuffer History;
+	HistoryBuffer History{ HISTORY_DURATION };
 
 public:
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const final;
 };
 
 }

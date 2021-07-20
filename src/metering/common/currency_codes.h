@@ -17,18 +17,18 @@ class CurrencyCodes
 public:
 	enum class ISO4127_CurrencyCodes
 	{
-		NotSpecified,
+		NotSpecified = 0,	// Note that '000-008' are not active currency codes
 		AUD = 36,
 		USD = 840,
 		XXX = 999,
-		Unknown
+		Unknown = 1000		// Note that all currency codes are three-digits so 1000 is unused
 	};
 
 public:
 	struct PropertyTreeTranslator
 	{
-		typedef CurrencyCodes external_type;
-		typedef std::string internal_type;
+		using external_type = CurrencyCodes;
+		using internal_type = std::string;
 
 		boost::optional<external_type> get_value(const internal_type& value)
 		{
@@ -38,8 +38,8 @@ public:
 
 public:
 	CurrencyCodes();
-	CurrencyCodes(ISO4127_CurrencyCodes currency_code);
-	CurrencyCodes(const std::string& currency_code);
+	explicit CurrencyCodes(ISO4127_CurrencyCodes currency_code);
+	explicit CurrencyCodes(const std::string& currency_code);
 
 private:
 	ISO4127_CurrencyCodes m_CurrencyCode;

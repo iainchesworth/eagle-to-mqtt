@@ -20,8 +20,8 @@ class DeviceInfo : public IFragmentProcessor
 	static const std::string FIELDNAME_DATECODE;
 
 public:
-	DeviceInfo(const boost::property_tree::ptree& node);
-	virtual ~DeviceInfo();
+	explicit DeviceInfo(const boost::property_tree::ptree& node);
+	virtual ~DeviceInfo() = default;
 
 public:
 	std::optional<std::string> FirmwareVersion() const;
@@ -38,8 +38,8 @@ private:
 	std::optional<std::string> m_ImageType;
 	std::optional<std::string> m_Manufacturer;
 	std::optional<std::string> m_ModelId;
-	std::optional<std::string> m_DateCode;
-	std::optional<std::string> m_LotNumber;
+	std::optional<std::string> m_DateCode{};
+	std::optional<std::string> m_LotNumber{};
 };
 
 #endif // DEVICE_INFO_H

@@ -10,10 +10,10 @@
 class Notification_PublishKeepAlive : public NotificationBase<void(const std::chrono::seconds uptime)>
 {
 public:
-	Notification_PublishKeepAlive(const std::chrono::seconds uptime);
+	explicit Notification_PublishKeepAlive(const std::chrono::seconds uptime);
 
 protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
+	void Notify(boost::signals2::signal<NotificationCallback>& signal) override;
 
 private:
 	boost::signals2::scoped_connection m_Connection;

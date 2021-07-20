@@ -9,7 +9,7 @@ public:
 	Eagle200();
 
 private:
-	virtual void ProcessFragment(const NetworkInfo& network_info) final;
+	void ProcessFragment(const NetworkInfo& network_info) final;
 };
 
 #endif // EAGLE_200_H

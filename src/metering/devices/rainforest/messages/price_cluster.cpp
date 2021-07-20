@@ -16,10 +16,6 @@ PriceCluster::PriceCluster(const boost::property_tree::ptree& node) :
 {
 }
 
-PriceCluster::~PriceCluster()
-{
-}
-
 Tiers PriceCluster::Tier() const
 {
 	return m_Tier;

@@ -7,10 +7,10 @@ class BridgeStatistics : public ISerializable
 {
 public:
 	BridgeStatistics();
-	virtual ~BridgeStatistics();
+	virtual ~BridgeStatistics() = default;
 
 public:
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const final;
 };
 
 #endif // BRIDGE_STATS_H

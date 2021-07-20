@@ -12,10 +12,7 @@
 
 Bridge::Bridge(boost::asio::io_context& ioc) :
 	IBridge(ioc),
-	m_UptimeStart(std::chrono::steady_clock::now()),
-	m_KeepAliveTimer(ioc),
-	m_Status(BridgeStatus::BridgeStatusTypes::Offline),
-	m_Statistics()
+	m_KeepAliveTimer(ioc)
 {
 	BOOST_LOG_TRIVIAL(debug) << L"Initialising the Bridge";
 
@@ -26,13 +23,9 @@ Bridge::Bridge(boost::asio::io_context& ioc) :
 	BridgeRegistrySingleton()->Add(bridge_ptr);
 }
 
-Bridge::~Bridge()
-{
-}
-
 void Bridge::Run()
 {
-	m_Status = BridgeStatus::BridgeStatusTypes::Online;
+	m_Status = BridgeStatus(BridgeStatus::BridgeStatusTypes::Online);
 	TriggerBridgeStatusChanged();
 
 	TriggerKeepAlive();
@@ -42,7 +35,7 @@ void Bridge::Stop()
 {
 	m_KeepAliveTimer.cancel();
 
-	m_Status = BridgeStatus::BridgeStatusTypes::Offline;
+	m_Status = BridgeStatus(BridgeStatus::BridgeStatusTypes::Offline);
 	TriggerBridgeStatusChanged();
 }
 
@@ -65,9 +58,9 @@ void Bridge::TriggerKeepAlive()
 	else
 	{
 		m_KeepAliveTimer.async_wait(
-			[this](const boost::system::error_code& ec)
+			[this](const boost::system::error_code& error_code)
 			{
-				if (boost::asio::error::operation_aborted == ec)
+				if (boost::asio::error::operation_aborted == error_code)
 				{
 					BOOST_LOG_TRIVIAL(debug) << L"Keep-alive send was aborted; canceling";
 				}

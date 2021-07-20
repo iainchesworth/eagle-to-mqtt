@@ -10,10 +10,6 @@ SolarApi_CurrentData_Inverter::SolarApi_CurrentData_Inverter(const boost::proper
 {
 }
 
-SolarApi_CurrentData_Inverter::~SolarApi_CurrentData_Inverter()
-{
-}
-
 NamedCollection<int64_t> SolarApi_CurrentData_Inverter::Power_AC() const
 {
 	return m_Power_AC;

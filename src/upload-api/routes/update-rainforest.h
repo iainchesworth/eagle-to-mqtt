@@ -10,6 +10,7 @@ class ApiRoute_Rainforest : public IApiRoute
 
 public:
 	ApiRoute_Rainforest();
+	virtual ~ApiRoute_Rainforest() = default;
 
 public:
 	HttpResponse Handler(const HttpRequest& request);

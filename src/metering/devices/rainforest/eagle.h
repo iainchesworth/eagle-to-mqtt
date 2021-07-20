@@ -34,7 +34,7 @@ public:
 	Eagle();
 
 public:
-	virtual void ProcessPayload(const boost::property_tree::ptree& node);
+	void ProcessPayload(const boost::property_tree::ptree& node) override;
 
 protected:
 	virtual void ProcessFragment(const BillingPeriodList& billing_period_list);
@@ -73,11 +73,18 @@ protected:
 	PricingTiers m_PricingTiers;
 
 protected:
-	std::map<Queues, MeterMessageQueue> m_MeterMessages;
+	std::map<Queues, MeterMessageQueue> m_MeterMessages
+	{
+		// Instantiate the various available meter messages queues.
+		std::make_pair(Queues::QueueTypes::NotSpecified, MeterMessageQueue()),
+		std::make_pair(Queues::QueueTypes::Active, MeterMessageQueue()),
+		std::make_pair(Queues::QueueTypes::CancelPending, MeterMessageQueue()),
+		std::make_pair(Queues::QueueTypes::Unknown, MeterMessageQueue())
+	};
 
 public:
 	friend class Eagle_Serializer;
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const override;
 };
 
 #endif // EAGLE_H

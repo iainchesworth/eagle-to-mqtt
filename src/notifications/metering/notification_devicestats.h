@@ -13,8 +13,23 @@
 
 class Notification_DeviceStats : public Notification_PublishPayload
 {
+	static const std::string MAPKEY_LASTMESSAGETIMESTAMP;
+	static const std::string MAPKEY_MISSINGPAYLOADFIELDS;
+	static const std::string MAPKEY_ERRORSWHILEPROCESSING;
+	static const std::string MAPKEY_BILLINGPERIODCOUNT;
+	static const std::string MAPKEY_BLOCKPRICEDETAILCOUNT;
+	static const std::string MAPKEY_CONNECTIONSTATUSCOUNT;
+	static const std::string MAPKEY_CURRENTSUMMATIONCOUNT;
+	static const std::string MAPKEY_DEVICEINFOCOUNT;
+	static const std::string MAPKEY_INSTANTANEOUSDEMANDCOUNT;
+	static const std::string MAPKEY_MESSAGECLUSTERCOUNT;
+	static const std::string MAPKEY_NETWORKINFOCOUNT;
+	static const std::string MAPKEY_PRICECLUSTERCOUNT;
+	static const std::string MAPKEY_TIMECLUSTERCOUNT;
+	static const std::string MAPKEY_UNKNOWNMESSAGECOUNT;
+
 public:
-	Notification_DeviceStats(EthernetMacId device_id);
+	explicit Notification_DeviceStats(EthernetMacId device_id);
 
 public:
 	Notification_DeviceStats& DeviceStats(const Rainforest::DeviceStatistics& statistics);
@@ -34,9 +49,6 @@ public:
 	Notification_DeviceStats& PriceClusterCount(const uint64_t& price_cluster_count);
 	Notification_DeviceStats& TimeClusterCount(const uint64_t& time_cluster_count);
 	Notification_DeviceStats& UnknownMessageCount(const uint64_t& unknown_message_count);
-
-protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
 
 private:
 	boost::signals2::scoped_connection m_Connection;

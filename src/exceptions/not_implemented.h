@@ -8,7 +8,7 @@ class NotImplemented : public std::runtime_error
 {
 public:
 	NotImplemented();
-	NotImplemented(const std::string& message);
+	explicit NotImplemented(const std::string& message);
 };
 
 #endif // UNKNOWN_FRAGMENT_TYPE_H

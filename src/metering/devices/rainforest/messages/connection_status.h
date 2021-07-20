@@ -20,8 +20,8 @@ class ConnectionStatus : public IFragmentProcessor
 	static const std::string FIELDNAME_LINKSTRENGTH;
 
 public:
-	ConnectionStatus(const boost::property_tree::ptree& node);
-	virtual ~ConnectionStatus();
+	explicit ConnectionStatus(const boost::property_tree::ptree& node);
+	virtual ~ConnectionStatus() = default;
 
 public:
 	std::optional<ZigBeeMacId> Meter_MacId() const;

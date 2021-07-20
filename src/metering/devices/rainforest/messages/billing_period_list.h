@@ -20,8 +20,8 @@ class BillingPeriodList : public IFragmentProcessor
 	static const std::string FIELDNAME_CURRENTDURATION;
 
 public:
-	BillingPeriodList(const boost::property_tree::ptree& node);
-	virtual ~BillingPeriodList();
+	explicit BillingPeriodList(const boost::property_tree::ptree& node);
+	virtual ~BillingPeriodList() = default;
 
 public:
 	std::chrono::time_point<std::chrono::system_clock> CurrentPeriodStart() const;

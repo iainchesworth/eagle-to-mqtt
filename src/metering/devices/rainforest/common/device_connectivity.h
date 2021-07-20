@@ -15,7 +15,7 @@ class DeviceConnectivity : public ISerializable
 {
 public:
 	DeviceConnectivity();
-	virtual ~DeviceConnectivity();
+	virtual ~DeviceConnectivity() = default;
 
 public:
 	struct
@@ -27,14 +27,14 @@ public:
 	ZigBee;
 
 public:
-	Statuses Status;
+	Statuses Status{ Statuses::StatusTypes::Unknown };
 
 public:
 	std::string Channel;
 	uint8_t LinkStrength;
 
 public:
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const final;
 };
 
 }

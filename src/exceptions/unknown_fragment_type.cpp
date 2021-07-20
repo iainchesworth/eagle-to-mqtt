@@ -6,7 +6,7 @@ UnknownFragmentType::UnknownFragmentType(const std::string& unknown_fragment) :
 {
 }
 
-const std::string UnknownFragmentType::Fragment() const
+std::string UnknownFragmentType::Fragment() const
 {
 	return m_UnknownFragment;
 }

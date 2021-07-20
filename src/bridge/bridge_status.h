@@ -22,8 +22,8 @@ public:
 
 public:
 	BridgeStatus();
-	BridgeStatus(BridgeStatusTypes status);
-	BridgeStatus(const std::string& status);
+	explicit BridgeStatus(BridgeStatusTypes status);
+	explicit BridgeStatus(const std::string& status);
 
 private:
 	BridgeStatusTypes m_Status;

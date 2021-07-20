@@ -19,10 +19,6 @@ ConnectionStatus::ConnectionStatus(const boost::property_tree::ptree& node) :
 {
 }
 
-ConnectionStatus::~ConnectionStatus()
-{
-}
-
 std::optional<ZigBeeMacId> ConnectionStatus::Meter_MacId() const
 {
 	return m_MeterMacId;

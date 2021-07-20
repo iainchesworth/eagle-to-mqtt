@@ -6,20 +6,17 @@
 
 const std::string InstantaneousDemand::FIELDNAME_METERMACID{ "MeterMacId" };
 const std::string InstantaneousDemand::FIELDNAME_TIMESTAMP{ "TimeStamp" };
+const std::string InstantaneousDemand::FIELDNAME_DEMAND{ "Demand" };
 
 InstantaneousDemand::InstantaneousDemand(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
 	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
 	m_Timestamp(IsEssential<ZigbeeTimepoint>(node, FIELDNAME_TIMESTAMP)),
-	m_Demand(Demand::ExtractFromPayload(node))
+	m_Demand(Energy::ExtractFromPayload<Power>(node, FIELDNAME_DEMAND))
 {
 }
 
-InstantaneousDemand::~InstantaneousDemand()
-{
-}
-
-Demand InstantaneousDemand::Now() const
+Power InstantaneousDemand::Now() const
 {
 	return m_Demand;
 }

@@ -4,7 +4,7 @@
 #include "metering/types/integer.h"
 #include "metering/types/optional.h"
 
-MeterMessage::MeterMessage(std::string id, std::string text, Priorities priority, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration, bool confirmation_required, bool confirmed) :
+MeterMessage::MeterMessage(const std::string& id, const std::string& text, Priorities priority, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration, bool confirmation_required, bool confirmed) :
 	m_Id(id),
 	m_Text(text),
 	m_Priority(priority),

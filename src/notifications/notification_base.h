@@ -18,7 +18,7 @@ protected:
 	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal) = 0;
 
 private:
-	void Trigger(std::shared_ptr<boost::signals2::signal_base> signal_base)
+	void Trigger(std::shared_ptr<boost::signals2::signal_base> signal_base) final
 	{
 		using NotificationSignal = boost::signals2::signal<NotificationCallback>;
 

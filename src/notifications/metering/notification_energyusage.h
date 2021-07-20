@@ -3,23 +3,23 @@
 
 #include <boost/signals2/signal.hpp>
 
-#include "metering/devices/rainforest/messages/partial_message_types/demand.h"
+#include "metering/common/energy_value.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
-#include "metering/devices/rainforest/messages/partial_message_types/summation.h"
 #include "notifications/metering/notification_publishpayload.h"
 
 class Notification_EnergyUsage : public Notification_PublishPayload
 {
-public:
-	Notification_EnergyUsage(EthernetMacId device_id);
+	static const std::string MAPKEY_INSTANTANEOUSDEMAND;
+	static const std::string MAPKEY_LIFETIMEDELIVERED;
+	static const std::string MAPKEY_LIFETIMERECEIVED;
 
 public:
-	Notification_EnergyUsage& InstantaneousDemand(const Demand& now);
-	Notification_EnergyUsage& LifetimeDelivered(const Summation& delivered);
-	Notification_EnergyUsage& LifetimeReceived(const Summation& received);
+	explicit Notification_EnergyUsage(EthernetMacId device_id);
 
-protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
+public:
+	Notification_EnergyUsage& InstantaneousDemand(const Power& now);
+	Notification_EnergyUsage& LifetimeDelivered(const Usage& delivered);
+	Notification_EnergyUsage& LifetimeReceived(const Usage& received);
 
 private:
 	boost::signals2::scoped_connection m_Connection;

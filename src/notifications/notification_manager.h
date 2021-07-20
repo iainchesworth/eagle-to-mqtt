@@ -51,7 +51,7 @@ public:
 	void Poll();
 
 private:
-	std::map<std::string, std::shared_ptr<boost::signals2::signal_base>> m_Signals;
+	std::map<std::string, std::shared_ptr<boost::signals2::signal_base>, std::less<>> m_Signals;
 	std::queue<std::shared_ptr<INotification>> m_Queue;
 	std::mutex m_GuardMutex;
 };

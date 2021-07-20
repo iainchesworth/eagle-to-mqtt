@@ -11,10 +11,10 @@
 
 namespace DeviceFactory
 {
-	template<typename DEVICE_TYPE, typename std::enable_if<std::is_base_of<IDevice, DEVICE_TYPE>::value>::type* = nullptr>
+	template<typename DEVICE_TYPE, typename std::enable_if_t<std::is_base_of_v<IDevice, DEVICE_TYPE>>* = nullptr>
 	std::unique_ptr<DEVICE_TYPE> CreateDevice()
 	{
-		// BOOST_LOG_TRIVIAL(warning) << L"Attempted to create an instance of an unknown device type";
+		BOOST_LOG_TRIVIAL(debug) << L"Factory is creating new device of type: " << typeid(DEVICE_TYPE).name();
 		return std::make_unique<DEVICE_TYPE>();
 	}
 };

@@ -15,6 +15,7 @@ class HttpRouter : public IHttpRouter
 {
 public:
 	HttpRouter();
+	virtual ~HttpRouter() = default;
 
 public:
 	virtual HttpResponse HandleRoute(const HttpRequest& req) const;

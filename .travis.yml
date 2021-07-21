@@ -22,7 +22,7 @@ before_install:
   - git submodule update --init --recursive --jobs 8
 
 script:
-  - cmake -Bbuild -DE2M_OPTION_CODE_COVERAGE=ON -H.
+  - cmake -Bbuild -D E2M_OPTION_CODE_COVERAGE=ON -H.
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarQube Scanner) into the "bw-output" folder
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/ 

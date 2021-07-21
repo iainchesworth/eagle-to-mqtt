@@ -10,6 +10,7 @@
 #include <queue>
 #include <string>
 
+#include "exceptions/incorrect_notification_callback.h"
 #include "interfaces/inotification.h"
 #include "utils/singleton.h"
 
@@ -24,7 +25,7 @@ public:
 	{
 		if (false == boost::is_base_of<INotification, NOTIFICATION>::value)
 		{
-			throw;  ///FIXME
+			throw IncorrectNotificationCallback(typeid(NOTIFICATION).name());
 		}
 		else
 		{

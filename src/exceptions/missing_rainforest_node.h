@@ -7,7 +7,6 @@ class MissingRainforestNode : public std::runtime_error
 {
 public:
 	MissingRainforestNode();
-	virtual ~MissingRainforestNode() = default;
 };
 
 

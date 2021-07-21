@@ -21,9 +21,9 @@ struct Fixture_NotificationConnectivity
 	LastNotificationPayload last_notification_payload;
 	uint32_t notifications_count = 0;
 
-	const EthernetMacId device_id;
-	const ZigBeeMacId extended_panid;
-	const ZigBeeMacId meter_macid;
+	const EthernetMacId device_id{ std::string("0xAABBCCDDEEFF") };
+	const ZigBeeMacId extended_panid{ std::string("0xAABBCCDDEEFF0011") };
+	const ZigBeeMacId meter_macid{ std::string("0x1100FFEEDDCCBBAA") };
 
 	std::shared_ptr<Notification_Connectivity> connection_status_notif;
 	NotificationManager mgr;
@@ -31,11 +31,7 @@ struct Fixture_NotificationConnectivity
 	static const std::string TEST_CHANNEL;
 
 	Fixture_NotificationConnectivity() :
-		device_id(std::string("0xAABBCCDDEEFF")),
-		extended_panid(std::string("0xAABBCCDDEEFF0011")),
-		meter_macid(std::string("0x1100FFEEDDCCBBAA")),
-		connection_status_notif{ std::make_shared<Notification_Connectivity>(device_id) },
-		mgr()
+		connection_status_notif{ std::make_shared<Notification_Connectivity>(device_id) }
 	{
 		mgr.RegisterCallback<Notification_Connectivity>(
 			[this](const MeteringPayload& metering_payload)
@@ -46,10 +42,6 @@ struct Fixture_NotificationConnectivity
 				++notifications_count;
 			}
 		);
-	}
-
-	~Fixture_NotificationConnectivity()
-	{
 	}
 };
 
@@ -89,7 +81,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_1)
 	try
 	{
 		(*(fixture_nc.connection_status_notif))
-			.Channel(fixture_nc.TEST_CHANNEL);
+			.Channel(Fixture_NotificationConnectivity::TEST_CHANNEL);
 
 		fixture_nc.mgr.Dispatch(fixture_nc.connection_status_notif);
 		BOOST_TEST(1 == fixture_nc.notifications_count);
@@ -98,7 +90,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_1)
 
 		BOOST_TEST(fixture_nc.last_notification_payload.device_id == fixture_nc.device_id);
 		BOOST_TEST(fixture_nc.last_notification_payload.payload.size() == 1);
-		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), fixture_nc.TEST_CHANNEL);
+		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), Fixture_NotificationConnectivity::TEST_CHANNEL);
 	}
 	catch (const std::exception& ex)
 	{
@@ -120,7 +112,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_2)
 
 		BOOST_TEST(fixture_nc.last_notification_payload.device_id == fixture_nc.device_id);
 		BOOST_TEST(fixture_nc.last_notification_payload.payload.size() == 2);
-		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), fixture_nc.TEST_CHANNEL);
+		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), Fixture_NotificationConnectivity::TEST_CHANNEL);
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("extended_panid"), ZigBeeMacId::ToString(fixture_nc.extended_panid));
 	}
 	catch (const std::exception& ex)
@@ -143,7 +135,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_3)
 
 		BOOST_TEST(fixture_nc.last_notification_payload.device_id == fixture_nc.device_id);
 		BOOST_TEST(fixture_nc.last_notification_payload.payload.size() == 3);
-		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), std::string("TEST_CHANNEL"));
+		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), Fixture_NotificationConnectivity::TEST_CHANNEL);
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("extended_panid"), ZigBeeMacId::ToString(fixture_nc.extended_panid));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("link_strength"), std::string("67"));
 
@@ -168,7 +160,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_4)
 
 		BOOST_TEST(fixture_nc.last_notification_payload.device_id == fixture_nc.device_id);
 		BOOST_TEST(fixture_nc.last_notification_payload.payload.size() == 4);
-		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), std::string("TEST_CHANNEL"));
+		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), Fixture_NotificationConnectivity::TEST_CHANNEL);
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("extended_panid"), ZigBeeMacId::ToString(fixture_nc.extended_panid));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("link_strength"), std::string("67"));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("meter_macid"), ZigBeeMacId::ToString(fixture_nc.meter_macid));
@@ -193,7 +185,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_5)
 
 		BOOST_TEST(fixture_nc.last_notification_payload.device_id == fixture_nc.device_id);
 		BOOST_TEST(fixture_nc.last_notification_payload.payload.size() == 5);
-		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), std::string("TEST_CHANNEL"));
+		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), Fixture_NotificationConnectivity::TEST_CHANNEL);
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("extended_panid"), ZigBeeMacId::ToString(fixture_nc.extended_panid));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("link_strength"), std::string("67"));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("meter_macid"), ZigBeeMacId::ToString(fixture_nc.meter_macid));
@@ -220,7 +212,7 @@ BOOST_AUTO_TEST_CASE(Test_NotificationConnectivity_6)
 
 		BOOST_TEST(fixture_nc.last_notification_payload.device_id == fixture_nc.device_id);
 		BOOST_TEST(fixture_nc.last_notification_payload.payload.size() == 5);
-		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), std::string("TEST_CHANNEL"));
+		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("channel"), Fixture_NotificationConnectivity::TEST_CHANNEL);
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("extended_panid"), ZigBeeMacId::ToString(fixture_nc.extended_panid));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("link_strength"), std::string("34"));
 		test_tools::NotificationPayload_ValueTester(fixture_nc.last_notification_payload.payload, std::string("meter_macid"), ZigBeeMacId::ToString(fixture_nc.meter_macid));

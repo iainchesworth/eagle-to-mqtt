@@ -22,15 +22,16 @@ before_install:
   - git submodule update --init --recursive --jobs 8
 
 script:
-  - cmake -Bbuild -H.
+  - cmake -Bbuild -DE2M_OPTION_CODE_COVERAGE=ON -H.
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarQube Scanner) into the "bw-output" folder
-  - build-wrapper-linux-x86-64 --out-dir bw-output cmake -DE2M_OPTION_CODE_COVERAGE --build build/
+  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/ 
 
 after_success:
-  - NUMBER_OF_PROCESSORS=$(nproc --all)
-  # And finally run the SonarQube analysis - read the "sonar-project.properties"
+  - cmake --build build/ --target coverage  
+# And finally run the SonarQube analysis - read the "sonar-project.properties"
   # file to see the specific configuration
+  - NUMBER_OF_PROCESSORS=$(nproc --all)
   - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
 
 cache:

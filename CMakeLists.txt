@@ -33,6 +33,7 @@ if (E2M_OPTION_CODE_COVERAGE)
     include(CodeCoverage)
     append_coverage_compiler_flags()
 endif()
+option(E2M_OPTION_SUPPORT_SONARQUBE "Integrate with SonarQube reporting" OFF)
 
 if(WIN32)
     # Custom Windows options go here...
@@ -143,6 +144,10 @@ add_subdirectory(tests)
 #-----------------------------------------------------------------------------------------------------------------------
 
 if (E2M_OPTION_CODE_COVERAGE)
+
+if (E2M_OPTION_SUPPORT_SONARQUBE)
+    set(GCOVR_ADDITIONAL_ARGS --sonarqube coverage.sonarqube.xml)
+endif ()
 
     set(COVERAGE_EXCLUDES "${CMAKE_SOURCE_DIR}/tests")
     setup_target_for_coverage_gcovr_xml(NAME coverage EXECUTABLE eagle-to-mqtt-tests DEPENDENCIES ${TEST_TARGET})

@@ -146,7 +146,7 @@ add_subdirectory(tests)
 if (E2M_OPTION_CODE_COVERAGE)
 
 if (E2M_OPTION_SUPPORT_SONARQUBE)
-    set(GCOVR_ADDITIONAL_ARGS --sonarqube ${CMAKE_SOURCE_DIR}/coverage.sonarqube.xml)
+    set(GCOVR_ADDITIONAL_ARGS --sonarqube coverage.sonarqube.xml)
 endif ()
 
     set(COVERAGE_EXCLUDES "${CMAKE_SOURCE_DIR}/tests")

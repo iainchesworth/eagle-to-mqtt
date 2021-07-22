@@ -7,7 +7,7 @@
 class IncorrectNotificationCallback : public std::runtime_error
 {
 public:
-	IncorrectNotificationCallback(const std::string& notification_callback_type);
+	explicit IncorrectNotificationCallback(const std::string& notification_callback_type);
 };
 
 

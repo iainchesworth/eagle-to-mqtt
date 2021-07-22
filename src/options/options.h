@@ -49,7 +49,7 @@ private:
 	std::string m_MqttPassword;
 	uint16_t m_MqttPort;
 	std::string m_MqttTopic;
-	bool m_MqttUseAuthentication;
+	bool m_MqttUseAuthentication{ false };
 	bool m_MqttUseTls;
 	std::string m_MqttUsername;
 };

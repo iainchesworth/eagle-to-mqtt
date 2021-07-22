@@ -13,14 +13,9 @@
 #include "versions/versions_git.h"
 
 Options::Options(int argc, char* argv[]) :
-	m_HttpInterface(),
-	m_HttpUseTls(),
 	m_HttpPort(),
-	m_MqttHost(),
 	m_MqttPassword(MQTT_DEFAULT_PASSWORD),
 	m_MqttPort(),
-	m_MqttTopic(),
-	m_MqttUseTls(),
 	m_MqttUseAuthentication(false),
 	m_MqttUsername(MQTT_DEFAULT_USERNAME)
 {
@@ -129,14 +124,14 @@ Options::Options(int argc, char* argv[]) :
 		}
 
 		std::cerr << cmdline_options;
-		exit(-1);
+		throw; // Re-throw to propagate the exception up to the main application (so it terminates).
 	}
 	catch (const boost::program_options::error& poex)
 	{
 		// Display the help information then re-throw the exception...
 		std::cerr << "Failed to process provided arguments: " << poex.what() << std::endl;
 		std::cerr << cmdline_options;
-		exit(-1);
+		throw; // Re-throw to propagate the exception up to the main application (so it terminates).
 	}
 }
 

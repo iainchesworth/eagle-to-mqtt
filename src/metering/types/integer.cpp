@@ -13,7 +13,7 @@
 //
 
 template<typename INTEGER_TYPE>
-INTEGER_TYPE GetValue(const boost::property_tree::ptree& node, const std::string& key, std::function<INTEGER_TYPE(const std::string& value)> converter)
+INTEGER_TYPE GetValue(const boost::property_tree::ptree& node, const std::string& key, const std::function<INTEGER_TYPE(const std::string& value)>& converter)
 {
 	INTEGER_TYPE value;
 
@@ -37,22 +37,22 @@ INTEGER_TYPE GetValue(const boost::property_tree::ptree& node, const std::string
 // UNSIGNED INTEGER
 //
 
-uint64_t GetValue_UInt64(const boost::property_tree::ptree& node, const std::string& key, std::function<uint64_t(const std::string& value)> converter)
+uint64_t GetValue_UInt64(const boost::property_tree::ptree& node, const std::string& key, const std::function<uint64_t(const std::string& value)>& converter)
 {
 	return GetValue<uint64_t>(node, key, converter);
 }
 
-uint32_t GetValue_UInt32(const boost::property_tree::ptree& node, const std::string& key, std::function<uint32_t(const std::string& value)> converter)
+uint32_t GetValue_UInt32(const boost::property_tree::ptree& node, const std::string& key, const std::function<uint32_t(const std::string& value)>& converter)
 {
 	return GetValue<uint32_t>(node, key, converter);
 }
 
-uint16_t GetValue_UInt16(const boost::property_tree::ptree& node, const std::string& key, std::function<uint16_t(const std::string& value)> converter)
+uint16_t GetValue_UInt16(const boost::property_tree::ptree& node, const std::string& key, const std::function<uint16_t(const std::string& value)>& converter)
 {
 	return GetValue<uint16_t>(node, key, converter);
 }
 
-uint8_t GetValue_UInt8(const boost::property_tree::ptree& node, const std::string& key, std::function<uint8_t(const std::string& value)> converter)
+uint8_t GetValue_UInt8(const boost::property_tree::ptree& node, const std::string& key, const std::function<uint8_t(const std::string& value)>& converter)
 {
 	return GetValue<uint8_t>(node, key, converter);
 }

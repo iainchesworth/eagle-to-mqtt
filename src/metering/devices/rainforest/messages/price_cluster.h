@@ -19,8 +19,8 @@ class PriceCluster : public IFragmentProcessor
 	static const std::string FIELDNAME_TIER;
 
 public:
-	PriceCluster(const boost::property_tree::ptree& node);
-	virtual ~PriceCluster();
+	explicit PriceCluster(const boost::property_tree::ptree& node);
+	virtual ~PriceCluster() = default;
 
 public:
 	Tiers Tier() const;

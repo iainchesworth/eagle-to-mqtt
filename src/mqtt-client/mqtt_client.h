@@ -14,7 +14,7 @@ class MqttClient : public IPublisher
 {
 public:
 	explicit MqttClient(boost::asio::io_context& ioc, const Options& options);
-	virtual ~MqttClient();
+	virtual ~MqttClient() = default;
 
 public:
 	void Run() final;

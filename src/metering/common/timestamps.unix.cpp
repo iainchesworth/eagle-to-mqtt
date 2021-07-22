@@ -18,16 +18,12 @@ UnixTimepoint::UnixTimepoint(const std::chrono::time_point<std::chrono::system_c
 {
 }
 
-UnixTimepoint::~UnixTimepoint()
-{
-}
-
 UnixTimepoint UnixTimepoint::FromString(const std::string& unix_timepoint_string)
 {
 	return UnixTimepoint(hex_string_to_timepoint(unix_timepoint_string));
 }
 
-std::string UnixTimepoint::ToString(const UnixTimepoint unix_timepoint)
+std::string UnixTimepoint::ToString(const UnixTimepoint& unix_timepoint)
 {
 	std::ostringstream oss;
 

@@ -14,6 +14,6 @@ public:
 	explicit IPublisher(boost::asio::io_context& ioc);
 };
 
-typedef std::vector<std::shared_ptr<IPublisher>> PublisherSet;
+using PublisherSet = std::vector<std::shared_ptr<IPublisher>>;
 
 #endif // IMQTTCLIENT_H

@@ -10,6 +10,7 @@ class ApiRoute_Fronius : public IApiRoute
 
 public:
 	ApiRoute_Fronius();
+	virtual ~ApiRoute_Fronius() = default;
 
 public:
 	HttpResponse Handler(const HttpRequest& request);

@@ -20,9 +20,7 @@ DeviceInfo::DeviceInfo(const boost::property_tree::ptree& node) :
 	m_HWVersion(IsOptional<std::string>(node, FIELDNAME_HWVERISON)),
 	m_ImageType(IsOptional<std::string>(node, FIELDNAME_IMAGETYPE)),
 	m_Manufacturer(IsOptional<std::string>(node, FIELDNAME_MANUFACTURER)),
-	m_ModelId(IsOptional<std::string>(node, FIELDNAME_MODELID)),
-	m_DateCode(),
-	m_LotNumber()
+	m_ModelId(IsOptional<std::string>(node, FIELDNAME_MODELID))
 {
 	// Manufacturer date code and lot number in format "YYYYMMDDZZZZZZZZ"
 
@@ -43,10 +41,6 @@ DeviceInfo::DeviceInfo(const boost::property_tree::ptree& node) :
 		m_DateCode = datecode;
 		m_LotNumber = lotnumber;
 	}
-}
-
-DeviceInfo::~DeviceInfo()
-{
 }
 
 std::optional<std::string> DeviceInfo::FirmwareVersion() const

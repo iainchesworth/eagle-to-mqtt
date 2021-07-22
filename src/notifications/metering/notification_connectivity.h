@@ -13,8 +13,14 @@
 
 class Notification_Connectivity : public Notification_PublishPayload
 {
+	static const std::string MAPKEY_METERMACID;
+	static const std::string MAPKEY_EXTENDEDPANID;
+	static const std::string MAPKEY_STATUS;
+	static const std::string MAPKEY_CHANNEL;
+	static const std::string MAPKEY_LINKSTRENGTH;
+
 public:
-	Notification_Connectivity(EthernetMacId device_id);
+	explicit Notification_Connectivity(EthernetMacId device_id);
 
 public:
 	Notification_Connectivity& Meter_MacId(const ZigBeeMacId& meter_macid);
@@ -22,9 +28,6 @@ public:
 	Notification_Connectivity& Status(const Statuses& status);
 	Notification_Connectivity& Channel(const std::string& channel);
 	Notification_Connectivity& LinkStrength(const uint8_t link_strength);
-
-protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
 
 private:
 	boost::signals2::scoped_connection m_Connection;

@@ -20,8 +20,8 @@ public:
 public:
 	struct PropertyTreeTranslator
 	{
-		typedef ZigBeeMacId external_type;
-		typedef std::string internal_type;
+		using external_type = ZigBeeMacId;
+		using internal_type = std::string;
 
 		boost::optional<external_type> get_value(const internal_type& value)
 		{

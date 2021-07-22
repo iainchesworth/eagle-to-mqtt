@@ -12,7 +12,7 @@ public:
 	Notification_PublishPayload(MeteringPayload_DeviceId device_id, std::initializer_list<MeteringPayload_Element> payload_elements = {});
 
 protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
+	void Notify(boost::signals2::signal<NotificationCallback>& signal) final;
 
 private:
 	boost::signals2::scoped_connection m_Connection;

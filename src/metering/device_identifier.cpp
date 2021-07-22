@@ -1,3 +1,4 @@
+#include <boost/core/ignore_unused.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 
@@ -16,7 +17,7 @@
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/types/optional.h"
 
-std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(boost::property_tree::ptree& device_payload)
+std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(const boost::property_tree::ptree& device_payload)
 {
 	std::shared_ptr<IDevice> processor;
 
@@ -24,8 +25,7 @@ std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(boost::property_tree::ptree
 	std::optional<double> processor_v2;
 	std::optional<std::string> raw_ethernet_mac;
 
-	const auto rainforest_child = device_payload.get_child_optional("rainforest");
-	if (!rainforest_child)
+	if (const auto rainforest_child = device_payload.get_child_optional("rainforest"); !rainforest_child)
 	{
 		BOOST_LOG_TRIVIAL(warning) << L"No version present in the payload; cannot determine device type!";
 	}
@@ -51,8 +51,10 @@ std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(boost::property_tree::ptree
 	return processor;
 }
 
-std::shared_ptr<IDevice> IdentifyAndGetSymoInstance(boost::property_tree::ptree& device_payload)
+std::shared_ptr<IDevice> IdentifyAndGetSymoInstance(const boost::property_tree::ptree& device_payload)
 {
+	boost::ignore_unused(device_payload);
+
 	std::shared_ptr<IDevice> processor = DeviceRegistrySingleton()->GetOrCreate<Symo>(EthernetMacId());
 
 	return processor;

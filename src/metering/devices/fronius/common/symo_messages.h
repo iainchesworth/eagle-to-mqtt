@@ -40,14 +40,14 @@ public:
 private:
 	SymoMessageTypes m_MessageType;
 
+public:
+	static SymoMessageTypes FromPayload(const boost::property_tree::ptree& node);
+	static std::string ToString(const SymoMessageTypes message_type);
+
 private:
 	static SymoMessageTypes MessageCheck_1(const boost::property_tree::ptree& node);
 	static SymoMessageTypes MessageCheck_2(const boost::property_tree::ptree& node);
 	static SymoMessageTypes MessageCheck_3(const boost::property_tree::ptree& node);
-
-public:
-	static SymoMessageTypes FromPayload(const boost::property_tree::ptree& node);
-	static std::string ToString(const SymoMessageTypes message_type);
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const SymoMessages& message_type);

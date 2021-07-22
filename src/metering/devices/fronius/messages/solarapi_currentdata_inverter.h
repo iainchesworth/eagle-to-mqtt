@@ -5,14 +5,13 @@
 
 #include <cstdint>
 
-#include "metering/common/base_energy_value.h"
 #include "metering/types/collection.h"
 
 class SolarApi_CurrentData_Inverter
 {
 public:
-	SolarApi_CurrentData_Inverter(const boost::property_tree::ptree& node);
-	virtual ~SolarApi_CurrentData_Inverter();
+	explicit SolarApi_CurrentData_Inverter(const boost::property_tree::ptree& node);
+	virtual ~SolarApi_CurrentData_Inverter() = default;
 
 public:
 	NamedCollection<int64_t> Power_AC() const;

@@ -11,17 +11,19 @@
 
 class Notification_DeviceInfo : public Notification_PublishPayload
 {
+	static const std::string MAPKEY_DEVICEMACID;
+	static const std::string MAPKEY_FIRMWAREVERSION;
+	static const std::string MAPKEY_HARDWAREVERSION;
+	static const std::string MAPKEY_MODELID;
+
 public:
-	Notification_DeviceInfo(EthernetMacId device_id);
+	explicit Notification_DeviceInfo(EthernetMacId device_id);
 
 public:
 	Notification_DeviceInfo& Device_MacId(const ZigBeeMacId& device_macid);
 	Notification_DeviceInfo& FirmwareVersion(const std::string& firmware_version);
 	Notification_DeviceInfo& HardwareVersion(const std::string& hardware_version);
 	Notification_DeviceInfo& ModelId(const std::string& model_id);
-
-protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
 
 private:
 	boost::signals2::scoped_connection m_Connection;

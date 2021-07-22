@@ -1,5 +1,6 @@
 language: cpp
 compiler:
+- gcc
 - clang
 
 dist: focal
@@ -7,6 +8,12 @@ os:
 - linux
 
 addons:
+  apt:
+    packages:
+      - cmake 
+      - gcovr
+      - libicu66 
+      - libssl1.1
   sonarcloud:
     organization: "iainchesworth"
     token:
@@ -15,22 +22,22 @@ addons:
 before_install:
   # Prepare the build system
   - sudo apt-get update
-  - sudo apt-get -qq -y --no-install-recommends install libicu66 libssl1.1
+  - sudo apt-get -qq -y --no-install-recommends install ./deps/boost/boost-build_1.76.0_amd64.deb
   - sudo env "PATH=$PATH" bash ./deps/paho.mqtt.sh
-  - sudo apt -qq -y --no-install-recommends install ./deps/boost/boost-build_1.76.0_amd64.deb
   - git submodule update --init --recursive --jobs 8
 
 script:
-  - cmake -Bbuild -H.
+  - cmake -Bbuild -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON -H.
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarQube Scanner) into the "bw-output" folder
-  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
+  - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/ 
 
 after_success:
-  - NUMBER_OF_PROCESSORS=$(nproc --all)
+  - cmake --build build/ --target coverage  
   # And finally run the SonarQube analysis - read the "sonar-project.properties"
   # file to see the specific configuration
-  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
+  - NUMBER_OF_PROCESSORS=$(nproc --all)
+  - sonar-scanner -X -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
 
 cache:
   directories:

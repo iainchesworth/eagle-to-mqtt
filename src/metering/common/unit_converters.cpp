@@ -32,7 +32,7 @@ INTEGER_TYPE hex_string_to_unsigned_integer(const std::string& hex_string)
 				throw InvalidNumberConversion(std::string("Invalid number conversion performed: cannot fit ") + hex_string + std::string(" into ") + typeid(INTEGER_TYPE).name());
 			}
 
-			return converted_value;
+			return static_cast<INTEGER_TYPE>(converted_value);
 		}
 		catch (const std::invalid_argument& ex_ia)
 		{
@@ -106,8 +106,7 @@ int8_t unsigned_to_signed(uint8_t value)
 
 std::chrono::time_point<std::chrono::system_clock> hex_string_to_timepoint(const std::string& hex_string)
 {
-	const uint32_t MAX_HEX_STRING_LENGTH = 10; // 0x12345678 is the maximum length
-	if (MAX_HEX_STRING_LENGTH < hex_string.length())
+	if (const uint32_t MAX_HEX_STRING_LENGTH = 10; MAX_HEX_STRING_LENGTH < hex_string.length()) // 0x12345678 is the maximum length
 	{
 		BOOST_LOG_TRIVIAL(debug) << L"Received timestamp hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
 	}

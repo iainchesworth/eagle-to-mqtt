@@ -2,10 +2,7 @@
 
 #include "notifications/notification_manager.h"
 
-NotificationManager::NotificationManager() :
-	m_Signals(),
-	m_Queue(),
-	m_GuardMutex()
+NotificationManager::NotificationManager()
 {
 	BOOST_LOG_TRIVIAL(info) << L"Starting Notification Manager";
 }
@@ -13,7 +10,7 @@ NotificationManager::NotificationManager() :
 void NotificationManager::Dispatch(std::shared_ptr<INotification> notification)
 {
 	BOOST_LOG_TRIVIAL(trace) << L"Dispatching notification";
-	std::lock_guard<std::mutex> guard(m_GuardMutex);
+	std::scoped_lock guard(m_GuardMutex);
 	m_Queue.push(notification);
 }
 
@@ -21,7 +18,7 @@ void NotificationManager::Poll()
 {
 	BOOST_LOG_TRIVIAL(trace) << L"Triggering " << m_Queue.size() << L" notifications";
 
-	std::lock_guard<std::mutex> guard(m_GuardMutex);
+	std::scoped_lock guard(m_GuardMutex);
 
 	while (!m_Queue.empty())
 	{

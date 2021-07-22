@@ -10,7 +10,7 @@ public:
 	explicit UnknownFragmentType(const std::string& unknown_fragment);
 
 public:
-	const std::string Fragment() const;
+	std::string Fragment() const;
 
 private:
 	const std::string m_UnknownFragment;

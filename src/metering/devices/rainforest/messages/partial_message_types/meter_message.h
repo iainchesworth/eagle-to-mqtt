@@ -12,7 +12,7 @@
 class MeterMessage
 {
 public:
-	MeterMessage(std::string id, std::string text, Priorities priority, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration, bool confirmation_required, bool confirmed);
+	MeterMessage(const std::string& id, const std::string& text, Priorities priority, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration, bool confirmation_required, bool confirmed);
 
 public:
 	std::string Id() const;

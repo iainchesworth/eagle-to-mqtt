@@ -9,8 +9,7 @@
 #include "serialization/fronius/symo_serializer.h"
 
 Symo::Symo() :
-	IDevice(),
-	m_Statistics()
+	IDevice()
 {
 }
 

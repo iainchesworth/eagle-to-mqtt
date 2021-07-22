@@ -27,6 +27,56 @@ SymoMessages::SymoMessages(const boost::property_tree::ptree& node) :
 {
 }
 
+SymoMessages::SymoMessageTypes SymoMessages::FromPayload(const boost::property_tree::ptree& node)
+{
+	if (const auto scope_node = node.get_optional<std::string>("Head.RequestArguments.Scope"); (!scope_node.is_initialized()) || "System" != scope_node.get())
+	{
+		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot find scope node";
+
+		// Check for message payloads that don't have anything in the header.requestarguments...
+		return MessageCheck_3(node);
+	}
+	else if (auto message_type_1 = MessageCheck_1(node); SymoMessageTypes::Unknown != message_type_1)
+	{
+		return message_type_1;
+	}
+	else if (auto message_type_2 = MessageCheck_2(node); SymoMessageTypes::Unknown != message_type_2)
+	{
+		return message_type_2;
+	}
+	else
+	{
+		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot determine message type";
+		return SymoMessageTypes::Unknown;
+	}
+}
+
+std::string SymoMessages::ToString(const SymoMessageTypes message_type)
+{
+	switch (message_type)
+	{
+	case SymoMessageTypes::NotSpecified:
+		return NOT_SPECIFIED;
+	case SymoMessageTypes::SolarAPI_CurrentData_Inverter:
+		return SOLARAPI_CURRENTDATA_INVERTER;
+	case SymoMessageTypes::SolarAPI_CurrentData_Meter:
+		return SOLARAPI_CURRENTDATA_METER;
+	case SymoMessageTypes::SolarAPI_CurrentData_PowerFlow:
+		return SOLARAPI_CURRENTDATA_POWERFLOW;
+	case SymoMessageTypes::SolarAPI_CurrentData_SensorCard:
+		return SOLARAPI_CURRENTDATA_SENSORCARD;
+	case SymoMessageTypes::SolarAPI_CurrentData_StringControl:
+		return SOLARAPI_CURRENTDATA_STRINGCONTROL;
+	case SymoMessageTypes::SolarAPI_LogData_Data:
+		return SOLARAPI_LOGDATA_DATA;
+	case SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents:
+		return SOLARAPI_LOGDATA_ERRORSANDEVENTS;
+	case SymoMessageTypes::Unknown:
+	default:
+		return UNKNOWN;
+	}
+}
+
 SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_1(const boost::property_tree::ptree& node)
 {
 	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
@@ -68,8 +118,7 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_2(const boost::propert
 {
 	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
 
-	const auto device_class_node = node.get_optional<std::string>("Head.RequestArguments.DeviceClass");
-	if (!device_class_node.is_initialized())
+	if (const auto device_class_node = node.get_optional<std::string>("Head.RequestArguments.DeviceClass"); !device_class_node.is_initialized())
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot find device class node";
 	}
@@ -95,8 +144,7 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_3(const boost::propert
 {
 	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
 
-	const auto body_inverters_node = node.get_child_optional("Body.Inverters");
-	if (!body_inverters_node.is_initialized())
+	if (const auto body_inverters_node = node.get_child_optional("Body.Inverters"); !body_inverters_node.is_initialized())
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_3 - cannot find body.inverters node";
 	}
@@ -107,57 +155,6 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_3(const boost::propert
 	}
 
 	return message_type;
-}
-
-SymoMessages::SymoMessageTypes SymoMessages::FromPayload(const boost::property_tree::ptree& node)
-{
-	const auto scope_node = node.get_optional<std::string>("Head.RequestArguments.Scope");
-	if ((!scope_node.is_initialized()) || "System" != scope_node.get())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot find scope node";
-
-		// Check for message payloads that don't have anything in the header.requestarguments...
-		return MessageCheck_3(node);
-	}
-	else if (auto message_type = MessageCheck_1(node); SymoMessageTypes::Unknown != message_type)
-	{
-		return message_type;
-	}
-	else if (auto message_type = MessageCheck_2(node); SymoMessageTypes::Unknown != message_type)
-	{
-		return message_type;
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot determine message type";
-		return SymoMessageTypes::Unknown;
-	}
-}
-
-std::string SymoMessages::ToString(const SymoMessageTypes message_type)
-{
-	switch (message_type)
-	{
-	case SymoMessageTypes::NotSpecified:
-		return NOT_SPECIFIED;
-	case SymoMessageTypes::SolarAPI_CurrentData_Inverter:
-		return SOLARAPI_CURRENTDATA_INVERTER;
-	case SymoMessageTypes::SolarAPI_CurrentData_Meter:
-		return SOLARAPI_CURRENTDATA_METER;
-	case SymoMessageTypes::SolarAPI_CurrentData_PowerFlow:
-		return SOLARAPI_CURRENTDATA_POWERFLOW;
-	case SymoMessageTypes::SolarAPI_CurrentData_SensorCard:
-		return SOLARAPI_CURRENTDATA_SENSORCARD;
-	case SymoMessageTypes::SolarAPI_CurrentData_StringControl:
-		return SOLARAPI_CURRENTDATA_STRINGCONTROL;
-	case SymoMessageTypes::SolarAPI_LogData_Data:
-		return SOLARAPI_LOGDATA_DATA;
-	case SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents:
-		return SOLARAPI_LOGDATA_ERRORSANDEVENTS;
-	case SymoMessageTypes::Unknown:
-	default:
-		return UNKNOWN;
-	}
 }
 
 std::ostream& operator<<(std::ostream& os, const SymoMessages& message)

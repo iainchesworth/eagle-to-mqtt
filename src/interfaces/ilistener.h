@@ -14,6 +14,6 @@ public:
 	explicit IListener(boost::asio::io_context& ioc);
 };
 
-typedef std::vector<std::shared_ptr<IListener>> ListenerSet;
+using ListenerSet = std::vector<std::shared_ptr<IListener>>;
 
 #endif // IUPLOADER_API_H

@@ -10,11 +10,7 @@ BlockPriceDetail::BlockPriceDetail(const boost::property_tree::ptree& node) :
 	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
 	m_Timestamp(IsOptional<ZigbeeTimepoint>(node, FIELDNAME_TIMESTAMP)),
 	m_CurrentBlock(BlockPeriod::ExtractFromPayload(node)),
-	m_Currency(IsOptionalWithDefault<CurrencyCodes>(node, FIELDNAME_CURRENCY, CurrencyCodes::ISO4127_CurrencyCodes::NotSpecified))
-{
-}
-
-BlockPriceDetail::~BlockPriceDetail()
+	m_Currency(IsOptionalWithDefault<CurrencyCodes>(node, FIELDNAME_CURRENCY, CurrencyCodes(CurrencyCodes::ISO4127_CurrencyCodes::NotSpecified)))
 {
 }
 

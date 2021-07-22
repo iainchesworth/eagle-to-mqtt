@@ -13,21 +13,17 @@ CurrentSummation::CurrentSummation(const boost::property_tree::ptree& node) :
 	IFragmentProcessor(node),
 	m_MeterMacId(IsOptional<ZigBeeMacId>(node, FIELDNAME_METERMACID)),
 	m_TimeStamp(IsOptional<ZigbeeTimepoint>(node, FIELDNAME_TIMESTAMP)),
-	m_SummationDelivered(IsOptional<Summation>(node, FIELDNAME_SUMMATIONDELIVERED)),
-	m_SummationReceived(IsOptional<Summation>(node, FIELDNAME_SUMMATIONRECEIVED))
+	m_SummationDelivered(IsOptional<Usage>(node, FIELDNAME_SUMMATIONDELIVERED)),
+	m_SummationReceived(IsOptional<Usage>(node, FIELDNAME_SUMMATIONRECEIVED))
 {
 }
 
-CurrentSummation::~CurrentSummation()
-{
-}
-
-std::optional<Summation> CurrentSummation::Delivered() const
+std::optional<Usage> CurrentSummation::Delivered() const
 {
 	return m_SummationDelivered;
 }
 
-std::optional<Summation> CurrentSummation::Received() const
+std::optional<Usage> CurrentSummation::Received() const
 {
 	return m_SummationReceived;
 }

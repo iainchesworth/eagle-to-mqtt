@@ -7,7 +7,7 @@ class DuplicateDeviceInsertion : public std::runtime_error
 {
 public:
 	DuplicateDeviceInsertion();
-	virtual ~DuplicateDeviceInsertion();
+	virtual ~DuplicateDeviceInsertion() = default;
 };
 
 #endif // DUPLICATE_DEVICE_INSERTION_H

@@ -10,6 +10,7 @@
 #include <queue>
 #include <string>
 
+#include "exceptions/incorrect_notification_callback.h"
 #include "interfaces/inotification.h"
 #include "utils/singleton.h"
 
@@ -24,7 +25,7 @@ public:
 	{
 		if (false == boost::is_base_of<INotification, NOTIFICATION>::value)
 		{
-			throw;  ///FIXME
+			throw IncorrectNotificationCallback(typeid(NOTIFICATION).name());
 		}
 		else
 		{
@@ -51,7 +52,7 @@ public:
 	void Poll();
 
 private:
-	std::map<std::string, std::shared_ptr<boost::signals2::signal_base>> m_Signals;
+	std::map<std::string, std::shared_ptr<boost::signals2::signal_base>, std::less<>> m_Signals;
 	std::queue<std::shared_ptr<INotification>> m_Queue;
 	std::mutex m_GuardMutex;
 };

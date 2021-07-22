@@ -1,7 +1,8 @@
+#include <boost/core/ignore_unused.hpp>
+
 #include <functional>
 
 #include "mqtt-client/mqtt_connection.h"
-#include "mqtt-client/action-listeners/connect_action_listener.h"
 #include "notifications/notification_manager.h"
 #include "notifications/bridge/notification_bridgestatuschanged.h"
 #include "notifications/bridge/notification_publishkeepalive.h"
@@ -14,10 +15,7 @@ MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& opti
 	m_IOContext(ioc),
 	m_Options(options),
 	m_ClientPtr(client_ptr),
-	m_ConnectOptionsPtr(connect_options_ptr),
-	m_ConnectionRetryAttempt(0),
-	m_QueuedSendOnConnect{},
-	m_QueuedSendOnConnectMutex()
+	m_ConnectOptionsPtr(connect_options_ptr)
 {
 	///
 
@@ -81,7 +79,7 @@ void MqttConnection::Publish(const mqtt::message_ptr& message_to_send)
 {
 	auto self = shared_from_this();
 
-	m_IOContext.post([self, message_to_send = std::move(message_to_send)]()
+	m_IOContext.post([self, message_to_send]()
 		{
 			try 
 			{
@@ -129,7 +127,7 @@ void MqttConnection::connected(const std::string& cause)
 	// Reset the connection attempts counter (in case of disconnection).
 	m_ConnectionRetryAttempt = 0;
 
-	std::lock_guard<std::mutex> guard(m_QueuedSendOnConnectMutex);
+	std::scoped_lock guard(m_QueuedSendOnConnectMutex);
 	if (m_QueuedSendOnConnect.empty())
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"No MQTT messages in the queued send map; ignoring";
@@ -139,7 +137,7 @@ void MqttConnection::connected(const std::string& cause)
 		BOOST_LOG_TRIVIAL(debug) << L"Publishing the set of " << m_QueuedSendOnConnect.size() << L" queued messages";
 
 		std::for_each(m_QueuedSendOnConnect.begin(), m_QueuedSendOnConnect.end(),
-			[this](QueuedMessageMap::value_type& queued_message)
+			[this](const QueuedMessageMap::value_type& queued_message)
 			{
 				if (auto message_ptr = queued_message.second; nullptr != message_ptr)
 				{
@@ -165,20 +163,28 @@ void MqttConnection::connection_lost(const std::string& cause)
 
 void MqttConnection::message_arrived(mqtt::const_message_ptr msg)
 {
+	boost::ignore_unused(msg);
+
 	BOOST_LOG_TRIVIAL(debug) << L"Message received from MQTT broker";
 }
 
 void MqttConnection::delivery_complete(mqtt::delivery_token_ptr tok)
 {
+	boost::ignore_unused(tok);
+
 	BOOST_LOG_TRIVIAL(debug) << L"Message successfully delivered to MQTT broker";
 }
 
-void MqttConnection::disconnected(const mqtt::properties& properties, mqtt::ReasonCode reason)
+void MqttConnection::disconnected(const mqtt::properties& properties, mqtt::ReasonCode reason) const
 {
+	boost::ignore_unused(properties);
+
 	BOOST_LOG_TRIVIAL(debug) << L"Disconnected from MQTT broker; reason: " << reason;
 }
 
-bool MqttConnection::update_connection_handler(mqtt::connect_data& connect_data)
+bool MqttConnection::update_connection_handler(mqtt::connect_data& connect_data) const
 {
+	boost::ignore_unused(connect_data);
+	
 	return true;
 }

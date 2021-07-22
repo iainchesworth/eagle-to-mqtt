@@ -6,7 +6,7 @@ MissingMessageKey::MissingMessageKey(const std::string& missing_key) :
 {
 }
 
-const std::string MissingMessageKey::MissingKey() const
+std::string MissingMessageKey::MissingKey() const
 {
 	return m_MissingKey;
 }

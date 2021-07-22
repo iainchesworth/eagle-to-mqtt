@@ -28,10 +28,6 @@ BillingPeriodList::BillingPeriodList(const boost::property_tree::ptree& node) :
 	m_Duration = duration_in_minutes;
 }
 
-BillingPeriodList::~BillingPeriodList()
-{
-}
-
 std::chrono::time_point<std::chrono::system_clock> BillingPeriodList::CurrentPeriodStart() const
 {
 	return m_Start;

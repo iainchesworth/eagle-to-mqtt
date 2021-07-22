@@ -9,10 +9,10 @@
 class Notification_BridgeStatusChanged : public NotificationBase<void(const BridgeStatus status)>
 {
 public:
-	Notification_BridgeStatusChanged(const BridgeStatus status);
+	explicit Notification_BridgeStatusChanged(const BridgeStatus status);
 
 protected:
-	virtual void Notify(boost::signals2::signal<NotificationCallback>& signal);
+	void Notify(boost::signals2::signal<NotificationCallback>& signal) override;
 
 private:
 	boost::signals2::scoped_connection m_Connection;

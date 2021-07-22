@@ -22,7 +22,7 @@ private:
 
 private:
 	std::mutex m_BridgeMutex;
-	std::shared_ptr<Bridge> m_Bridge;
+	std::shared_ptr<Bridge> m_Bridge{ nullptr };
 
 private:
 	friend class Bridge;

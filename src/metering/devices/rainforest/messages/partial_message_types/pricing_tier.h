@@ -13,7 +13,7 @@
 class PricingTier
 {
 public:
-	PricingTier(std::string rate_label, const PricingInfo price_info, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration);
+	PricingTier(const std::string& rate_label, const PricingInfo price_info, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration);
 
 public:
 	std::string RateLabel() const;

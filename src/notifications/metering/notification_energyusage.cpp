@@ -1,29 +1,28 @@
 #include "notifications/metering/notification_energyusage.h"
 
+const std::string  Notification_EnergyUsage::MAPKEY_INSTANTANEOUSDEMAND{ "instantaneous_watts" };
+const std::string  Notification_EnergyUsage::MAPKEY_LIFETIMEDELIVERED{ "lifetimedelivered_kwh" };
+const std::string  Notification_EnergyUsage::MAPKEY_LIFETIMERECEIVED{ "lifetimereceived_kwh" };
+
 Notification_EnergyUsage::Notification_EnergyUsage(EthernetMacId device_id) :
 	Notification_PublishPayload(device_id)
 {
 }
 
-Notification_EnergyUsage& Notification_EnergyUsage::InstantaneousDemand(const Demand& now)
+Notification_EnergyUsage& Notification_EnergyUsage::InstantaneousDemand(const Power& now)
 {
-	m_ElementsMap.insert(std::make_pair("instantaneous_watts", now.EnergyValue(UnitsOfMeasure(UnitsOfMeasure::Units::Watts))));
+	m_ElementsMap.insert_or_assign(MAPKEY_INSTANTANEOUSDEMAND, now.ValueIn<Watts>());
 	return *this;
 }
 
-Notification_EnergyUsage& Notification_EnergyUsage::LifetimeDelivered(const Summation& delivered)
+Notification_EnergyUsage& Notification_EnergyUsage::LifetimeDelivered(const Usage& delivered)
 {
-	m_ElementsMap.insert(std::make_pair("lifetimedelivered_kwh", delivered.EnergyValue()));
+	m_ElementsMap.insert_or_assign(MAPKEY_LIFETIMEDELIVERED, delivered.ValueIn<KilowattHours>());
 	return *this;
 }
 
-Notification_EnergyUsage& Notification_EnergyUsage::LifetimeReceived(const Summation& received)
+Notification_EnergyUsage& Notification_EnergyUsage::LifetimeReceived(const Usage& received)
 {
-	m_ElementsMap.insert(std::make_pair("lifetimereceived_kwh", received.EnergyValue()));
+	m_ElementsMap.insert_or_assign(MAPKEY_LIFETIMERECEIVED, received.ValueIn<KilowattHours>());
 	return *this;
-}
-
-void Notification_EnergyUsage::Notify(boost::signals2::signal<NotificationCallback>& signal)
-{
-	Notification_PublishPayload::Notify(signal);
 }

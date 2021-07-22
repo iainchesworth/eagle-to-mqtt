@@ -10,7 +10,7 @@ public:
 	explicit MissingMessageKey(const std::string& missing_key);
 
 public:
-	const std::string MissingKey() const;
+	std::string MissingKey() const;
 
 private:
 	const std::string m_MissingKey;

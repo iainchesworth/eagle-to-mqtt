@@ -40,7 +40,7 @@ public:
 	uint64_t UnknownMessageCount;
 
 public:
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const final;
 };
 
 }

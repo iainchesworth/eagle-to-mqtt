@@ -20,8 +20,8 @@ class BlockPriceDetail : public IFragmentProcessor
 	static const std::string FIELDNAME_CURRENCY;
 
 public:
-	BlockPriceDetail(const boost::property_tree::ptree& node);
-	virtual ~BlockPriceDetail();
+	explicit BlockPriceDetail(const boost::property_tree::ptree& node);
+	virtual ~BlockPriceDetail() = default;
 
 public:
 	BlockPeriod CurrentBlock() const;

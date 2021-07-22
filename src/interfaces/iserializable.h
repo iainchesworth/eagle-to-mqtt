@@ -8,9 +8,6 @@
 class ISerializable
 {
 public:
-	ISerializable();
-
-public:
 	virtual boost::json::object Serialize() const = 0;
 };
 

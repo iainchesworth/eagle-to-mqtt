@@ -16,7 +16,7 @@ public:
 	Symo();
 
 public:
-	virtual void ProcessPayload(const boost::property_tree::ptree& node);
+	void ProcessPayload(const boost::property_tree::ptree& node) override;
 
 protected:
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
@@ -29,7 +29,7 @@ protected:
 
 public:
 	friend class Symo_Serializer;
-	virtual boost::json::object Serialize() const;
+	boost::json::object Serialize() const override;
 };
 
 #endif // SYMO_H

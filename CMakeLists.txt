@@ -18,17 +18,27 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_LINK)
+
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif (COMMAND cmake_policy)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
 # Build options
 #-----------------------------------------------------------------------------------------------------------------------
+
+option(E2M_OPTION_CODE_COVERAGE "Determine unit test code coverage" OFF)
+if (E2M_OPTION_CODE_COVERAGE)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+endif()
+option(E2M_OPTION_SUPPORT_SONARQUBE "Integrate with SonarQube reporting" OFF)
 
 if(WIN32)
     # Custom Windows options go here...
 else()
-    option(BUILD_DEB_PACKAGE "Build Debian package" FALSE)
+    option(E2M_OPTION_BUILD_DEB_PACKAGE "Build Debian package" OFF)
 endif()
 
 # System dependent settings
@@ -39,12 +49,14 @@ if (UNIX)
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_RUNTIME OFF)
 
+    # Enable PIC
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
     # Fix issues with RPATH when building under _real_ Linux/Unix (i.e. not WSL2)
     set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
     # Fix issues with dynamic linking for Boost under Linux/Unix
     add_definitions(-DBOOST_LOG_DYN_LINK)
-
 endif ()
 
 if (WIN32)
@@ -84,7 +96,7 @@ find_package(Threads REQUIRED)
 set(GIT_FAIL_IF_NONZERO_EXIT false)
 set(PRE_CONFIGURE_FILE "src/versions/versions_git.constants.cpp.in")
 set(POST_CONFIGURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/versions_git.constants.cpp")
-include(cmake/GitWatcher.cmake)
+include(GitWatcher)
 
 # Template the versioning information prior to building the application. 
 set(VERSION_CMAKE_SOURCE_FILE "src/versions/versions_cmake.constants.cpp.in")
@@ -128,6 +140,20 @@ target_link_libraries(
 enable_testing()
 add_subdirectory(tests)
 
+# Static analysis and code coverage
+#-----------------------------------------------------------------------------------------------------------------------
+
+if (E2M_OPTION_CODE_COVERAGE)
+
+if (E2M_OPTION_SUPPORT_SONARQUBE)
+    set(GCOVR_ADDITIONAL_ARGS --sonarqube coverage.sonarqube.xml)
+endif ()
+
+    set(COVERAGE_EXCLUDES "${CMAKE_SOURCE_DIR}/tests")
+    setup_target_for_coverage_gcovr_xml(NAME coverage EXECUTABLE eagle-to-mqtt-tests DEPENDENCIES ${TEST_TARGET})
+
+endif ()
+
 # Installation
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -150,9 +176,9 @@ install (CODE "
 if(WIN32)
     set(CPACK_GENERATOR "ZIP")
 elseif(UNIX)
-    if(BUILD_DEB_PACKAGE)
+    if(E2M_OPTION_BUILD_DEB_PACKAGE)
         set(CPACK_GENERATOR "DEB")
-        include(cmake/CPackDebConfig.cmake)
+        include(CPackDebConfig)
     else()
         set(CPACK_GENERATOR "TGZ")
 	endif()

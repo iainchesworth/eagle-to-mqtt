@@ -20,8 +20,8 @@ class MessageCluster : public IFragmentProcessor
 	static const std::string FIELDNAME_QUEUE;
 
 public:
-	MessageCluster(const boost::property_tree::ptree& node);
-	virtual ~MessageCluster();
+	explicit MessageCluster(const boost::property_tree::ptree& node);
+	virtual ~MessageCluster() = default;
 
 public:
 	ZigbeeTimepoint Timestamp() const;

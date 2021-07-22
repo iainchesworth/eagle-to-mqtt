@@ -29,7 +29,7 @@ void MqttConnection::NotificationHandler_BridgeStatusChange(const BridgeStatus& 
 	{
 		BOOST_LOG_TRIVIAL(debug) << L"MQTT client is not connected; cannot send BridgeStatusChange message to broker";
 
-		std::lock_guard<std::mutex> guard(m_QueuedSendOnConnectMutex);
+		std::scoped_lock guard(m_QueuedSendOnConnectMutex);
 		m_QueuedSendOnConnect[typeid(Notification_BridgeStatusChanged)] = message;
 	}
 	else

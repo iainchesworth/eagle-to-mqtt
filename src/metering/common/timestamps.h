@@ -11,7 +11,7 @@ class ZigbeeTimepoint
 
 public:
 	ZigbeeTimepoint(const std::string& timepoint);
-	virtual ~ZigbeeTimepoint();
+	virtual ~ZigbeeTimepoint() = default;
 
 private:
 	ZigbeeTimepoint();
@@ -19,7 +19,7 @@ private:
 
 public:
 	static ZigbeeTimepoint FromString(const std::string& zigbee_timepoint_string);
-	static std::string ToString(const ZigbeeTimepoint zigbee_timepoint);
+	static std::string ToString(const ZigbeeTimepoint& zigbee_timepoint);
 
 public:
 	bool operator==(const ZigbeeTimepoint& rhs) const;
@@ -43,14 +43,14 @@ class UnixTimepoint
 public:
 	UnixTimepoint();
 	UnixTimepoint(const std::string& unix_timepoint);
-	virtual ~UnixTimepoint();
+	virtual ~UnixTimepoint() = default;
 
 private:
 	UnixTimepoint(const std::chrono::time_point<std::chrono::system_clock>& unix_timepoint);
 
 public:
 	static UnixTimepoint FromString(const std::string& unix_timepoint_string);
-	static std::string ToString(const UnixTimepoint unix_timepoint);
+	static std::string ToString(const UnixTimepoint& unix_timepoint);
 
 public:
 	bool operator==(const UnixTimepoint& rhs) const;

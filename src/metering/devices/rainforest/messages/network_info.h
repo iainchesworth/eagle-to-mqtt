@@ -23,8 +23,8 @@ class NetworkInfo : public IFragmentProcessor
 	static const std::string FIELDNAME_LINKSTRENGTH;
 
 public:
-	NetworkInfo(const boost::property_tree::ptree& node);
-	virtual ~NetworkInfo();
+	explicit NetworkInfo(const boost::property_tree::ptree& node);
+	virtual ~NetworkInfo() = default;
 
 public:
 	std::optional<ZigBeeMacId> CoordinatorZigbeeId() const;

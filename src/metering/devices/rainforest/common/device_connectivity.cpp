@@ -4,13 +4,7 @@
 using namespace Rainforest;
 
 DeviceConnectivity::DeviceConnectivity() :
-	Status(Statuses::StatusTypes::Unknown),
-	Channel(),
 	LinkStrength()
-{
-}
-
-DeviceConnectivity::~DeviceConnectivity()
 {
 }
 

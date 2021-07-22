@@ -3,7 +3,7 @@
 #include "metering/types/essential.h"
 #include "metering/types/optional.h"
 
-PricingTier::PricingTier(std::string rate_label, const PricingInfo price_info, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration) :
+PricingTier::PricingTier(const std::string& rate_label, const PricingInfo price_info, std::chrono::time_point<std::chrono::system_clock> start_time, std::chrono::minutes duration) :
 	m_RateLabel(rate_label),
 	m_PricingInfo(price_info),
 	m_StartTime(start_time),

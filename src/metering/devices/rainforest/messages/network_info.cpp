@@ -26,10 +26,6 @@ NetworkInfo::NetworkInfo(const boost::property_tree::ptree& node) :
 {
 }
 
-NetworkInfo::~NetworkInfo()
-{
-}
-
 std::optional<ZigBeeMacId> NetworkInfo::CoordinatorZigbeeId() const
 {
 	return m_CoordMacId;

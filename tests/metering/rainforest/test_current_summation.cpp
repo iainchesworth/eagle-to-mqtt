@@ -72,12 +72,12 @@ BOOST_AUTO_TEST_CASE(Test_CurrentSummation, *boost::unit_test::tolerance(0.00001
 		CurrentSummation cs_v2(v2_currentsummation.get_child("rainforest.CurrentSummation"));
 
 		BOOST_TEST(cs_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
-		BOOST_TEST(cs_v1.Delivered().value().EnergyValue() == 1.0f);
-		BOOST_TEST(cs_v1.Received().value().EnergyValue() == 1.0f);
+		BOOST_TEST(cs_v1.Delivered().value().ValueIn<WattHours>() == 1.0f);
+		BOOST_TEST(cs_v1.Received().value().ValueIn<WattHours>() == 1.0f);
 
 		BOOST_TEST(cs_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000af85"));
-		BOOST_TEST(cs_v2.Delivered().value().EnergyValue() == 129.055f);
-		BOOST_TEST(cs_v2.Received().value().EnergyValue() == 0.0f);
+		BOOST_TEST(cs_v2.Delivered().value().ValueIn<WattHours>() == 129.055f);
+		BOOST_TEST(cs_v2.Received().value().ValueIn<WattHours>() == 0.0f);
 	}
 	catch (const std::exception& ex)
 	{

@@ -13,12 +13,12 @@
 class IFragmentProcessor
 {
 protected:
-	IFragmentProcessor(const boost::property_tree::ptree& node);
+	explicit IFragmentProcessor(const boost::property_tree::ptree& node);
 
 public:
 	std::optional<ZigBeeMacId> DeviceMacId() const;
 
-protected:
+private:
 	std::optional<ZigBeeMacId> m_DeviceMacId;
 	std::optional<Protocols> m_Protocol;
 };

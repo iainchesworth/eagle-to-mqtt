@@ -1,3 +1,5 @@
+#include <boost/core/ignore_unused.hpp>
+
 #include <functional>
 
 #include "mqtt-client/mqtt_connection.h"
@@ -161,20 +163,28 @@ void MqttConnection::connection_lost(const std::string& cause)
 
 void MqttConnection::message_arrived(mqtt::const_message_ptr msg)
 {
+	boost::ignore_unused(msg);
+
 	BOOST_LOG_TRIVIAL(debug) << L"Message received from MQTT broker";
 }
 
 void MqttConnection::delivery_complete(mqtt::delivery_token_ptr tok)
 {
+	boost::ignore_unused(tok);
+
 	BOOST_LOG_TRIVIAL(debug) << L"Message successfully delivered to MQTT broker";
 }
 
 void MqttConnection::disconnected(const mqtt::properties& properties, mqtt::ReasonCode reason) const
 {
+	boost::ignore_unused(properties);
+
 	BOOST_LOG_TRIVIAL(debug) << L"Disconnected from MQTT broker; reason: " << reason;
 }
 
 bool MqttConnection::update_connection_handler(mqtt::connect_data& connect_data) const
 {
+	boost::ignore_unused(connect_data);
+	
 	return true;
 }

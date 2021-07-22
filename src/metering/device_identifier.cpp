@@ -1,3 +1,4 @@
+#include <boost/core/ignore_unused.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 
@@ -52,6 +53,8 @@ std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(const boost::property_tree:
 
 std::shared_ptr<IDevice> IdentifyAndGetSymoInstance(const boost::property_tree::ptree& device_payload)
 {
+	boost::ignore_unused(device_payload);
+
 	std::shared_ptr<IDevice> processor = DeviceRegistrySingleton()->GetOrCreate<Symo>(EthernetMacId());
 
 	return processor;

@@ -38,7 +38,7 @@ FIELD_TYPE RetrieveValue(GETTER_FUNC getter)
 	try
 	{
 		// Attempt to retrieve the "expected" value; on failure, the exception is propagated up.
-		return getter();
+		return FIELD_TYPE(getter());
 
 	}
 	catch (const std::invalid_argument& ia)
@@ -119,7 +119,7 @@ std::optional<FIELD_TYPE> TryAndRetrieveValue(GETTER_FUNC getter)
 	try
 	{
 		// Attempt to retrieve the "optional" value; on failure, the "un-initialised" optional is returned.
-		optional_value = getter();
+		optional_value = FIELD_TYPE(getter());
 
 	}
 	catch (const std::invalid_argument& ia)

@@ -74,6 +74,11 @@ bool CurrencyCodes::operator==(const CurrencyCodes& other) const
 	return (m_CurrencyCode == other.m_CurrencyCode);
 }
 
+bool CurrencyCodes::operator==(const ISO4127_CurrencyCodes& currency_code) const
+{
+	return (m_CurrencyCode == currency_code);
+}
+
 std::ostream& operator<<(std::ostream& os, const CurrencyCodes& currency_code)
 {
 	os << currency_code.ToString(currency_code.m_CurrencyCode);

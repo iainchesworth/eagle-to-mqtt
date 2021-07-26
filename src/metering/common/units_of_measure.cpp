@@ -90,6 +90,11 @@ bool UnitsOfMeasure::operator==(const UnitsOfMeasure& other) const
 	return (m_Units == other.m_Units);
 }
 
+bool UnitsOfMeasure::operator==(const Units& units) const
+{
+	return (m_Units == units);
+}
+
 std::ostream& operator<<(std::ostream& os, const UnitsOfMeasure& units)
 {
 	os << UnitsOfMeasure::ToString(units.m_Units);

@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(Test_PriceCluster, *boost::unit_test::tolerance(0.00001)) /
 		BOOST_TEST(pc_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
 		BOOST_TEST(pc_v1.TierPricing().Pricing().Currency() == CurrencyCodes(CurrencyCodes::ISO4127_CurrencyCodes::XXX));
 		BOOST_TEST(pc_v1.TierPricing().Pricing().Price() == 10.0f);
-		BOOST_TEST(pc_v1.Tier() == Tiers::SupportedTiers::Unknown);
+		BOOST_TEST(pc_v1.Tier() == Tiers(Tiers::SupportedTiers::Unknown));
 		BOOST_TEST(test_tools::within_60_seconds(pc_v1.TierPricing().StartsAt(), v1_valid_from));
 		BOOST_TEST(test_tools::within_60_seconds(pc_v1.TierPricing().EndsAt(), v1_valid_till));
 
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(Test_PriceCluster, *boost::unit_test::tolerance(0.00001)) /
 		BOOST_TEST(pc_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000fca8"));
 		BOOST_TEST(pc_v2.TierPricing().Pricing().Currency() == CurrencyCodes(CurrencyCodes::ISO4127_CurrencyCodes::USD));
 		BOOST_TEST(pc_v2.TierPricing().Pricing().Price() == 0.5f);
-		BOOST_TEST(pc_v2.Tier() == Tiers::SupportedTiers::Tier_1);
+		BOOST_TEST(pc_v2.Tier() == Tiers(Tiers::SupportedTiers::Tier_1));
 		BOOST_TEST(test_tools::within_60_seconds(pc_v2.TierPricing().StartsAt(), v2_valid_from));
 		BOOST_TEST(test_tools::within_60_seconds(pc_v2.TierPricing().EndsAt(), v2_valid_till));
 	}

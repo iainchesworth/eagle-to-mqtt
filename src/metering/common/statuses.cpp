@@ -133,6 +133,11 @@ bool Statuses::operator==(const Statuses& other) const
 	return (m_Status == other.m_Status);
 }
 
+bool Statuses::operator==(const StatusTypes& status_type) const
+{
+	return (m_Status == status_type);
+}
+
 std::ostream& operator<<(std::ostream& os, const Statuses& status)
 {
 	os << Statuses::ToString(status.m_Status);

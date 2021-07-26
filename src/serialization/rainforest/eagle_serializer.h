@@ -14,7 +14,7 @@ public:
 	explicit Eagle_Serializer(const Eagle& eagle);
 
 public:
-	virtual boost::json::object Serialize() const final;
+	boost::json::object Serialize() const final;
 };
 
 #endif // EAGLE_SERIALIZER_H

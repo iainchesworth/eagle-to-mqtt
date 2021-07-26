@@ -42,6 +42,7 @@ public:
 public:
 	Units operator()() const;
 	bool operator==(const UnitsOfMeasure& other) const;
+	bool operator==(const Units& units) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const UnitsOfMeasure& units);

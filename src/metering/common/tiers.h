@@ -17,19 +17,19 @@ class Tiers
 public:
 	enum class SupportedTiers
 	{
-		NotSpecified,
+		NotSpecified = 0,	// Arbitary value - the specification says tiers start at "1"
 		Tier_1 = 1,
 		Tier_2 = 2,
 		Tier_3 = 3,
 		Tier_4 = 4,
 		Tier_5 = 5,
-		Unknown
+		Unknown = 999		// Arbitary value - the specification says tiers stop at "5"
 	};
 
 public:
 	Tiers();
-	Tiers(SupportedTiers pricing_tier);
-	Tiers(const std::string& pricing_tier);
+	explicit Tiers(SupportedTiers pricing_tier);
+	explicit Tiers(const std::string& pricing_tier);
 
 private:
 	SupportedTiers m_PricingTier;
@@ -40,6 +40,7 @@ public:
 
 public:
 	bool operator==(const Tiers& other) const;
+	bool operator==(const SupportedTiers& supported_tier) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const Tiers& pricing_tier);

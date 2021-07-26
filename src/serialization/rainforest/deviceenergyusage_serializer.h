@@ -17,7 +17,7 @@ public:
 	explicit DeviceEnergyUsage_Serializer(const DeviceEnergyUsage& deu);
 
 public:
-	virtual boost::json::object Serialize() const final;
+	boost::json::object Serialize() const final;
 };
 
 }

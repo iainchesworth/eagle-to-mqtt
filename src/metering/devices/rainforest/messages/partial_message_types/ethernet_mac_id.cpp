@@ -15,14 +15,9 @@ EthernetMacId::EthernetMacId(const std::string& ethernet_mac_id) :
 {
 }
 
-bool EthernetMacId::operator==(const EthernetMacId& other) const
-{
-	return (m_DeviceMacId == other.m_DeviceMacId);
-}
-
 std::size_t EthernetMacId::EthernetMacId_Hasher::operator()(const EthernetMacId& key) const
 {
-	return boost::hash_range(key.m_DeviceMacId.begin(), key.m_DeviceMacId.end());
+	return boost::hash_range(key.DeviceMacId().cbegin(), key.DeviceMacId().cend());
 }
 
 std::ostream& operator<<(std::ostream& os, const EthernetMacId& ethernet_macid)

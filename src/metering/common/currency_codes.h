@@ -50,6 +50,7 @@ public:
 
 public:
 	bool operator==(const CurrencyCodes& other) const;
+	bool operator==(const ISO4127_CurrencyCodes& currency_code) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const CurrencyCodes& currency_code);

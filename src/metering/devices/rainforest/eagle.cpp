@@ -47,72 +47,72 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 				}
 				else
 				{
-					switch (string_view_to_fragmenttype(node_name))
+					switch (Fragments::FromString(node_name))
 					{
-					case FragmentTypes::BillingPeriodList:
+					case Fragments::FragmentTypes::BillingPeriodList:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing BillingPeriodList fragment";
 						ProcessFragment(BillingPeriodList(node_data));
 						++m_Statistics.BillingPeriodCount;
 						device_stats_notif->BillingPeriodCount(m_Statistics.BillingPeriodCount);
 						break;					
 
-					case FragmentTypes::BlockPriceDetail:
+					case Fragments::FragmentTypes::BlockPriceDetail:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing BlockPriceDetail fragment";
 						ProcessFragment(BlockPriceDetail(node_data));
 						++m_Statistics.BlockPriceDetailCount;
 						device_stats_notif->BlockPriceDetailCount(m_Statistics.BlockPriceDetailCount);
 						break;
 
-					case FragmentTypes::ConnectionStatus:
+					case Fragments::FragmentTypes::ConnectionStatus:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing ConnectionStatus fragment";
 						ProcessFragment(ConnectionStatus(node_data));
 						++m_Statistics.ConnectionStatusCount;
 						device_stats_notif->ConnectionStatusCount(m_Statistics.ConnectionStatusCount);
 						break;
 
-					case FragmentTypes::CurrentSummation:
+					case Fragments::FragmentTypes::CurrentSummation:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing CurrentSummation fragment";
 						ProcessFragment(CurrentSummation(node_data));
 						++m_Statistics.CurrentSummationCount;
 						device_stats_notif->CurrentSummationCount(m_Statistics.CurrentSummationCount);
 						break;
 
-					case FragmentTypes::DeviceInfo:
+					case Fragments::FragmentTypes::DeviceInfo:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing DeviceInfo fragment";
 						ProcessFragment(DeviceInfo(node_data));
 						++m_Statistics.DeviceInfoCount;
 						device_stats_notif->DeviceInfoCount(m_Statistics.DeviceInfoCount);
 						break;
 
-					case FragmentTypes::InstantaneousDemand:
+					case Fragments::FragmentTypes::InstantaneousDemand:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing InstantaneousDemand fragment";
 						ProcessFragment(InstantaneousDemand(node_data));
 						++m_Statistics.InstantaneousDemandCount;
 						device_stats_notif->InstantaneousDemandCount(m_Statistics.InstantaneousDemandCount);
 						break;
 
-					case FragmentTypes::MessageCluster:
+					case Fragments::FragmentTypes::MessageCluster:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing MessageCluster fragment";
 						ProcessFragment(MessageCluster(node_data));
 						++m_Statistics.MessageClusterCount;
 						device_stats_notif->MessageClusterCount(m_Statistics.MessageClusterCount);
 						break;
 
-					case FragmentTypes::NetworkInfo:
+					case Fragments::FragmentTypes::NetworkInfo:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing NetworkInfo fragment";
 						ProcessFragment(NetworkInfo(node_data));
 						++m_Statistics.NetworkInfoCount;
 						device_stats_notif->NetworkInfoCount(m_Statistics.NetworkInfoCount);
 						break;
 
-					case FragmentTypes::PriceCluster:
+					case Fragments::FragmentTypes::PriceCluster:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing PriceCluster fragment";
 						ProcessFragment(PriceCluster(node_data));
 						++m_Statistics.PriceClusterCount;
 						device_stats_notif->PriceClusterCount(m_Statistics.PriceClusterCount);
 						break;
 
-					case FragmentTypes::TimeCluster:
+					case Fragments::FragmentTypes::TimeCluster:
 						BOOST_LOG_TRIVIAL(debug) << L"Processing TimeCluster fragment";
 						++m_Statistics.TimeClusterCount;
 						device_stats_notif->TimeClusterCount(m_Statistics.TimeClusterCount);

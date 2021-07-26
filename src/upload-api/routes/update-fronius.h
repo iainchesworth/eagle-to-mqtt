@@ -13,7 +13,7 @@ public:
 	virtual ~ApiRoute_Fronius() = default;
 
 public:
-	HttpResponse Handler(const HttpRequest& request);
+	HttpResponse Handler(const HttpRequest& request) final;
 };
 
 #endif // ROUTEUPDATE_H

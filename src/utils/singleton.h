@@ -25,7 +25,7 @@ public:
 protected:
     Singleton()
     {
-        static bool static_init = []() -> bool
+        static bool static_init = []()
         {
             m_pInstance = new T;
             return true;
@@ -34,7 +34,7 @@ protected:
 
     Singleton(int)
     {
-        static bool static_init = []() -> bool
+        static bool static_init = []()
         {
             m_pInstance = Context::init();
             return true;

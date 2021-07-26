@@ -13,7 +13,7 @@ public:
 	virtual ~ApiRoute_Root() = default;
 
 public:
-	HttpResponse Handler(const HttpRequest& request);
+	HttpResponse Handler(const HttpRequest& request) final;
 };
 
 #endif // ROUTEROOT_H

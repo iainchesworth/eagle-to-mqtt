@@ -81,8 +81,7 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_1(const boost::propert
 {
 	SymoMessageTypes message_type = SymoMessageTypes::Unknown;
 
-	const auto query_node = node.get_optional<std::string>("Head.RequestArguments.Query");
-	if (!query_node.is_initialized())
+	if (const auto query_node = node.get_optional<std::string>("Head.RequestArguments.Query"); !query_node.is_initialized())
 	{
 		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot find query node";
 	}

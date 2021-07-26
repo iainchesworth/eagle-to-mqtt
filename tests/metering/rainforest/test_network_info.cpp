@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(Test_NetworkInfo)
 
 		BOOST_TEST(ni_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
 		BOOST_TEST(ni_v1.CoordinatorZigbeeId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
-		BOOST_TEST(ni_v1.Status().value() == Statuses::StatusTypes::JoinSuccess);
+		BOOST_TEST(ni_v1.Status().value() == Statuses(Statuses::StatusTypes::JoinSuccess));
 		BOOST_TEST(ni_v1.StatusCode().value() == 255);
 		BOOST_TEST(ni_v1.Channel().value() == "00");
 		BOOST_TEST(ni_v1.LinkStrength().value() == 255);

@@ -63,6 +63,11 @@ bool Protocols::operator==(const Protocols& other) const
 	return (m_Protocol == other.m_Protocol);
 }
 
+bool Protocols::operator==(const ProtocolTypes& protocol_type) const
+{
+	return (m_Protocol == protocol_type);
+}
+
 std::ostream& operator<<(std::ostream& os, const Protocols& protocol)
 {
 	os << protocol.ToString(protocol.m_Protocol);

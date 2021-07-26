@@ -41,10 +41,10 @@ NamedCollection<FIELD_TYPE> Collection(const boost::property_tree::ptree& node, 
 		auto X = node.get<std::string>(field_units);
 		collection.Units = UnitsOfMeasure(UnitsOfMeasure::FromString(X));
 
-		for (const boost::property_tree::ptree::value_type& vt : node.get_child(field_values))
+		for (const auto& [key, value] : node.get_child(field_values))
 		{
-			NamedCollectionElementId device_id = std::stoi(vt.first);
-			auto reported_value = vt.second.get_value<FIELD_TYPE>();
+			NamedCollectionElementId device_id = std::stoi(key);
+			auto reported_value = value.get_value<FIELD_TYPE>();
 
 			collection.Values.push_back(std::make_pair(device_id, reported_value));
 		}

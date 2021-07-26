@@ -70,6 +70,11 @@ bool Queues::operator==(const Queues& other) const
 	return (m_Queue == other.m_Queue);
 }
 
+bool Queues::operator==(const QueueTypes& queue_type) const
+{
+	return (m_Queue == queue_type);
+}
+
 bool Queues::operator<(const Queues& other) const
 {
 	return (m_Queue < other.m_Queue);

@@ -22,8 +22,8 @@ public:
 
 public:
 	Protocols();
-	Protocols(ProtocolTypes protocol);
-	Protocols(const std::string& protocol);
+	explicit Protocols(ProtocolTypes protocol);
+	explicit Protocols(const std::string& protocol);
 
 private:
 	ProtocolTypes m_Protocol;
@@ -34,6 +34,7 @@ public:
 
 public:
 	bool operator==(const Protocols& other) const;
+	bool operator==(const ProtocolTypes& protocol_type) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const Protocols& protocol);

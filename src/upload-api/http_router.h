@@ -18,7 +18,7 @@ public:
 	virtual ~HttpRouter() = default;
 
 public:
-	virtual HttpResponse HandleRoute(const HttpRequest& req) const;
+	HttpResponse HandleRoute(const HttpRequest& req) const final;
 
 public:
 	HttpRouter& AddRoute(const std::shared_ptr<IApiRoute> route);

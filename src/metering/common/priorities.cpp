@@ -84,6 +84,11 @@ bool Priorities::operator==(const Priorities& other) const
 	return (m_Priority == other.m_Priority);
 }
 
+bool Priorities::operator==(const PriorityTypes& priority_type) const
+{
+	return (m_Priority == priority_type);
+}
+
 std::ostream& operator<<(std::ostream& os, const Priorities& priority)
 {
 	os << Priorities::ToString(priority.m_Priority);

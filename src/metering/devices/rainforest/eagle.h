@@ -76,10 +76,10 @@ protected:
 	std::map<Queues, MeterMessageQueue> m_MeterMessages
 	{
 		// Instantiate the various available meter messages queues.
-		std::make_pair(Queues::QueueTypes::NotSpecified, MeterMessageQueue()),
-		std::make_pair(Queues::QueueTypes::Active, MeterMessageQueue()),
-		std::make_pair(Queues::QueueTypes::CancelPending, MeterMessageQueue()),
-		std::make_pair(Queues::QueueTypes::Unknown, MeterMessageQueue())
+		std::make_pair(Queues(Queues::QueueTypes::NotSpecified), MeterMessageQueue()),
+		std::make_pair(Queues(Queues::QueueTypes::Active), MeterMessageQueue()),
+		std::make_pair(Queues(Queues::QueueTypes::CancelPending), MeterMessageQueue()),
+		std::make_pair(Queues(Queues::QueueTypes::Unknown), MeterMessageQueue())
 	};
 
 public:

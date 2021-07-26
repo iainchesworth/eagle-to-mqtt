@@ -49,5 +49,5 @@ HttpResponse ApiRoute_Fronius::Handler(const HttpRequest& request)
 		return make_400<boost::beast::http::string_body>(request, "Cannot find top-level upload data element; payload is malformed", "text/html");
 	}
 
-	return make_200<boost::beast::http::string_body>(request, "", "text/html");;
+	return make_200<boost::beast::http::string_body>(request, "", "text/html");
 }

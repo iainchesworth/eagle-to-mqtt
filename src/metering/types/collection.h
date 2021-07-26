@@ -43,7 +43,9 @@ NamedCollection<FIELD_TYPE> Collection(const boost::property_tree::ptree& node, 
 
 		for (const auto& [key, child_node] : node.get_child(field_values))
 		{
-			collection.Values.push_back(std::make_pair(NamedCollectionElementId(std::stoi(key)), child_node.template get_value<FIELD_TYPE>()));
+			NamedCollectionElementId ncmi = std::stoi(key);
+
+			collection.Values.push_back(std::make_pair(ncmi, child_node.template get_value<FIELD_TYPE>()));
 		}
 
 		return collection;

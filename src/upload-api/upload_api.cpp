@@ -12,8 +12,8 @@
 UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options, const IHttpRouter& http_router) :
 	IListener(ioc),
 	m_Options(options),
-	m_Acceptor{ m_IOContext, {boost::asio::ip::make_address(m_Options.HttpInterface()), m_Options.HttpPort() } },
 	m_ApiRouter{ http_router },
+	m_Acceptor{ m_IOContext, {boost::asio::ip::make_address(m_Options.HttpInterface()), m_Options.HttpPort() } },
 	m_Socket{ m_IOContext }
 {
 	BOOST_LOG_TRIVIAL(info) << L"Starting Uploader API";

@@ -21,9 +21,7 @@ class MacId
 	static constexpr std::array<uint8_t, ADDRESS_ELEMENTS> UNKNOWN_DEVICE_MACID { 0x00 };	// Default initialised to zero.
 
 public:
-	explicit MacId()
-	{
-	}
+	explicit MacId() = default;
 
 	explicit MacId(const std::string& device_mac_id) :
 		MacId(FromString(device_mac_id))

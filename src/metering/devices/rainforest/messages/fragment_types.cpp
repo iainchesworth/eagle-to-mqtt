@@ -38,7 +38,7 @@ Fragments::FragmentTypes Fragments::FromString(const std::string& fragment_strin
 
 	if (0 == fragment_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid FragmentType provided to converter (zero-length)";;
+		BOOST_LOG_TRIVIAL(warning) << L"Invalid FragmentType provided to converter (zero-length)";
 		throw UnknownFragmentType("Zero-length fragment type value");
 	}
 	else if (BILLING_PERIOD_LIST == fragment_string)

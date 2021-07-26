@@ -17,7 +17,7 @@ public:
 	explicit DeviceConnectivity_Serializer(const DeviceConnectivity& dc);
 
 public:
-	virtual boost::json::object Serialize() const final;
+	boost::json::object Serialize() const final;
 };
 
 }

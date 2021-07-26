@@ -18,9 +18,6 @@ public:
 	explicit EthernetMacId(const std::string& ethernet_mac_id);
 
 public:
-	// Define the various operators required to support use in std::unordered_map
-	bool operator==(const EthernetMacId& other) const;
-
 	struct EthernetMacId_Hasher
 	{
 		std::size_t operator()(const EthernetMacId& k) const;
@@ -29,8 +26,8 @@ public:
 public:
 	struct PropertyTreeTranslator
 	{
-		typedef EthernetMacId external_type;
-		typedef std::string internal_type;
+		using external_type = EthernetMacId;
+		using internal_type = std::string;
 
 		boost::optional<external_type> get_value(const internal_type& value)
 		{

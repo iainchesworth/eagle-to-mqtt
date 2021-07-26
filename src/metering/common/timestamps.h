@@ -10,12 +10,12 @@ class ZigbeeTimepoint
 	static constexpr std::chrono::seconds DIFFERENCE_IN_SECONDS_FROM_1970_TO_2000{ 946684800 };
 
 public:
-	ZigbeeTimepoint(const std::string& timepoint);
+	explicit ZigbeeTimepoint(const std::string& timepoint);
 	virtual ~ZigbeeTimepoint() = default;
 
 private:
 	ZigbeeTimepoint();
-	ZigbeeTimepoint(const std::chrono::time_point<std::chrono::system_clock>& zigbee_timepoint);
+	explicit ZigbeeTimepoint(const std::chrono::time_point<std::chrono::system_clock>& zigbee_timepoint);
 
 public:
 	static ZigbeeTimepoint FromString(const std::string& zigbee_timepoint_string);
@@ -42,11 +42,11 @@ class UnixTimepoint
 {
 public:
 	UnixTimepoint();
-	UnixTimepoint(const std::string& unix_timepoint);
+	explicit UnixTimepoint(const std::string& unix_timepoint);
 	virtual ~UnixTimepoint() = default;
 
 private:
-	UnixTimepoint(const std::chrono::time_point<std::chrono::system_clock>& unix_timepoint);
+	explicit UnixTimepoint(const std::chrono::time_point<std::chrono::system_clock>& unix_timepoint);
 
 public:
 	static UnixTimepoint FromString(const std::string& unix_timepoint_string);

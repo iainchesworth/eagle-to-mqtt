@@ -12,9 +12,9 @@
 UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options, const IHttpRouter& http_router) :
 	IListener(ioc),
 	m_Options(options),
+	m_ApiRouter{ http_router },
 	m_Acceptor{ m_IOContext, {boost::asio::ip::make_address(m_Options.HttpInterface()), m_Options.HttpPort() } },
-	m_Socket{ m_IOContext },
-	m_ApiRouter{ http_router }
+	m_Socket{ m_IOContext }
 {
 	BOOST_LOG_TRIVIAL(info) << L"Starting Uploader API";
 }
@@ -31,7 +31,7 @@ void UploaderAPI::Run()
 	{
 		BOOST_LOG_TRIVIAL(debug) << L"Listening for data uploader connections on " << m_Options.HttpInterface() << L":" << m_Options.HttpPort();
 
-		m_Acceptor.async_accept(m_Socket, [&](boost::beast::error_code ec)
+		m_Acceptor.async_accept(m_Socket, [this](boost::beast::error_code ec)
 			{
 				if (!ec)
 				{

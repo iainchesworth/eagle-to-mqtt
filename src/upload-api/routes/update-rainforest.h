@@ -13,7 +13,7 @@ public:
 	virtual ~ApiRoute_Rainforest() = default;
 
 public:
-	HttpResponse Handler(const HttpRequest& request);
+	HttpResponse Handler(const HttpRequest& request) final;
 }; 
 
 #endif // ROUTE_UPDATE_EAGLE_H

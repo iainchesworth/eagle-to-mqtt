@@ -71,6 +71,11 @@ bool BridgeStatus::operator==(const BridgeStatus& other) const
 	return (m_Status == other.m_Status);
 }
 
+bool BridgeStatus::operator==(const BridgeStatusTypes& bridge_status_type) const
+{
+	return (m_Status == bridge_status_type);
+}
+
 std::ostream& operator<<(std::ostream& os, const BridgeStatus& bridge_status)
 {
 	os << BridgeStatus::ToString(bridge_status.m_Status);

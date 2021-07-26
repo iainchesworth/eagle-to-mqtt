@@ -26,8 +26,8 @@ public:
 
 public:
 	Priorities();
-	Priorities(PriorityTypes priority);
-	Priorities(const std::string& priority);
+	explicit Priorities(PriorityTypes priority);
+	explicit Priorities(const std::string& priority);
 
 private:
 	PriorityTypes m_Priority;
@@ -38,6 +38,7 @@ public:
 
 public:
 	bool operator==(const Priorities& other) const;
+	bool operator==(const PriorityTypes& priority_type) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const Priorities& priority);

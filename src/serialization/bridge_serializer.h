@@ -14,7 +14,7 @@ public:
 	explicit Bridge_Serializer(const Bridge& bridge);
 
 public:
-	virtual boost::json::object Serialize() const final;
+	boost::json::object Serialize() const final;
 };
 
 #endif // BRIDGE_SERIALIZER_H

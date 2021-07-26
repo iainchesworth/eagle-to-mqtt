@@ -13,7 +13,7 @@ public:
 	virtual ~ApiRoute_Status() = default;
 
 public:
-	HttpResponse Handler(const HttpRequest& request);
+	HttpResponse Handler(const HttpRequest& request) final;
 };
 
 #endif // ROUTESTATUS_H

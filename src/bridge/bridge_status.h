@@ -34,6 +34,7 @@ public:
 
 public:
 	bool operator==(const BridgeStatus& other) const;
+	bool operator==(const BridgeStatusTypes& bridge_status_type) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const BridgeStatus& bridge_status);

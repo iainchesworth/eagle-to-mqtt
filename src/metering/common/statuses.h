@@ -40,8 +40,8 @@ public:
 
 public:
 	Statuses();
-	Statuses(StatusTypes status);
-	Statuses(const std::string& status);
+	explicit Statuses(StatusTypes status);
+	explicit Statuses(const std::string& status);
 
 private:
 	StatusTypes m_Status;
@@ -52,6 +52,7 @@ public:
 
 public:
 	bool operator==(const Statuses& other) const;
+	bool operator==(const StatusTypes& status_type) const;
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, const Statuses& status);

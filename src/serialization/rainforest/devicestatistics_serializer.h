@@ -17,7 +17,7 @@ public:
 	explicit DeviceStatistics_Serializer(const DeviceStatistics& ds);
 
 public:
-	virtual boost::json::object Serialize() const final;
+	boost::json::object Serialize() const final;
 };
 
 }

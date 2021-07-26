@@ -77,12 +77,12 @@ BOOST_AUTO_TEST_CASE(Test_MessageCluster)
 		BOOST_TEST(mc_v1.DeviceMacId().value() == ZigBeeMacId("0xFFFFFFFFFFFFFFFF"));
 		BOOST_TEST(mc_v1.Message().Id() == std::string("0xFFFFFFFF"));
 		BOOST_TEST(mc_v1.Message().Text() == std::string("{string}"));
-		BOOST_TEST(mc_v1.Message().Priority() == Priorities::PriorityTypes::Critical);
+		BOOST_TEST(mc_v1.Message().Priority() == Priorities(Priorities::PriorityTypes::Critical));
 		BOOST_TEST(test_tools::within_60_seconds(mc_v1.Message().ValidFrom(), v1_valid_from));
 		BOOST_TEST(test_tools::within_60_seconds(mc_v1.Message().ValidTill(), v1_valid_till));
 		BOOST_TEST(mc_v1.Message().ConfirmationRequired() == false);
 		BOOST_TEST(mc_v1.Message().IsConfirmed() == true);
-		BOOST_TEST(mc_v1.Queue() == Queues::QueueTypes::CancelPending);
+		BOOST_TEST(mc_v1.Queue() == Queues(Queues::QueueTypes::CancelPending));
 
 		const auto v2_valid_from = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x20acad0d);
 		const auto v2_valid_till = std::chrono::system_clock::now() + std::chrono::duration<uint32_t>(0x20acad0d) + std::chrono::minutes(0xffff);
@@ -90,12 +90,12 @@ BOOST_AUTO_TEST_CASE(Test_MessageCluster)
 		BOOST_TEST(mc_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000af85"));
 		BOOST_TEST(mc_v2.Message().Id() == std::string("0x00000000"));
 		BOOST_TEST(mc_v2.Message().Text() == std::string("Welcome to the program"));
-		BOOST_TEST(mc_v2.Message().Priority() == Priorities::PriorityTypes::Low);
+		BOOST_TEST(mc_v2.Message().Priority() == Priorities(Priorities::PriorityTypes::Low));
 		BOOST_TEST(test_tools::within_60_seconds(mc_v2.Message().ValidFrom(), v2_valid_from));
 		BOOST_TEST(test_tools::within_60_seconds(mc_v2.Message().ValidTill(), v2_valid_till));
 		BOOST_TEST(mc_v2.Message().ConfirmationRequired() == false);
 		BOOST_TEST(mc_v2.Message().IsConfirmed() == false);
-		BOOST_TEST(mc_v2.Queue() == Queues::QueueTypes::Active);
+		BOOST_TEST(mc_v2.Queue() == Queues(Queues::QueueTypes::Active));
 	}
 	catch (const std::exception& ex)
 	{

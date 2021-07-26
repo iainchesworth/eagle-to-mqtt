@@ -22,8 +22,8 @@ public:
 
 public:
 	Queues();
-	Queues(QueueTypes queue);
-	Queues(const std::string& queue);
+	explicit Queues(QueueTypes queue);
+	explicit Queues(const std::string& queue);
 
 private:
 	QueueTypes m_Queue;
@@ -34,6 +34,7 @@ public:
 
 public:
 	bool operator==(const Queues& other) const;
+	bool operator==(const QueueTypes& queue_type) const;
 	bool operator<(const Queues& other) const;
 
 public:

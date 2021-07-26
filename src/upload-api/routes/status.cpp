@@ -20,8 +20,7 @@ HttpResponse ApiRoute_Status::Handler(const HttpRequest& request)
 	std::stringstream response_stream;
     
 	// Report the bridge information
-	auto bridge = BridgeRegistrySingleton()->operator()();
-	if (nullptr == bridge)
+	if (auto bridge = BridgeRegistrySingleton()->operator()(); nullptr == bridge)
 	{
 		BOOST_LOG_TRIVIAL(debug) << L"Cannot serialize bridge - object is not initialized in registry";
 	}
@@ -31,16 +30,16 @@ HttpResponse ApiRoute_Status::Handler(const HttpRequest& request)
 	}
 
 	// Report the collection of Eagle devices
-	for (auto device : *DeviceRegistrySingleton())
+	for (const auto& [ethernet_macid, device] : *DeviceRegistrySingleton())
 	{
-		if (!device.second)
+		if (!device)
 		{
 			BOOST_LOG_TRIVIAL(debug) << L"Cannot serialize device - object is not initialized in registry";
 		}
 		else
 		{
             BOOST_LOG_TRIVIAL(debug) << L"Serialising device object";
-			response_object[EthernetMacId::ToString(device.first)] = device.second->Serialize();
+			response_object[EthernetMacId::ToString(ethernet_macid)] = device->Serialize();
 		}
 	}
 

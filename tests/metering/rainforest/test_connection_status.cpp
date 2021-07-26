@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE(Test_ConnectionStatus)
 		BOOST_TEST(cs_v2.DeviceMacId().value() == ZigBeeMacId("0xd8d5b9000000b200"));
 		BOOST_TEST(cs_v2.Meter_MacId().value() == ZigBeeMacId("0x000781000081fd0b"));
 		BOOST_TEST(cs_v2.ShortAddr().value() == std::string("0xd291"));
-		BOOST_TEST(cs_v2.Status().value() == Statuses::StatusTypes::AuthenticatingSuccess);
+		BOOST_TEST(cs_v2.Status().value() == Statuses(Statuses::StatusTypes::AuthenticatingSuccess));
 		BOOST_TEST(cs_v2.Channel().value() == std::string("14"));
 		BOOST_TEST(cs_v2.LinkStrength().value() == 0);
 	}

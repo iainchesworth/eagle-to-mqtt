@@ -99,6 +99,11 @@ bool Tiers::operator==(const Tiers& other) const
 	return (m_PricingTier == other.m_PricingTier);
 }
 
+bool Tiers::operator==(const SupportedTiers& supported_tier) const
+{
+	return (m_PricingTier == supported_tier);
+}
+
 std::ostream& operator<<(std::ostream& os, const Tiers& pricing_tier)
 {
 	os << Tiers::ToString(pricing_tier.m_PricingTier);

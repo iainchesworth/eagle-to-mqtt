@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <ostream>
 #include <string>
+#include <string_view>
 #include <tuple>
 
 #include "exceptions/invalid_message_value.h"
@@ -20,33 +21,15 @@ class MacId
 	static constexpr std::array<uint8_t, ADDRESS_ELEMENTS> UNKNOWN_DEVICE_MACID { 0x00 };	// Default initialised to zero.
 
 public:
-	explicit MacId() :
-		m_DeviceMacId{ UNKNOWN_DEVICE_MACID }
-	{
-	}
+	explicit MacId() = default;
 
-	MacId(const std::string& device_mac_id) :
+	explicit MacId(const std::string& device_mac_id) :
 		MacId(FromString(device_mac_id))
 	{
 	}
 
-	~MacId()
-	{
-	}
-
 public:
-	MacId(const MacId& other) :
-		m_DeviceMacId(other.m_DeviceMacId)
-	{
-	}
-
-	MacId(MacId&& other) noexcept :
-		m_DeviceMacId(std::exchange(other.m_DeviceMacId, UNKNOWN_DEVICE_MACID))
-	{
-	}
-
-public:
-	MacId<ADDRESS_ELEMENTS> FromString(const std::string& device_mac_id)
+	MacId<ADDRESS_ELEMENTS> FromString(const std::string_view& device_mac_id)
 	{
 		MacId<ADDRESS_ELEMENTS> mac_id;
 
@@ -104,18 +87,6 @@ public:
 	}
 
 public:
-	MacId& operator=(const MacId& other)
-	{
-		return *this = MacId(other);
-	}
-
-	MacId& operator=(MacId&& other) noexcept
-	{
-		std::swap(m_DeviceMacId, other.m_DeviceMacId);
-		return *this;
-	}
-
-public:
 	bool operator==(const MacId<ADDRESS_ELEMENTS>& other) const
 	{
 		return (m_DeviceMacId == other.m_DeviceMacId);
@@ -128,7 +99,13 @@ public:
 	}
 
 protected:
-	std::array<uint8_t, ADDRESS_ELEMENTS> m_DeviceMacId;
+	std::array<uint8_t, ADDRESS_ELEMENTS> DeviceMacId() const
+	{
+		return m_DeviceMacId;
+	}
+
+private:
+	std::array<uint8_t, ADDRESS_ELEMENTS> m_DeviceMacId{ UNKNOWN_DEVICE_MACID };
 };
 
 #endif // DEVICE_MAC_ID_H

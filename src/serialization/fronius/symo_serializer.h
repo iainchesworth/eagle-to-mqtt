@@ -14,7 +14,7 @@ public:
 	explicit Symo_Serializer(const Symo& symo);
 
 public:
-	virtual boost::json::object Serialize() const final;
+	boost::json::object Serialize() const final;
 };
 
 #endif // SYMO_SERIALIZER_H

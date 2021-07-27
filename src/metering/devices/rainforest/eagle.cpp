@@ -212,9 +212,39 @@ const Rainforest::DeviceStatistics& Eagle::Statistics() const
 	return m_Statistics;
 }
 
+const EthernetMacId& Eagle::Ethernet_MacId() const
+{
+	return m_EthernetMacId;
+}
+
+const ZigBeeMacId& Eagle::Zigbee_MacId() const
+{
+	return m_ZigbeeMacId;
+}
+
+const std::string& Eagle::FirmwareVersion() const
+{
+	return m_FirmwareVersion;
+}
+
+const std::string& Eagle::HardwareVersion() const
+{
+	return m_HardwareVersion;
+}
+
+const std::string& Eagle::ModelId() const
+{
+	return m_ModelId;
+}
+
 const PricingTiers& Eagle::PriceTiers() const
 {
 	return m_PricingTiers;
+}
+
+const Eagle::MeterMessagesMap& Eagle::MessageQueues() const
+{
+	return m_MeterMessages;
 }
 
 boost::json::object Eagle::Serialize() const

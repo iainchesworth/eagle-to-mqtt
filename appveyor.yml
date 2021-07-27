@@ -1,28 +1,53 @@
-version: 1.0.{build}
+version: 1.0.0.{build}-{branch}
 image: Visual Studio 2019
+
+pull_requests:
+  do_not_increment_build_number: true
 
 environment:
   matrix:
+    - GENERATOR: '"Visual Studio 16 2019" -A x86'
+      BUILD_TYPE: Debug
+    - GENERATOR: '"Visual Studio 16 2019" -A x86'
+      BUILD_TYPE: Release
+    - GENERATOR: '"Visual Studio 16 2019" -A x64'
+      BUILD_TYPE: Debug
     - GENERATOR: '"Visual Studio 16 2019" -A x64'
       BUILD_TYPE: Release
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 install:
-  - cd c:\tools\vcpkg
-  - vcpkg install boost:x64-windows boost-log:x64-windows boost-json:x64-windows boost-program-options:x64-windows openssl:x64-windows paho-mqtt:x64-windows paho-mqttpp3[*]:x64-windows
+  - cmd: >-
+  
+     if "%platform%"=="x86" VCPKG_DEFAULT_TRIPLET=x86-windows
+  
+     if "%platform%"=="x64" VCPKG_DEFAULT_TRIPLET=x64-windows
+  
+     c:\tools\vcpkg install boost boost-log boost-json boost-program-options openssl paho-mqtt paho-mqttpp3[*]
 
 cache:
   - c:/tools/vcpkg/installed -> appveyor.yml
+  - c:/users/appveyor/appdata/local/vcpkg/archives -> appveyor.yml
   
 before_build:
-  - cd c:/projects/eagle-to-mqtt
-  - git submodule update --init --recursive --jobs 8
+  - cmd: >-
+
+      cd c:/projects/eagle-to-mqtt
+      
+      git submodule update --init --recursive --jobs 8
 
 build_script:
-  - cd c:/projects/eagle-to-mqtt
-  - cmake -D CMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -G %GENERATOR% -B build -H .
-  - cmake --build build/ --config %BUILD_TYPE%
+  - cmd: >- 
+  
+      cd c:/projects/eagle-to-mqtt
+  
+      cmake -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -G%GENERATOR% -Bbuild -H.
+  
+      cmake --build build/ --config %BUILD_TYPE%
 
 test_script:
-  - cd c:/projects/eagle-to-mqtt/build/%BUILD_TYPE%
-  - tests/eagle-to-mqtt-tests.exe
+  - cmd: >-
+  
+      cd c:/projects/eagle-to-mqtt/build/%BUILD_TYPE%
+  
+      tests/eagle-to-mqtt-tests.exe

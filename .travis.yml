@@ -20,14 +20,20 @@ addons:
       secure: "BEwMb27/Wk30/ydyIeFwdPsqeN625chYQ2Or3qE4/g4Q6JYYNhBqIeXc3kLUPBfvvLCQPjxeIiXm7r369FonM5N+5/1eu54u6hWY+AZDgddMFF42yD7/cto3SP5uNve6ffGbsDbe2dTkGuVnDu1dzPiY+bVG4HUBSSgRlP0TxcrUcyR4QGJZIPosAh7XgxZyEII7q/V4EFvC3SBTmBrqJQnrgR02HM5aXK39ucNFnzFETXnHJl70tjadlkZNgH+ELJHvA8qLWiOeoehlZ+6k2+bUYjxGV8lLoghc2mFzTUl9uD46xY/n5gZ1tOQz0yiMkAv4rXVHVM93KCd0Dj8CRFVI+V44JiZZqgrT8r0P7/CGZuO8AVpXWYCO5deZcY/7261VhqNK14SZEEMPU6pVgFq0nEyq7sUkZXwC11mODmVe0oCd0GKNvw0kvc06r04F/VXoiEEgXctSFzykcd6+oE5NG9p8pYjCv6Jzlb8qy1/BbmCh+5FpXJQAcVGK4I8hT7HlC+k8Sr8i1dlKoAAP5LUBq1yntIMXL6h2lwQvquBAoLE608EA0Pw/dEFsMct40w5ikLnRb7PGYntkFD4qYUrxcnj2GcDctMkxWp1sC/dg9XXGCnl82Ul7cFiGiWy4J240DosyiETD7+JG1IbWCdb9LbBYZ6GYqg5WhAZtxfk="
 
 before_install:
-  # Prepare the build system
-  - sudo apt-get update
-  - sudo apt-get -qq -y --no-install-recommends install ./deps/boost/boost-build_1.76.0_amd64.deb
-  - sudo env "PATH=$PATH" bash ./deps/paho.mqtt.sh
+  # Start using vcpkg for dependencies
+  - |
+    mkdir $HOME/.vcpkg
+    git clone https://github.com/Microsoft/vcpkg.git $HOME/.vcpkg
+    export VCPKG_DEFAULT_TRIPLET=x64-linux
+    $HOME/.vcpkg/bootstrap-vcpkg.sh
+    $HOME/.vcpkg/vcpkg integrate install
+    $HOME/.vcpkg/vcpkg install boost boost-log boost-json boost-program-options openssl paho-mqtt paho-mqttpp3[*]
+
+  # Prepare the hosted dependencies
   - git submodule update --init --recursive --jobs 8
 
 script:
-  - cmake -Bbuild -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON -H.
+  - cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=$HOME/.vcpkg/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON -H.
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarQube Scanner) into the "bw-output" folder
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/ 
@@ -41,6 +47,7 @@ after_success:
 
 cache:
   directories:
+    - $HOME/.vcpkg/installed
     - $HOME/.sonar/cache
     # This contains the CFamily cache. According to https://docs.travis-ci.com/user/caching/#pull-request-builds-and-caches,
     # for a PR, it will use the cache of the target branch if the branch of the PR does not already have its cache.

@@ -51,9 +51,9 @@ protected:
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
 
 public:
-	Rainforest::DeviceConnectivity Connectivity() const;
-	Rainforest::DeviceEnergyUsage EnergyUsage() const;
-	Rainforest::DeviceStatistics Statistics() const;
+	const Rainforest::DeviceConnectivity& Connectivity() const;
+	const Rainforest::DeviceEnergyUsage& EnergyUsage() const;
+	const Rainforest::DeviceStatistics& Statistics() const;
 
 protected:
 	Rainforest::DeviceConnectivity m_Connectivity;
@@ -68,6 +68,9 @@ protected:
 	std::string m_FirmwareVersion;
 	std::string m_HardwareVersion;
 	std::string m_ModelId;
+
+public:
+	const PricingTiers& PriceTiers() const;
 
 protected:
 	PricingTiers m_PricingTiers;

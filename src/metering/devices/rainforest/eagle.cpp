@@ -197,19 +197,24 @@ void Eagle::ProcessHeaderAttributes(const boost::property_tree::ptree& header_at
 	}
 }
 
-Rainforest::DeviceConnectivity Eagle::Connectivity() const
+const Rainforest::DeviceConnectivity& Eagle::Connectivity() const
 {
 	return m_Connectivity;
 }
 
-Rainforest::DeviceEnergyUsage Eagle::EnergyUsage() const
+const Rainforest::DeviceEnergyUsage& Eagle::EnergyUsage() const
 {
 	return m_EnergyUsage;
 }
 
-Rainforest::DeviceStatistics Eagle::Statistics() const
+const Rainforest::DeviceStatistics& Eagle::Statistics() const
 {
 	return m_Statistics;
+}
+
+const PricingTiers& Eagle::PriceTiers() const
+{
+	return m_PricingTiers;
 }
 
 boost::json::object Eagle::Serialize() const

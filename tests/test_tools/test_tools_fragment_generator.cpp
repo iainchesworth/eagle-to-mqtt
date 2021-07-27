@@ -175,9 +175,14 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_Instan
 {
 	switch (m_Version)
 	{
-	case FragmentVersions::V1: AddFragment_InstantaneousDemand("0xFFFFFFFF", "0xFFFFFF", "0xFFFFFFFF", "0xFFFFFFFF"); break;
-	case FragmentVersions::V2: AddFragment_InstantaneousDemand("0x211cc7a8", "0x000032", "0x00000001", "0x000003e8"); break;
-	default: throw std::runtime_error("AddFragment_InstantaneousDemand(): Invalid version present in the FragmentGenerator test tool");
+	case FragmentVersions::V1: 
+		AddFragment_InstantaneousDemand("0xFFFFFFFF", "0xFFFFFF", "0xFFFFFFFF", "0xFFFFFFFF"); 
+		break;
+	case FragmentVersions::V2: 
+		AddFragment_InstantaneousDemand("0x211cc7a8", "0x000032", "0x00000001", "0x000003e8"); 
+		break;
+	default: 
+		throw std::runtime_error("AddFragment_InstantaneousDemand(): Invalid version present in the FragmentGenerator test tool");
 	}
 
 	return *this;
@@ -228,7 +233,7 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_Instan
 		break;
 
 	default: 
-		throw std::runtime_error("AddFragment_InstantaneousDemand(): Invalid version present in the FragmentGenerator test tool");
+		throw std::runtime_error("AddFragment_InstantaneousDemand(<params>): Invalid version present in the FragmentGenerator test tool");
 	}
 
 	return *this;
@@ -314,7 +319,8 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_PriceC
 		"<TierLabel>{string}</TierLabel>"
 		"<RateLabel>{string}</RateLabel>"
 		"</PriceCluster>";
-	static const std::string V2_PRICE_CLUSTER_FRAGMENT = "<PriceCluster>"
+	static const std::string V2_PRICE_CLUSTER_FRAGMENT = 
+		"<PriceCluster>"
 		"<DeviceMacId>0xd8d5b9000000fca8</DeviceMacId>"
 		"<MeterMacId>0x00078100005a499f</MeterMacId>"
 		"<TimeStamp>0x24e5ffd8</TimeStamp>"
@@ -330,9 +336,66 @@ test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_PriceC
 
 	switch (m_Version)
 	{
-	case FragmentVersions::V1: m_Fragment.append(V1_PRICE_CLUSTER_FRAGMENT); break;
-	case FragmentVersions::V2: m_Fragment.append(V2_PRICE_CLUSTER_FRAGMENT); break;
-	default: throw std::runtime_error("AddFragment_PriceCluster(): Invalid version present in the FragmentGenerator test tool");
+	case FragmentVersions::V1: 
+		AddFragment_PriceCluster("0xFFFFFFFF", "0x000003E8", "0x03E7", "0x02", "00", "", "", "{string}", "{string}"); 
+		break;		
+	case FragmentVersions::V2: 
+		AddFragment_PriceCluster("0x24e5ffd8", "0x00000005", "0x0348", "0x01", "0x01", "0x24e60010", "0xffff", "", "Price1");
+		break;
+	default: 
+		throw std::runtime_error("AddFragment_PriceCluster(<params>): Invalid version present in the FragmentGenerator test tool");
+	}
+
+	return *this;
+}
+
+test_tools::FragmentGenerator& test_tools::FragmentGenerator::AddFragment_PriceCluster(const std::string& timestamp, const std::string& price, const std::string& currency, const std::string& trailing_digits, const std::string& tier, const std::string& start_time, const std::string& duration, const std::string& tier_label, const std::string& rate_label)
+{
+	static const std::string V1_PRICE_CLUSTER_FRAGMENT_PRE =
+		"<PriceCluster>"
+		"<DeviceMacId>0xFFFFFFFFFFFFFFFF</DeviceMacId>"
+		"<MeterMacId>0xFFFFFFFFFFFFFFFF</MeterMacId>";
+	static const std::string V1_PRICE_CLUSTER_FRAGMENT_POST = 
+		"</PriceCluster>";
+
+	static const std::string V2_PRICE_CLUSTER_FRAGMENT_PRE =
+		"<PriceCluster>"
+		"<DeviceMacId>0xd8d5b9000000fca8</DeviceMacId>"
+		"<MeterMacId>0x00078100005a499f</MeterMacId>"
+		"<TimeStamp>0x24e5ffd8</TimeStamp>";
+	static const std::string V2_PRICE_CLUSTER_FRAGMENT_POST = 
+		"<Protocol>Zigbee</Protocol>"
+		"</PriceCluster>";
+
+	switch (m_Version)
+	{
+	case FragmentVersions::V1:
+		m_Fragment.append(V1_PRICE_CLUSTER_FRAGMENT_PRE);
+		m_Fragment.append("<TimeStamp>").append(timestamp).append("</TimeStamp>");
+		m_Fragment.append("<Price>").append(price).append("</Price>");
+		m_Fragment.append("<Currency>").append(currency).append("</Currency>");
+		m_Fragment.append("<TrailingDigits>").append(trailing_digits).append("</TrailingDigits>");
+		m_Fragment.append("<Tier>").append(tier).append("</Tier>");
+		m_Fragment.append("<TierLabel>").append(tier_label).append("</TierLabel>");
+		m_Fragment.append("<RateLabel>").append(rate_label).append("</RateLabel>");
+		m_Fragment.append(V1_PRICE_CLUSTER_FRAGMENT_POST);
+		break;
+
+	case FragmentVersions::V2:
+		m_Fragment.append(V2_PRICE_CLUSTER_FRAGMENT_PRE);
+		m_Fragment.append("<TimeStamp>").append(timestamp).append("</TimeStamp>");
+		m_Fragment.append("<Price>").append(price).append("</Price>");
+		m_Fragment.append("<Currency>").append(currency).append("</Currency>");
+		m_Fragment.append("<TrailingDigits>").append(trailing_digits).append("</TrailingDigits>");
+		m_Fragment.append("<Tier>").append(tier).append("</Tier>");
+		m_Fragment.append("<StartTime>").append(start_time).append("</StartTime>");
+		m_Fragment.append("<Duration>").append(duration).append("</Duration>");
+		m_Fragment.append("<RateLabel>").append(rate_label).append("</RateLabel>");
+		m_Fragment.append(V2_PRICE_CLUSTER_FRAGMENT_POST);
+		break;
+
+	default:
+		throw std::runtime_error("AddFragment_PriceCluster(): Invalid version present in the FragmentGenerator test tool");
 	}
 
 	return *this;

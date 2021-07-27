@@ -33,6 +33,7 @@ public:
 	FragmentGenerator& AddFragment_MessageCluster();
 	FragmentGenerator& AddFragment_NetworkInfo();
 	FragmentGenerator& AddFragment_PriceCluster();
+	FragmentGenerator& AddFragment_PriceCluster(const std::string& timestamp, const std::string& price, const std::string& currency, const std::string& trailing_digits, const std::string& tier, const std::string& start_time, const std::string& duration, const std::string& tier_label, const std::string& rate_label);
 
 public:
 	std::stringstream Generate() const;

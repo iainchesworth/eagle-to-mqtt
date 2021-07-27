@@ -14,8 +14,7 @@ environment:
       BUILD_TYPE: Debug
     - GENERATOR: '"Visual Studio 16 2019" -A x64'
       BUILD_TYPE: Release
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-
+      
 install:
   - cmd: >-
   

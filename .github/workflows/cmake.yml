@@ -12,8 +12,8 @@ env:
 
 jobs:
   job:
-    name: ${{ matrix.os }}-build
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.name }}-build
+    runs-on: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix:

@@ -22,17 +22,19 @@ addons:
 before_install:
   # Start using vcpkg for dependencies
   - |
-    git clone https://github.com/Microsoft/vcpkg.git $HOME/.vcpkg-local
+    git clone https://github.com/Microsoft/vcpkg.git
+    cd vcpkg
     export VCPKG_DEFAULT_TRIPLET=x64-linux
-    $HOME/.vcpkg-local/bootstrap-vcpkg.sh
-    $HOME/.vcpkg-local/vcpkg integrate install
-    $HOME/.vcpkg-local/vcpkg install boost boost-log boost-json boost-program-options openssl paho-mqtt paho-mqttpp3[*]
+    ./bootstrap-vcpkg.sh
+    ./vcpkg integrate install
+    ./vcpkg install boost boost-log boost-json boost-program-options openssl paho-mqtt paho-mqttpp3[*]
+    cd ..
 
   # Prepare the hosted dependencies
   - git submodule update --init --recursive --jobs 8
 
 script:
-  - cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=$HOME/.vcpkg-local/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON -H.
+  - cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON -H.
   # Wraps the compilation with the Build Wrapper to generate configuration (used
   # later by the SonarQube Scanner) into the "bw-output" folder
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/ 
@@ -46,7 +48,6 @@ after_success:
 
 cache:
   directories:
-    - $HOME/.vcpkg-local/installed
     - $HOME/.sonar/cache
     # This contains the CFamily cache. According to https://docs.travis-ci.com/user/caching/#pull-request-builds-and-caches,
     # for a PR, it will use the cache of the target branch if the branch of the PR does not already have its cache.

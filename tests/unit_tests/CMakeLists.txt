@@ -20,6 +20,7 @@ foreach(PROJECT_TEST_SOURCE_FILE ${PROJECT_TEST_SOURCES})
 			Boost::boost 
 			Boost::json 
 			Boost::log 
+            Boost::log_setup
 			Boost::program_options 
 			OpenSSL::Crypto 
 			OpenSSL::SSL 

@@ -38,13 +38,8 @@ jobs:
         submodules: true
     
     - uses: lukka/get-cmake@latest
-    
-    - name: Set vcpkg's response file path used as part of cache's key.
-      uses: lukka/set-shell-env@master
-      with:
-        VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_${{ matrix.triplet }}.txt
       
-    - name: Restore artifacts, or run vcpkg, build and cache artifacts
+    - name: Restore artifacts (or run vcpkg) and build, cache artifacts
       uses: lukka/run-vcpkg@main
       id: runvcpkg
       with:
@@ -59,7 +54,7 @@ jobs:
         # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed'.
         additionalCachedPaths: ${{ env.BUILD_DIR }}/vcpkg_installed
 
-    - name: Configure CMake
+    - name: Configure CMake and build the application
       uses: lukka/run-cmake@main
       id: runcmake
       with:
@@ -69,6 +64,7 @@ jobs:
         useVcpkgToolchainFile: true
         cmakeAppendedArgs: '-B ${{github.workspace}}/build -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}'
         buildWithCMake: true
+        buildWithCMakeArgs: '--config ${{env.BUILD_TYPE}} --parallel'
 
     - name: Test
       working-directory: ${{github.workspace}}/build

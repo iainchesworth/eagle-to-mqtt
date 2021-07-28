@@ -131,7 +131,7 @@ target_link_directories(${APPLICATION_TARGET} PRIVATE ${Boost_LIBRARY_DIRS} ${CM
 target_link_libraries(
     ${APPLICATION_TARGET}
         PRIVATE
-            ${LIBRARY_TARGET}
+            eagle-to-mqtt-core
         PRIVATE 
             Boost::boost
             Boost::log 

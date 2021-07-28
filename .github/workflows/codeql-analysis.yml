@@ -74,20 +74,27 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get -qq -y --no-install-recommends install \
+                cmake \
                 libicu66 \
                 libssl1.1
-        sudo bash /home/runner/work/eagle-to-mqtt/eagle-to-mqtt/deps/paho.mqtt.sh
-
-    - name: Install 3rd-party source dependencies
+    
+    - name: Install vcpkg dependencies
       run: |
-        sudo apt -qq -y --no-install-recommends install \
-                /home/runner/work/eagle-to-mqtt/eagle-to-mqtt/deps/boost/boost-build_1.76.0_amd64.deb
+        cd /home/runner/work/eagle-to-mqtt/eagle-to-mqtt
+        git clone https://github.com/Microsoft/vcpkg.git
+        cd vcpkg
+        export VCPKG_DEFAULT_TRIPLET=x64-linux
+        ./bootstrap-vcpkg.sh
+        ./vcpkg integrate install
+        ./vcpkg install boost-algorithm boost-asio boost-beast boost-circular-buffer boost-log boost-json boost-program-options boost-property-tree boost-signals2 boost-system boost-thread boost-test boost-type-traits openssl paho-mqtt paho-mqttpp3[*]
+        cd ..
 
     - name: Build eagle-to-mqtt
       run: |
         cd /home/runner/work/eagle-to-mqtt/eagle-to-mqtt
         git submodule update --init --recursive --jobs 8
-        cmake -Bbuild -H. && cmake --build build/ --target eagle-to-mqtt
+        cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -H.
+        cmake --build build/
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

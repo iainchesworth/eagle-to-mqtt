@@ -57,6 +57,11 @@ if (UNIX)
 
     # Fix issues with dynamic linking for Boost under Linux/Unix
     add_definitions(-DBOOST_LOG_DYN_LINK)
+
+    # Set some variables to handle different library names under different environments
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT eclipse-paho-mqtt-c::paho-mqtt3a-static eclipse-paho-mqtt-c::paho-mqtt3c-static eclipse-paho-mqtt-c::paho-mqtt3as-static eclipse-paho-mqtt-c::paho-mqtt3cs-static)
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP PahoMqttCpp::paho-mqttpp3-static)
+
 endif ()
 
 if (WIN32)
@@ -81,6 +86,10 @@ if (WIN32)
 
     # Silence MSVC warnings about features that are deprecated in C++17 (notably in Boost headers)
     add_definitions(-D_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS)
+
+    # Set some variables to handle different library names under different environments
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT eclipse-paho-mqtt-c::paho-mqtt3a eclipse-paho-mqtt-c::paho-mqtt3c eclipse-paho-mqtt-c::paho-mqtt3as eclipse-paho-mqtt-c::paho-mqtt3cs)
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP PahoMqttCpp::paho-mqttpp3)
 
 endif ()
 
@@ -129,8 +138,9 @@ target_link_libraries(
             Boost::json 
             Boost::program_options
             OpenSSL::Crypto 
-            OpenSSL::SSL 
-            PahoMqttCpp::paho-mqttpp3
+            OpenSSL::SSL
+            ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT}
+            ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP}
             Threads::Threads
 )
 

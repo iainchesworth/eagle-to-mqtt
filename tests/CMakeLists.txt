@@ -21,7 +21,8 @@ target_link_libraries(
             Boost::unit_test_framework
             OpenSSL::Crypto 
             OpenSSL::SSL 
-            PahoMqttCpp::paho-mqttpp3
+            ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT}
+            ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP}
             Threads::Threads
 )
 

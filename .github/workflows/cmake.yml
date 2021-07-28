@@ -19,14 +19,29 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
-          - os: windows-latest
+          - name: windows-latest-cl
+            os: windows-latest
             triplet: x64-windows
+            cxx: cl.exe
+            cc: cl.exe
             vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
-          - os: ubuntu-latest
+          - name: ubuntu-latest-clang
+            os: ubuntu-latest
             triplet: x64-linux
+            cxx: clang++
+            cc: clang
             vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
-          - os: macos-latest
+          - name: ubuntu-latest-gcc
+            os: ubuntu-latest
             triplet: x64-osx
+            cxx: g++
+            cc: gcc
+            vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
+          - name: macos-latest-clang
+            os: macos-latest
+            triplet: x64-osx
+            cxx: clang++
+            cc: clang
             vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
 
     env:
@@ -36,10 +51,27 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
+
+    - uses: ilammy/msvc-dev-cmd@latest
+      with:
+          arch: ${{ matrix.arch }}
     
     - uses: lukka/get-cmake@latest
+
+    - name: Setup compiler environment
+      uses: lukka/set-shell-env@latest
+      with:
+        CXX: ${{ matrix.cxx }}
+        CC: ${{ matrix.cc }}
+
+    # Install the latest version of gcc on ubuntu
+    - uses: egor-tensin/setup-gcc@v1
+      if: "startsWith(matrix.name, 'ubuntu')"
+      with:
+        version: latest
+        platform: x64
       
-    - name: Restore artifacts (or run vcpkg) and build, cache artifacts
+    - name: Build dependencies (via vcpkg)
       uses: lukka/run-vcpkg@main
       id: runvcpkg
       with:
@@ -54,7 +86,7 @@ jobs:
         # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed'.
         additionalCachedPaths: ${{ env.BUILD_DIR }}/vcpkg_installed
 
-    - name: Configure CMake and build the application
+    - name: Build eagle-to-mqtt
       uses: lukka/run-cmake@main
       id: runcmake
       with:
@@ -66,7 +98,7 @@ jobs:
         buildWithCMake: true
         buildWithCMakeArgs: '--config ${{env.BUILD_TYPE}} --parallel'
 
-    - name: Test
+    - name: Run unit and integration tests
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail

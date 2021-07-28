@@ -52,24 +52,25 @@ jobs:
       with:
         submodules: true
 
+    - name: Setup compiler environment
+
     - uses: ilammy/msvc-dev-cmd@latest
+      if: "startsWith(matrix.name, 'windows')"
       with:
           arch: ${{ matrix.arch }}
-    
-    - uses: lukka/get-cmake@latest
 
-    - name: Setup compiler environment
-      uses: lukka/set-shell-env@latest
+    - uses: lukka/set-shell-env@latest
       with:
         CXX: ${{ matrix.cxx }}
         CC: ${{ matrix.cc }}
 
-    # Install the latest version of gcc on ubuntu
     - uses: egor-tensin/setup-gcc@v1
       if: "startsWith(matrix.name, 'ubuntu')"
       with:
         version: latest
         platform: x64
+    
+    - uses: lukka/get-cmake@latest
       
     - name: Build dependencies (via vcpkg)
       uses: lukka/run-vcpkg@main

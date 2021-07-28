@@ -17,17 +17,21 @@ environment:
       
 install:
   - cmd: >-
-  
-     if "%platform%"=="x86" VCPKG_DEFAULT_TRIPLET=x86-windows
-  
-     if "%platform%"=="x64" VCPKG_DEFAULT_TRIPLET=x64-windows
-  
-     c:/tools/vcpkg install boost-algorithm boost-asio boost-beast boost-circular-buffer boost-log boost-json boost-program-options boost-property-tree boost-signals2 boost-system boost-thread boost-test boost-type-traits openssl paho-mqtt paho-mqttpp3[*]
+      
+      git clone https://github.com/Microsoft/vcpkg.git
 
-cache:
-  - c:/tools/vcpkg/installed -> appveyor.yml
-  - c:/users/appveyor/appdata/local/vcpkg/archives -> appveyor.yml
+      cd vcpkg
   
+      if "%platform%"=="x86" VCPKG_DEFAULT_TRIPLET=x86-windows
+  
+      if "%platform%"=="x64" VCPKG_DEFAULT_TRIPLET=x64-windows
+
+      bootstrap-vcpkg.bat
+    
+      vcpkg integrate install
+    
+      vcpkg install boost-algorithm boost-asio boost-beast boost-circular-buffer boost-log boost-json boost-program-options boost-property-tree boost-signals2 boost-system boost-thread boost-test boost-type-traits openssl paho-mqtt paho-mqttpp3[*]
+        
 before_build:
   - cmd: >-
 

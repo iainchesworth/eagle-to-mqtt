@@ -1,6 +1,7 @@
 #include <boost/log/trivial.hpp>
 
 #include "metering/devices/rainforest/eagle.h"
+#include "metering/devices/rainforest/zigbee_id_handler.h"
 #include "notifications/notification_manager.h"
 #include "notifications/metering/notification_connectivity.h"
 #include "notifications/metering/notification_deviceinfo.h"
@@ -11,47 +12,23 @@ void Eagle::ProcessFragment(const NetworkInfo& network_info)
 
 	auto connection_status_notif = std::make_shared<Notification_Connectivity>(m_EthernetMacId);
 
-	if (!network_info.DeviceMacId().has_value())
-	{
-		BOOST_LOG_TRIVIAL(trace) << L"Missing Zigbee End Device (ZED) id in message payload";
-	}
-	else if (!network_info.DeviceMacId().value().IsValid())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received invalid Zigbee End Device (ZED) id in message payload";
-	}
-	else if (m_ZigbeeMacId.IsValid())
-	{
-		BOOST_LOG_TRIVIAL(trace) << L"Have already received valid Zigbee End Device (ZED) id; ignoring";
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Capturing Zigbee End Device (ZED) id for Eagle: " << ZigBeeMacId::ToString(network_info.DeviceMacId().value());
-		m_ZigbeeMacId = network_info.DeviceMacId().value();
+	ProcessAndSaveZigbeeId(
+		m_EthernetMacId,
+		network_info.DeviceMacId(),
+		m_ZigbeeMacId,
+		std::string("Zigbee End Device (ZED)"),
+		std::make_shared<Notification_DeviceInfo>(m_EthernetMacId),
+		&Notification_DeviceInfo::Device_MacId
+	);
 
-		auto device_info_notif = std::make_shared<Notification_DeviceInfo>(m_EthernetMacId);
-		device_info_notif->Device_MacId(m_ZigbeeMacId);
-		NotificationManagerSingleton()->Dispatch(device_info_notif);
-
-	}
-
-	if (!network_info.CoordinatorZigbeeId().has_value())
-	{
-		BOOST_LOG_TRIVIAL(trace) << L"Missing Zigbee Coordinator (ZC) id in message payload";
-	}
-	else if (!network_info.CoordinatorZigbeeId().value().IsValid())
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received invalid Zigbee Coordinator (ZC) id in message payload";
-	}
-	else if (m_Connectivity.ZigBee.Meter_MacId.IsValid())
-	{
-		BOOST_LOG_TRIVIAL(trace) << L"Have already received valid Zigbee Coordinator (ZC) id; ignoring";
-	}
-	else
-	{
-		BOOST_LOG_TRIVIAL(debug) << L"Capturing Zigbee Coordinator (ZC) id of device forming root with Eagle: " << ZigBeeMacId::ToString(network_info.CoordinatorZigbeeId().value());
-		m_Connectivity.ZigBee.Meter_MacId = network_info.CoordinatorZigbeeId().value();
-		connection_status_notif->Meter_MacId(m_Connectivity.ZigBee.Meter_MacId);
-	}
+	ProcessAndSaveZigbeeId(
+		m_EthernetMacId,
+		network_info.CoordinatorZigbeeId(),
+		m_Connectivity.ZigBee.Meter_MacId,
+		std::string("Zigbee Coordinator (ZC)"),
+		connection_status_notif,
+		&Notification_Connectivity::Meter_MacId
+	);
 
 	if (network_info.Status().has_value())
 	{

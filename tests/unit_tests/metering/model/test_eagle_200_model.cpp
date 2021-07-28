@@ -27,7 +27,7 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 
 		auto base_device = DeviceRegistrySingleton()->GetOrCreate<Eagle200>(EthernetMacId("0xF57625CDDBF7"));
 		auto test_device = std::dynamic_pointer_cast<Eagle200>(base_device);
-
+		
 		{
 			auto raw_payload = test_tools::FragmentGenerator(test_tools::FragmentGenerator::FragmentVersions::V2)
 				.AddFragment_CurrentSummation()
@@ -41,11 +41,14 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 			test_device->ProcessPayload(payload);
 		}
 
-		BOOST_TEST(test_device->EnergyUsage().History.size() == 3);
+		// Deducing which overload to use (const vs. non-const) is based on the const'ness of *this.
+		const auto const_device = std::dynamic_pointer_cast<const Eagle200>(base_device);
 
-		BOOST_TEST(1 == test_device->EnergyUsage().History[0].second.ValueIn<Watts>());
-		BOOST_TEST(16 == test_device->EnergyUsage().History[1].second.ValueIn<Watts>());
-		BOOST_TEST(256 == test_device->EnergyUsage().History[2].second.ValueIn<Watts>());
+		BOOST_TEST(const_device->EnergyUsage().History.size() == 3);
+
+		BOOST_TEST(1 == const_device->EnergyUsage().History[0].second.ValueIn<Watts>());
+		BOOST_TEST(16 == const_device->EnergyUsage().History[1].second.ValueIn<Watts>());
+		BOOST_TEST(256 == const_device->EnergyUsage().History[2].second.ValueIn<Watts>());
 
 		{
 			// NOTE THAT THESE ELEMENTS ARE DELIBERATELY OUT OF ORDER
@@ -60,12 +63,12 @@ BOOST_AUTO_TEST_CASE(Test_DemandHistory)
 			test_device->ProcessPayload(payload);
 		}
 
-		BOOST_TEST(test_device->EnergyUsage().History.size() == 5);
+		BOOST_TEST(const_device->EnergyUsage().History.size() == 5);
 
 		// NOTE THAT THE TESTED ELEMENTS ARE DELIBERATELY OUT OF ORDER
 
-		BOOST_TEST(4096 == test_device->EnergyUsage().History[4].second.ValueIn<Watts>());
-		BOOST_TEST(65536 == test_device->EnergyUsage().History[3].second.ValueIn<Watts>());
+		BOOST_TEST(4096 == const_device->EnergyUsage().History[4].second.ValueIn<Watts>());
+		BOOST_TEST(65536 == const_device->EnergyUsage().History[3].second.ValueIn<Watts>());
 	}
 	catch (const std::exception& ex)
 	{

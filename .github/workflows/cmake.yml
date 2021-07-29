@@ -77,7 +77,15 @@ jobs:
     
     - name: Configure build system
       uses: lukka/get-cmake@v3.20.1
+
+    - name: dir
+      run: find $RUNNER_TEMP
+      shell: bash
       
+    - name: dir
+      run: find $RUNNER_WORKSPACE
+      shell: bash
+
     - name: Build dependencies (via vcpkg)
       uses: lukka/run-vcpkg@main
       id: runvcpkg
@@ -87,10 +95,13 @@ jobs:
         # Location of the vcpkg submodule in the Git repository
         vcpkgDirectory: '${{ github.workspace }}/deps/vcpkg'
         # Ensure the cache key changes any time the content of the response file changes.
-        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json.' ) }}
+        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
         vcpkgTriplet: ${{ matrix.triplet }}
         # Ensure the vcpkg artifacts are cached, they are generated in the 'CMAKE_BINARY_DIR/vcpkg_installed'.
         additionalCachedPaths: ${{ env.BUILD_DIR }}/vcpkg_installed
+
+    - name: Prints output of run-vcpkg's action
+      run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}'"
 
     - name: Build eagle-to-mqtt
       uses: lukka/run-cmake@main
@@ -98,11 +109,11 @@ jobs:
       with:
         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
         cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-        buildDirectory: '${{ env.BUILD_DIR }}'
         useVcpkgToolchainFile: true
-        cmakeAppendedArgs: '-DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}'
+        # cmakeAppendedArgs: '-DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}'
+        buildDirectory: '${{ env.BUILD_DIR }}'
         buildWithCMake: true
-        buildWithCMakeArgs: '--config ${{env.BUILD_TYPE}} --parallel'
+        # buildWithCMakeArgs: '--config ${{env.BUILD_TYPE}} --parallel'
 
     - name: Run unit and integration tests
       working-directory: ${{ env.BUILD_DIR }}

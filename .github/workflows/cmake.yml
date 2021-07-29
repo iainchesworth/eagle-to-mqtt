@@ -63,7 +63,7 @@ jobs:
         CXX: ${{ matrix.cxx }}
         CC: ${{ matrix.cc }}
     
-    - uses: ilammy/msvc-dev-cmd@latest
+    - uses: ilammy/msvc-dev-cmd@v1
       if: "startsWith(matrix.os, 'windows')"
       with:
           arch: x64

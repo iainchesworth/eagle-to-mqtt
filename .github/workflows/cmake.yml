@@ -58,8 +58,6 @@ jobs:
       with:
         submodules: true
 
-    - name: Setup compiler environment
-
     - uses: lukka/set-shell-env@latest
       with:
         CXX: ${{ matrix.cxx }}

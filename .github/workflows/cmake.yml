@@ -58,7 +58,7 @@ jobs:
       with:
         submodules: true
 
-    - uses: lukka/set-shell-env@latest
+    - uses: lukka/set-shell-env@v1
       with:
         CXX: ${{ matrix.cxx }}
         CC: ${{ matrix.cc }}
@@ -74,7 +74,7 @@ jobs:
         version: latest
         platform: x64
     
-    - uses: lukka/get-cmake@latest
+    - uses: lukka/get-cmake@v3.20.1
       
     - name: Build dependencies (via vcpkg)
       uses: lukka/run-vcpkg@main

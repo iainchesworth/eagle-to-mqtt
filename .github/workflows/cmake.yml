@@ -12,37 +12,43 @@ env:
 
 jobs:
   job:
-    name: ${{ matrix.name }}-build
+    name: ${{ matrix.os }}-build
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        name: [ubuntu-latest-clang, ubuntu-latest-gcc, macos-latest-clang, windows-latest-cl]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [cl, gcc, clang]
         include:
-          - name: windows-latest-cl
-            os: windows-latest
+          - os: windows-latest
             triplet: x64-windows
-            cxx: cl.exe
-            cc: cl.exe
             vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
-          - name: ubuntu-latest-clang
-            os: ubuntu-latest
+          - os: ubuntu-latest
             triplet: x64-linux
-            cxx: clang++
-            cc: clang
             vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
-          - name: ubuntu-latest-gcc
-            os: ubuntu-latest
+          - os: macos-latest
             triplet: x64-osx
-            cxx: g++
+            vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
+          - compiler: cl
+            cc: cl
+            cxx: cl
+          - compiler: gcc
             cc: gcc
-            vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
-          - name: macos-latest-clang
-            os: macos-latest
-            triplet: x64-osx
-            cxx: clang++
+            cxx: g++
+          - compiler: clang
             cc: clang
-            vcpkgCommitId: '1257354a3ab0bebd8abe95281ca561537853578c'
+            cxx: clang++
+        exclude:
+          - os: ubuntu-latest
+            compiler: cl
+          - os: macos-latest
+            compiler: cl
+          - os: macos-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
 
     env:
       BUILD_DIR: '${{ github.workspace }}/build'
@@ -54,18 +60,18 @@ jobs:
 
     - name: Setup compiler environment
 
-    - uses: ilammy/msvc-dev-cmd@latest
-      if: "startsWith(matrix.name, 'windows')"
-      with:
-          arch: ${{ matrix.arch }}
-
     - uses: lukka/set-shell-env@latest
       with:
         CXX: ${{ matrix.cxx }}
         CC: ${{ matrix.cc }}
+    
+    - uses: ilammy/msvc-dev-cmd@latest
+      if: "startsWith(matrix.os, 'windows')"
+      with:
+          arch: x64
 
     - uses: egor-tensin/setup-gcc@v1
-      if: "startsWith(matrix.name, 'ubuntu')"
+      if: "startsWith(matrix.os, 'ubuntu')"
       with:
         version: latest
         platform: x64

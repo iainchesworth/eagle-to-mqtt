@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        remote: true
+        submodules: true
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1

@@ -10,6 +10,7 @@ env:
   BUILD_DIR: ${{github.workspace}}/build
   COVER_DIR: ${{github.workspace}}/build-for-coverage
   VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
+  BUILD_TYPE: RelWithDebInfo
 
 jobs:
   #pre-requisites:
@@ -27,7 +28,7 @@ jobs:
         languages: cpp
 
     - name: Install 3rd Party Dependencies
-      run: sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev unzip
+      run: sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev pkg-config unzip
 
     - name: Install vcpkg
       shell: bash
@@ -51,23 +52,46 @@ jobs:
   #  runs-on: ubuntu-latest  
 
   #  steps:
+    - name: Cache vcpkg
+      uses: actions/cache@v2
+      id: cache-vcpkg
+      with:
+        path: |
+          "${{env.BUILD_DIR}}/vcpkg_installed"
+          "${{env.COVER_DIR}}/vcpkg_installed"
+        key: vcpkg_installed-${{hashFiles('**/vcpkg.json')}}
+
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+      run: cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
 
     - name: Build Application
-      run: cmake --build ${{env.BUILD_DIR}}
+      run: cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} 
+
+    - name: Upload App Binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: artefacts-applicationbinaries
+        path: build/${{env.BUILD_TYPE}}
 
   #build-with-coverage:
   #  needs: pre-requisites
   #  runs-on: ubuntu-latest 
 
   #  steps:
-    - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
+    - name: Configure CMake (With Coverage)
+      run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
 
     - name: Build Application
-      run: |
-        build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}}    
+      run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
+
+    - name: Upload Test Binaries
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: artefacts-buildlogs-testbinaries-and-coveragefiles
+        path: |
+          ${{env.COVER_DIR}}
+        if-no-files-found: warn
 
   #test:
   #  needs: build
@@ -75,8 +99,7 @@ jobs:
 
   #  steps:
     - name: Run Unit and Integration Tests
-      working-directory: ${{env.BUILD_DIR}}
-      run: ctest
+      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.COVER_DIR}}
       
   #static_analysis:
   #  needs: [build, build-with-coverage]

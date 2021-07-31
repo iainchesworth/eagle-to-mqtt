@@ -24,7 +24,7 @@ jobs:
         languages: cpp
 
     - name: Install 3rd Party Dependencies
-      run: sudo apt-get install -y --no-install-recommends install curl gcovr libicu66 libssl1.1 libssl-dev unzip
+      run: sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev unzip
 
     - name: Install vcpkg
       working-directory: ${{env.VCPKG_DIR}}

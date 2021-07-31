@@ -1,4 +1,4 @@
-name: Build eagle-to-mqtt Application
+name: Build Application
 
 on:
   push:

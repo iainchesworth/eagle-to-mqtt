@@ -32,8 +32,8 @@ jobs:
       shell: bash
       run: |
         export VCPKG_DEFAULT_TRIPLET=x64-linux
-        ./${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
-        ./${{env.VCPKG_DIR}}/vcpkg integrate install
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
 
     - name: Install CMake
       uses: lukka/get-cmake@v3.20.1

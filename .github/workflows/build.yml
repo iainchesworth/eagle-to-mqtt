@@ -28,10 +28,11 @@ jobs:
 
     - name: Install vcpkg
       working-directory: ${{env.VCPKG_DIR}}
+      shell: bash
       run: |
         export VCPKG_DEFAULT_TRIPLET=x64-linux
-        ./bootstrap.sh
-        ./vcpkg integrate install
+        ./${{env.VCPKG_DIR}}/bootstrap.sh
+        ./${{env.VCPKG_DIR}}/vcpkg integrate install
 
     - name: Install CMake
       uses: lukka/get-cmake@v3.20.1

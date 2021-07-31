@@ -27,12 +27,11 @@ jobs:
       run: sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev unzip
 
     - name: Install vcpkg
-      working-directory: ${{env.VCPKG_DIR}}
       shell: bash
       run: |
         export VCPKG_DEFAULT_TRIPLET=x64-linux
-        ./bootstrap-vcpkg.sh
-        ./vcpkg integrate install
+        ./${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+        ./${{env.VCPKG_DIR}}/vcpkg integrate install
 
     - name: Install CMake
       uses: lukka/get-cmake@v3.20.1

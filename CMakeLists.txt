@@ -55,8 +55,10 @@ if (UNIX)
     # Fix issues with RPATH when building under _real_ Linux/Unix (i.e. not WSL2)
     set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 
-    # Fix issues with dynamic linking for Boost under Linux/Unix
-    add_definitions(-DBOOST_LOG_DYN_LINK)
+    # Set some variables to handle different library names under different environments
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT eclipse-paho-mqtt-c::paho-mqtt3a-static eclipse-paho-mqtt-c::paho-mqtt3c-static eclipse-paho-mqtt-c::paho-mqtt3as-static eclipse-paho-mqtt-c::paho-mqtt3cs-static)
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP PahoMqttCpp::paho-mqttpp3-static)
+
 endif ()
 
 if (WIN32)
@@ -82,12 +84,16 @@ if (WIN32)
     # Silence MSVC warnings about features that are deprecated in C++17 (notably in Boost headers)
     add_definitions(-D_SILENCE_CXX17_ADAPTOR_TYPEDEFS_DEPRECATION_WARNING -D_CRT_SECURE_NO_WARNINGS)
 
+    # Set some variables to handle different library names under different environments
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT eclipse-paho-mqtt-c::paho-mqtt3a eclipse-paho-mqtt-c::paho-mqtt3c eclipse-paho-mqtt-c::paho-mqtt3as eclipse-paho-mqtt-c::paho-mqtt3cs)
+    set(PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP PahoMqttCpp::paho-mqttpp3)
+
 endif ()
 
 # Main application
 #-----------------------------------------------------------------------------------------------------------------------
 
-find_package(Boost COMPONENTS log json program_options system thread unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS log log_setup json program_options system thread unit_test_framework REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(PahoMqttCpp CONFIG REQUIRED)
 find_package(Threads REQUIRED)
@@ -122,15 +128,17 @@ target_link_directories(${APPLICATION_TARGET} PRIVATE ${Boost_LIBRARY_DIRS} ${CM
 target_link_libraries(
     ${APPLICATION_TARGET}
         PRIVATE
-            ${LIBRARY_TARGET}
+            eagle-to-mqtt-core
         PRIVATE 
             Boost::boost
             Boost::log 
+            Boost::log_setup
             Boost::json 
             Boost::program_options
             OpenSSL::Crypto 
-            OpenSSL::SSL 
-            PahoMqttCpp::paho-mqttpp3
+            OpenSSL::SSL
+            ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT}
+            ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP}
             Threads::Threads
 )
 

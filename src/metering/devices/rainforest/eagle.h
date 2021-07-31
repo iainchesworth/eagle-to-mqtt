@@ -46,8 +46,6 @@ protected:
 	virtual void ProcessFragment(const MessageCluster& network_info);
 	virtual void ProcessFragment(const NetworkInfo& network_info);
 	virtual void ProcessFragment(const PriceCluster& price_cluster);
-
-protected:
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
 
 public:
@@ -55,16 +53,25 @@ public:
 	const Rainforest::DeviceEnergyUsage& EnergyUsage() const;
 	const Rainforest::DeviceStatistics& Statistics() const;
 
-protected:
+private:
 	Rainforest::DeviceConnectivity m_Connectivity;
 	Rainforest::DeviceEnergyUsage m_EnergyUsage;
 	Rainforest::DeviceStatistics m_Statistics;
 
-protected:
+public:
+	const EthernetMacId& Ethernet_MacId() const;
+	const ZigBeeMacId& Zigbee_MacId() const;
+
+private:
 	EthernetMacId m_EthernetMacId;
 	ZigBeeMacId m_ZigbeeMacId;
 
-protected:
+public:
+	const std::string& FirmwareVersion() const;
+	const std::string& HardwareVersion() const;
+	const std::string& ModelId() const;
+
+private:
 	std::string m_FirmwareVersion;
 	std::string m_HardwareVersion;
 	std::string m_ModelId;
@@ -72,11 +79,15 @@ protected:
 public:
 	const PricingTiers& PriceTiers() const;
 
-protected:
+private:
 	PricingTiers m_PricingTiers;
 
-protected:
-	std::map<Queues, MeterMessageQueue> m_MeterMessages
+public:
+	using MeterMessagesMap = std::map<Queues, MeterMessageQueue>;
+	const MeterMessagesMap& MessageQueues() const;
+
+private:
+	MeterMessagesMap m_MeterMessages
 	{
 		// Instantiate the various available meter messages queues.
 		std::make_pair(Queues(Queues::QueueTypes::NotSpecified), MeterMessageQueue()),
@@ -86,7 +97,6 @@ protected:
 	};
 
 public:
-	friend class Eagle_Serializer;
 	boost::json::object Serialize() const override;
 };
 

@@ -22,9 +22,9 @@ protected:
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
 
 public:
-	Fronius::DeviceStatistics Statistics() const;
+	const Fronius::DeviceStatistics& Statistics() const;
 
-protected:
+private:
 	Fronius::DeviceStatistics m_Statistics;
 
 public:

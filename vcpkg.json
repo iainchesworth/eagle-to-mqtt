@@ -1,0 +1,22 @@
+{
+  "name": "eagle-to-mqtt",
+  "version-string": "0.0.2",
+  "dependencies": [
+    "boost-algorithm",
+    "boost-asio",
+    "boost-beast",
+    "boost-circular-buffer",
+    "boost-log",
+    "boost-json",
+    "boost-program-options",
+    "boost-property-tree",
+    "boost-signals2",
+    "boost-system",
+    "boost-thread",
+    "boost-test",
+    "boost-type-traits",
+    "openssl",
+    "paho-mqtt",
+    "paho-mqttpp3"
+  ]
+}

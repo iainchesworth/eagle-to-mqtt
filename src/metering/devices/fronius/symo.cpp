@@ -104,6 +104,11 @@ void Symo::ProcessHeaderAttributes(const boost::property_tree::ptree& header_att
 	}
 }
 
+const Fronius::DeviceStatistics& Symo::Statistics() const
+{
+	return m_Statistics;
+}
+
 boost::json::object Symo::Serialize() const
 {
 	return Symo_Serializer(*this).Serialize();

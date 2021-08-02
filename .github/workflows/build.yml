@@ -22,11 +22,6 @@ jobs:
       with:
         submodules: true
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: cpp
-
     - name: Install 3rd Party Dependencies
       run: sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev pkg-config unzip
 
@@ -67,11 +62,18 @@ jobs:
     - name: Build Application
       run: cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} 
 
+    - name: Archive App Binaries
+      run: |
+        zip ${{env.BUILD_DIR}}.zip ${{env.BUILD_DIR}}/
+        zip ${{env.BUILD_TYPE}}.zip ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}/
+
     - name: Upload App Binaries
       uses: actions/upload-artifact@v2
       with:
         name: artefacts-applicationbinaries
-        path: build/${{env.BUILD_TYPE}}
+        path: |
+          ${{env.BUILD_DIR}}.zip
+          ${{env.BUILD_TYPE}}.zip
 
   #build-with-coverage:
   #  needs: pre-requisites
@@ -84,28 +86,52 @@ jobs:
     - name: Build Application (With Coverage)
       run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
 
-    - name: Upload Test Binaries
+    - name: Archive Test Binaries
+      run: zip ${{env.COVER_DIR}}.zip ${{env.COVER_DIR}}/
+
+    - name: Upload Test Binaries Archive
       uses: actions/upload-artifact@v2
       if: success()
       with:
         name: artefacts-buildlogs-testbinaries-and-coveragefiles
         path: |
-          ${{env.COVER_DIR}}
+          ${{env.COVER_DIR}}.zip
         if-no-files-found: warn
 
-  #test:
-  #  needs: build
-  #  runs-on: ubuntu-latest 
+  test:
+    needs: build
+    runs-on: ubuntu-latest 
 
-  #  steps:
+    steps:
+    - name: Download App Binaries Archive
+      uses: actions/download-artifact@v2
+      with: 
+        name: ${{env.BUILD_DIR}}.zip
+
+    - name: Unpack App Binaries
+      run: unzip ${{env.BUILD_DIR}}.zip
+
     - name: Run Unit and Integration Tests
-      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.COVER_DIR}}
+      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
       
-  #static_analysis:
-  #  needs: [build, build-with-coverage]
-  #  runs-on: ubuntu-latest 
+  static_analysis:
+    needs: build
+    runs-on: ubuntu-latest 
     
-  #  steps:
+    steps:
+    - name: Download Test Binaries Archive
+      uses: actions/download-artifact@v2
+      with: 
+        name: ${{env.COVER_DIR}}.zip
+
+    - name: Unpack Test Binaries
+      run: unzip ${{env.COVER_DIR}}.zip
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
   

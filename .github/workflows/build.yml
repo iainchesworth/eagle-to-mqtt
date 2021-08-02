@@ -66,9 +66,7 @@ jobs:
       run: cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} 
 
     - name: Archive App Binaries
-      run: |
-        zip ${{env.BUILD_DIR}}.zip ${{env.BUILD_DIR}}/
-        zip eagle-to-mqtt-linux.zip ${{env.BUILD_DIR}}/eagle-to-mqtt
+      run: zip ${{env.BUILD_DIR}}.zip ${{env.BUILD_DIR}}/
 
     - name: Upload App Binaries
       uses: actions/upload-artifact@v2
@@ -76,7 +74,7 @@ jobs:
         name: artefacts-applicationbinaries
         path: |
           ${{env.BUILD_DIR}}.zip
-          eagle-to-mqtt-linux.zip
+        if-no-files-found: error
 
   #build-with-coverage:
   #  needs: pre-requisites
@@ -99,7 +97,7 @@ jobs:
         name: artefacts-buildlogs-testbinaries-and-coveragefiles
         path: |
           ${{env.COVER_DIR}}.zip
-        if-no-files-found: warn
+        if-no-files-found: error
 
   test:
     needs: build

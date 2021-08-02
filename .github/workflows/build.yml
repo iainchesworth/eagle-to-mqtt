@@ -52,6 +52,9 @@ jobs:
       id: cache-vcpkg
       with:
         path: |
+          "${{env.VCPKG_DIR}}/buildtrees"
+          "${{env.VCPKG_DIR}}/downloads"
+          "${{env.VCPKG_DIR}}/packages"
           "${{env.BUILD_DIR}}/vcpkg_installed"
           "${{env.COVER_DIR}}/vcpkg_installed"
         key: vcpkg_installed-${{hashFiles('**/vcpkg.json')}}
@@ -65,7 +68,7 @@ jobs:
     - name: Archive App Binaries
       run: |
         zip ${{env.BUILD_DIR}}.zip ${{env.BUILD_DIR}}/
-        zip ${{env.BUILD_TYPE}}.zip ${{env.BUILD_DIR}}/${{env.BUILD_TYPE}}/
+        zip eagle-to-mqtt-linux.zip ${{env.BUILD_DIR}}/eagle-to-mqtt
 
     - name: Upload App Binaries
       uses: actions/upload-artifact@v2
@@ -73,7 +76,7 @@ jobs:
         name: artefacts-applicationbinaries
         path: |
           ${{env.BUILD_DIR}}.zip
-          ${{env.BUILD_TYPE}}.zip
+          eagle-to-mqtt-linux.zip
 
   #build-with-coverage:
   #  needs: pre-requisites

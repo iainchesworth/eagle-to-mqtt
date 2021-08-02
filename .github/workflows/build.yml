@@ -68,14 +68,14 @@ jobs:
       run: cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} 
 
     - name: Archive App Binaries
-      run: zip ${{BUILD_ARCHIVE}} ${{env.BUILD_DIR}}/
+      run: zip ${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}}/
 
     - name: Upload App Binaries
       uses: actions/upload-artifact@v2
       with:
         name: artefacts-applicationbinaries
         path: |
-          ${{BUILD_ARCHIVE}}
+          ${{env.BUILD_ARCHIVE}}
         if-no-files-found: error
 
   #build-with-coverage:
@@ -90,7 +90,7 @@ jobs:
       run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
 
     - name: Archive Test Binaries
-      run: zip ${{COVER_ARCHIVE}} ${{env.COVER_DIR}}/
+      run: zip ${{env.COVER_ARCHIVE}} ${{env.COVER_DIR}}/
 
     - name: Upload Test Binaries Archive
       uses: actions/upload-artifact@v2
@@ -98,7 +98,7 @@ jobs:
       with:
         name: artefacts-buildlogs-testbinaries-and-coveragefiles
         path: |
-          ${{COVER_ARCHIVE}}
+          ${{env.COVER_ARCHIVE}}
         if-no-files-found: error
 
   test:
@@ -109,10 +109,10 @@ jobs:
     - name: Download App Binaries Archive
       uses: actions/download-artifact@v2
       with: 
-        name: ${{BUILD_ARCHIVE}}
+        name: ${{env.BUILD_ARCHIVE}}
 
     - name: Unpack App Binaries
-      run: unzip ${{BUILD_ARCHIVE}}
+      run: unzip ${{env.BUILD_ARCHIVE}}
 
     - name: Run Unit and Integration Tests
       run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
@@ -125,10 +125,10 @@ jobs:
     - name: Download Test Binaries Archive
       uses: actions/download-artifact@v2
       with: 
-        name: ${{COVER_ARCHIVE}}
+        name: ${{env.COVER_ARCHIVE}}
 
     - name: Unpack Test Binaries
-      run: unzip ${{COVER_ARCHIVE}}
+      run: unzip ${{env.COVER_ARCHIVE}}
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1

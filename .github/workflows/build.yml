@@ -57,13 +57,13 @@ jobs:
       run: |
         choco install curl pip unzip zip
         pip install gcovr
-        export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
+        $env:VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
         ${{env.VCPKG_DIR}}/vcpkg integrate install
         curl -L --output ${{github.workspace}}/build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
         unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-win-x86.zip
         move build-wrapper-win-x86 build-wrapper
-        move build-wrapper/build-wrapper-win-x86-64 build-wrapper/build-wrapper
+        move build-wrapper/build-wrapper-win-x86-64.exe build-wrapper/build-wrapper.exe
 
     - name: Install 3rd Party Dependencies (MacOS)
       if: runner.os == 'macOS'

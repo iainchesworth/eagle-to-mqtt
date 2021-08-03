@@ -59,7 +59,7 @@ jobs:
       run: |
         export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
         if [ "$RUNNER_OS" == "Windows" ]; then
-          ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
+          cmd "/C ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat"
         else
           ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
         fi

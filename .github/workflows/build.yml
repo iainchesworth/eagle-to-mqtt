@@ -120,7 +120,11 @@ jobs:
         name: artefacts-applicationbinaries
 
     - name: Unpack App Binaries
-      run: unzip ${{env.BUILD_ARCHIVE}}
+      shell: bash
+      run: |
+        unzip ${{env.BUILD_ARCHIVE}}
+        mv home/runner/work/eagle-to-mqtt/eagle-to-mqtt/build .
+        rm -r home/runner/work/eagle-to-mqtt/eagle-to-mqtt
 
     - name: Run Unit and Integration Tests
       run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
@@ -136,7 +140,11 @@ jobs:
         name: artefacts-buildlogs-testbinaries-and-coveragefiles
 
     - name: Unpack Test Binaries
-      run: unzip ${{env.COVER_ARCHIVE}}
+      shell: bash
+      run: |
+        unzip ${{env.COVER_ARCHIVE}}
+        mv home/runner/work/eagle-to-mqtt/eagle-to-mqtt/build-for-coverage .
+        rm -r home/runner/work/eagle-to-mqtt/eagle-to-mqtt
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1

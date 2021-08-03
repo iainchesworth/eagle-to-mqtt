@@ -48,7 +48,7 @@ jobs:
         elif [ "$RUNNER_OS" == "Windows" ]; then
           choco install unzip zip
         elif [ "$RUNNER_OS" == "macOS" ]; then
-          # Nothing here.
+          echo 'Nothing installed on macOS'
         else
           echo "$RUNNER_OS not supported"
           exit 1

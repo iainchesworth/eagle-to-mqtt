@@ -60,10 +60,11 @@ jobs:
         export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
         if [ "$RUNNER_OS" == "Windows" ]; then
           cmd "/C ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat"
+          cmd "/C ${{env.VCPKG_DIR}}/vcpkg integrate install"
         else
           ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+          ${{env.VCPKG_DIR}}/vcpkg integrate install
         fi
-        ${{env.VCPKG_DIR}}/vcpkg integrate install
 
     - name: Install CMake
       uses: lukka/get-cmake@v3.20.1

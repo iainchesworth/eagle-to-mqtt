@@ -57,7 +57,7 @@ jobs:
     - name: Install vcpkg
       shell: bash
       run: |
-        export VCPKG_DEFAULT_TRIPLET=${{os.vcpkg-triplet}}
+        export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
         if [ "$RUNNER_OS" == "Windows" ]; then
           ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
         else

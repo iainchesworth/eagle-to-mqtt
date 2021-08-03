@@ -7,12 +7,10 @@ on:
     branches: [ master ]
 
 env:
-  BUILD_DIR: ${{github.workspace}}/build
   COVER_DIR: ${{github.workspace}}/build-for-coverage
   VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
   BUILD_TYPE: RelWithDebInfo
-  BUILD_ARCHIVE: app-binaries-and-build-artefacts.zip
-  COVER_ARCHIVE: test-binaries-and-build-artefacts.zip
+  COVER_ARCHIVE: binaries-with-build-artefacts.zip
 
 jobs:
 
@@ -40,42 +38,54 @@ jobs:
       with:
         submodules: true
 
-    - name: Install 3rd Party Dependencies
+    - name: Install 3rd Party Dependencies (Linux)
+      if: runner.os == 'Linux'
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev pkg-config unzip
-        elif [ "$RUNNER_OS" == "Windows" ]; then
-          choco install unzip zip
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-          echo 'Nothing installed on macOS'
-        else
-          echo "$RUNNER_OS not supported"
-          exit 1
-        fi
-
-    - name: Install vcpkg
-      shell: bash
-      run: |
+        sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev pkg-config unzip
         export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          cmd "/C ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat"
-          cmd "/C ${{env.VCPKG_DIR}}/vcpkg integrate install"
-        else
-          ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
-          ${{env.VCPKG_DIR}}/vcpkg integrate install
-        fi
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
+        curl -L --output ${{github.workspace}}/build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-linux-x86.zip
+        mv build-wrapper-linux-x86 build-wrapper
+        mv build-wrapper/build-wrapper-linux-x86-64 build-wrapper/build-wrapper
+
+    - name: Install 3rd Party Dependencies (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        choco install curl pip unzip zip
+        pip install gcovr
+        export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
+        curl -L --output ${{github.workspace}}/build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
+        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-win-x86.zip
+        move build-wrapper-win-x86 build-wrapper
+        move build-wrapper/build-wrapper-win-x86-64 build-wrapper/build-wrapper
+
+    - name: Install 3rd Party Dependencies (MacOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        brew install gcovr
+        export VCPKG_DEFAULT_TRIPLET=${{matrix.vcpkg-triplet}}
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
+        curl -L --output ${{github.workspace}}/build-wrapper-macosx-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip
+        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-macosx-x86.zip
+        mv build-wrapper-macosx-x86 build-wrapper
+        mv build-wrapper/build-wrapper-macosx-x86 build-wrapper/build-wrapper
 
     - name: Install CMake
       uses: lukka/get-cmake@v3.20.1
 
-    - name: Install SonarQube Build Wrapper
-      if: runner.os == 'Linux'
-      working-directory: ${{github.workspace}}
-      shell: bash
-      run: |
-        curl -L --output ${{github.workspace}}/build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip 
-        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-linux-x86.zip
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
 
   #============================================================================
   #
@@ -96,104 +106,39 @@ jobs:
           "${{env.COVER_DIR}}/vcpkg_installed"
         key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
 
-    - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
-
-    - name: Build Application
-      run: cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} 
-
-    - name: Archive App Binaries
-      run: zip -9 -r -q ${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}}/
-
-    - name: Upload App Binaries
-      uses: actions/upload-artifact@v2
-      with:
-        name: artefacts-applicationbinaries
-        path: |
-          ${{env.BUILD_ARCHIVE}}
-        if-no-files-found: error
-
-  #============================================================================
-  #
-  #  (Linux-Only) Build the application and run coverage testing
-  #
-  #============================================================================
-
     - name: Configure CMake (With Coverage)
-      if: runner.os == 'Linux'
       run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
 
     - name: Build Application (With Coverage)
-      if: runner.os == 'Linux'
-      run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
+      run: build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
 
     - name: Archive Test Binaries
-      if: runner.os == 'Linux'
-      run: zip -9 -r -q ${{env.COVER_ARCHIVE}} ${{env.COVER_DIR}}/
+      run: zip -9 -r -q ${{runner.os}}-${{env.COVER_ARCHIVE}} ${{env.COVER_DIR}}/
 
     - name: Upload Test Binaries Archive
       uses: actions/upload-artifact@v2
-      if: success() && runner.os == 'Linux'
+      if: success()
       with:
-        name: artefacts-buildlogs-testbinaries-and-coveragefiles
+        name: ${{runner.os}}-artefacts-buildlogs-testbinaries-and-coveragefiles
         path: |
-          ${{env.COVER_ARCHIVE}}
+          ${{runner.os}}-${{env.COVER_ARCHIVE}}
         if-no-files-found: error
 
   #============================================================================
   #
-  #  (Linux-Only) Run the unit and integration tests
+  #  Run the unit and integration tests
   #
   #============================================================================
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest 
-
-    steps:
-    - name: Download App Binaries Archive
-      uses: actions/download-artifact@v2
-      with: 
-        name: artefacts-applicationbinaries
-
-    - name: Unpack App Binaries
-      shell: bash
-      run: |
-        unzip ${{env.BUILD_ARCHIVE}}
-        mv home/runner/work/eagle-to-mqtt/eagle-to-mqtt/build .
-        rm -r home/runner/work/eagle-to-mqtt/eagle-to-mqtt
 
     - name: Run Unit and Integration Tests
       run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
-   
+
   #============================================================================
   #
-  #  (Linux-Only) Perform static analysis and upload coverage reports
+  #  Perform static analysis and upload coverage reports
   #
   #============================================================================
    
-  static_analysis:
-    needs: build
-    runs-on: ubuntu-latest 
-    
-    steps:
-    - name: Download Test Binaries Archive
-      uses: actions/download-artifact@v2
-      with: 
-        name: artefacts-buildlogs-testbinaries-and-coveragefiles
-
-    - name: Unpack Test Binaries
-      shell: bash
-      run: |
-        unzip ${{env.COVER_ARCHIVE}}
-        mv home/runner/work/eagle-to-mqtt/eagle-to-mqtt/build-for-coverage .
-        rm -r home/runner/work/eagle-to-mqtt/eagle-to-mqtt
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: cpp
-
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
   

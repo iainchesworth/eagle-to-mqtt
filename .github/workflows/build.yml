@@ -117,7 +117,7 @@ jobs:
     - name: Download App Binaries Archive
       uses: actions/download-artifact@v2
       with: 
-        name: ${{env.BUILD_ARCHIVE}}
+        name: artefacts-applicationbinaries
 
     - name: Unpack App Binaries
       run: unzip ${{env.BUILD_ARCHIVE}}
@@ -133,7 +133,7 @@ jobs:
     - name: Download Test Binaries Archive
       uses: actions/download-artifact@v2
       with: 
-        name: ${{env.COVER_ARCHIVE}}
+        name: artefacts-buildlogs-testbinaries-and-coveragefiles
 
     - name: Unpack Test Binaries
       run: unzip ${{env.COVER_ARCHIVE}}

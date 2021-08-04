@@ -36,8 +36,8 @@ jobs:
             cxx: g++
           - os: macOS-latest
             vcpkg-triplet: "x64-osx"
-            cc: gcc-11
-            cxx: g++-11
+            cc: gcc
+            cxx: g++
 
     env:
       VCPKG_DEFAULT_TRIPLET: ${{matrix.vcpkg-triplet}}
@@ -79,7 +79,7 @@ jobs:
       shell: bash
       run: |
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        brew install gcovr make ninja
+        brew install gcovr
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
         ${{env.VCPKG_DIR}}/vcpkg integrate install
         curl -L --output ${{github.workspace}}/build-wrapper-macosx-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip

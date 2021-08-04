@@ -21,20 +21,28 @@ jobs:
   #============================================================================      
 
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         include:
           - os: ubuntu-latest
             vcpkg-triplet: "x64-linux"
+            cc: gcc-10
+            cxx: g++-10
           - os: windows-latest
             vcpkg-triplet: "x64-windows"
+            cc: gcc
+            cxx: g++
           - os: macOS-latest
             vcpkg-triplet: "x64-osx"
+            cc: gcc-11
+            cxx: g++-11
 
     env:
       VCPKG_DEFAULT_TRIPLET: ${{matrix.vcpkg-triplet}}
+      CC: ${{matrix.cc}}
+      CXX: ${{matrix.cxx}}
 
     steps:
     - uses: actions/checkout@v2
@@ -102,15 +110,14 @@ jobs:
           "${{env.VCPKG_DIR}}/downloads"
           "${{env.VCPKG_DIR}}/packages"
           "${{env.VCPKG_DIR}}/vcpkg*"
-          "${{env.BUILD_DIR}}/vcpkg_installed"
           "${{env.COVER_DIR}}/vcpkg_installed"
         key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
 
-    - name: Configure CMake (With Coverage)
+    - name: Configure CMake
       run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
 
-    - name: Build Application (With Coverage)
-      run: build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
+    - name: Build Application
+      run: build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}
 
     - name: Archive Test Binaries
       run: zip -9 -r -q ${{runner.os}}-${{env.COVER_ARCHIVE}} ${{env.COVER_DIR}}/
@@ -131,7 +138,7 @@ jobs:
   #============================================================================
 
     - name: Run Unit and Integration Tests
-      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
+      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.COVER_DIR}}
 
   #============================================================================
   #

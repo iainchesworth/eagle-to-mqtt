@@ -79,7 +79,7 @@ jobs:
       shell: bash
       run: |
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        brew install gcovr
+        brew install gcovr make ninja
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
         ${{env.VCPKG_DIR}}/vcpkg integrate install
         curl -L --output ${{github.workspace}}/build-wrapper-macosx-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip

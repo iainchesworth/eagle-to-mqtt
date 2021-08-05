@@ -28,19 +28,15 @@ jobs:
         include:
           - os: ubuntu-latest
             vcpkg-triplet: "x64-linux"
-            cc: gcc-10
-            cxx: g++-10
           - os: windows-latest
             vcpkg-triplet: "x64-windows"
-            cc: gcc
-            cxx: g++
           - os: macOS-latest
             vcpkg-triplet: "x64-osx"
-            cc: gcc-11
-            cxx: g++-11
 
     env:
       VCPKG_DEFAULT_TRIPLET: ${{matrix.vcpkg-triplet}}
+      CXX: g++
+      CC: gcc
 
     steps:
     - uses: actions/checkout@v2
@@ -112,7 +108,15 @@ jobs:
         key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
 
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_C_COMPILER=${{matrix.cc}} -DCMAKE_CXX_COMPILER=${{matrix.cxx}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
+      run: |
+        cmake -S ${{github.workspace}} \
+              -B ${{env.COVER_DIR}} \
+              -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+              -DCMAKE_C_COMPILER=${{env.CC}} \
+              -DCMAKE_CXX_COMPILER=${{env.CXX}} \
+              -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake \
+              -DE2M_OPTION_CODE_COVERAGE=ON \
+              -DE2M_OPTION_SUPPORT_SONARQUBE=ON
 
     - name: Build Application
       run: build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}

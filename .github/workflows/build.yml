@@ -108,14 +108,14 @@ jobs:
         key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
 
     - name: Configure CMake
-      run: |
-        cmake -S ${{github.workspace}} \
-              -B ${{env.COVER_DIR}} \
-              -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-              -DCMAKE_C_COMPILER=${{env.CC}} \
-              -DCMAKE_CXX_COMPILER=${{env.CXX}} \
-              -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake \
-              -DE2M_OPTION_CODE_COVERAGE=ON \
+      run: >
+        cmake -S ${{github.workspace}}
+              -B ${{env.COVER_DIR}}
+              -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+              -DCMAKE_C_COMPILER=${{env.CC}}
+              -DCMAKE_CXX_COMPILER=${{env.CXX}}
+              -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+              -DE2M_OPTION_CODE_COVERAGE=ON
               -DE2M_OPTION_SUPPORT_SONARQUBE=ON
 
     - name: Build Application

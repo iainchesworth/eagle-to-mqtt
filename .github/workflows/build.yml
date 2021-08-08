@@ -29,19 +29,30 @@ jobs:
           - os: ubuntu-latest
             vcpkg-triplet: "x64-linux"
           - os: windows-latest
-            vcpkg-triplet: "x64-mingw-dynamic"
+            vcpkg-triplet: "x64-windows"
           - os: macOS-latest
             vcpkg-triplet: "x64-osx"
 
     env:
       VCPKG_DEFAULT_TRIPLET: ${{matrix.vcpkg-triplet}}
-      CXX: g++
-      CC: gcc
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
+
+    - name: Set up GCC (Linux)
+      if: runner.os == 'Linux'
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+        platform: x64
+
+    - name: Set up MinGW (Windows)
+      if: runner.os == 'Windows'
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
 
     - name: Install 3rd Party Dependencies (Linux)
       if: runner.os == 'Linux'
@@ -59,7 +70,7 @@ jobs:
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        choco install curl mingw pip unzip zip
+        choco install curl pip unzip zip
         pip install gcovr
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
         ${{env.VCPKG_DIR}}/vcpkg integrate install

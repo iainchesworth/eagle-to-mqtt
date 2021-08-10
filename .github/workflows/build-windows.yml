@@ -10,7 +10,7 @@ env:
   VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
   VCPKG_DEFAULT_TRIPLET: x64-windows
   BUILD_DIR: ${{github.workspace}}/build-windows
-  BUILD_TYPE: RelWithDebInfo
+  BUILD_TYPE: Release
   BUILD_ARCHIVE: binaries-with-build-artefacts.zip
   BINARIES_ARCHIVE: binaries.zip
 
@@ -67,7 +67,11 @@ jobs:
           "${{env.VCPKG_DIR}}/packages"
           "${{env.VCPKG_DIR}}/vcpkg*"
           "${{env.BUILD_DIR}}/vcpkg_installed"
-        key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
+        key: ${{runner.os}}-build-${{env.cache-name}}-${{hashFiles('**/vcpkg.json')}}
+        restore-keys: |
+            ${{runner.os}}-build-${{env.cache-name}}-
+            ${{runner.os}}-build-
+            ${{runner.os}}-
 
     - name: Build Application
       run: |

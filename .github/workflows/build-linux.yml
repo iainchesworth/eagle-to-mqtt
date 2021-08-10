@@ -10,7 +10,7 @@ env:
   VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
   VCPKG_DEFAULT_TRIPLET: x64-linux
   BUILD_DIR: ${{github.workspace}}/build-linux
-  BUILD_TYPE: RelWithDebInfo
+  BUILD_TYPE: Debug
   BUILD_ARCHIVE: binaries-with-build-artefacts.zip
   BINARIES_ARCHIVE: binaries.zip
 
@@ -63,7 +63,8 @@ jobs:
 
     - name: Cache vcpkg
       uses: actions/cache@v2
-      id: cache-vcpkg
+      env:
+        cache-name: cache-vcpkg-modules
       with:
         path: |
           "${{env.VCPKG_DIR}}/buildtrees"
@@ -71,12 +72,16 @@ jobs:
           "${{env.VCPKG_DIR}}/packages"
           "${{env.VCPKG_DIR}}/vcpkg*"
           "${{env.BUILD_DIR}}/vcpkg_installed"
-        key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
+        key: ${{runner.os}}-build-${{env.cache-name}}-${{hashFiles('**/vcpkg.json')}}
+        restore-keys: |
+            ${{runner.os}}-build-${{env.cache-name}}-
+            ${{runner.os}}-build-
+            ${{runner.os}}-
 
     - name: Build Application
       run: |
         cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
-        build-wrapper/build-wrapper --out-dir ${{env.BUILD_DIR}}/bw-output cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} --target coverage
+        build-wrapper/build-wrapper --out-dir ${{env.BUILD_DIR}}/bw-output cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}} --target eagle-to-mqtt coverage
 
     - name: Archive Build Binaries
       run: |

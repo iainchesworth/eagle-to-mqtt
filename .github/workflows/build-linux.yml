@@ -1,0 +1,129 @@
+name: Build Application (Linux)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
+  VCPKG_DEFAULT_TRIPLET: x64-linux
+  BUILD_DIR: ${{github.workspace}}/build-linux
+  BUILD_TYPE: RelWithDebInfo
+  BUILD_ARCHIVE: binaries-with-build-artefacts.zip
+  BINARIES_ARCHIVE: binaries.zip
+
+jobs:  
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+  #============================================================================
+  #
+  #  Configure any/all pre-requisites
+  #
+  #============================================================================  
+
+    - name: Set up GCC (Linux)
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+        platform: x64
+
+    - name: Install CMake
+      uses: lukka/get-cmake@latest
+
+    - name: Install 3rd Party Dependencies
+      shell: bash
+      run: |
+        sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev pkg-config unzip
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
+        curl -L --output ${{github.workspace}}/build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-linux-x86.zip
+        mv build-wrapper-linux-x86 build-wrapper
+        mv build-wrapper/build-wrapper-linux-x86-64 build-wrapper/build-wrapper
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+
+  #============================================================================
+  #
+  #  (All Platforms) Build the application
+  #
+  #============================================================================      
+
+    - name: Cache vcpkg
+      uses: actions/cache@v2
+      id: cache-vcpkg
+      with:
+        path: |
+          "${{env.VCPKG_DIR}}/buildtrees"
+          "${{env.VCPKG_DIR}}/downloads"
+          "${{env.VCPKG_DIR}}/packages"
+          "${{env.VCPKG_DIR}}/vcpkg*"
+          "${{env.BUILD_DIR}}/vcpkg_installed"
+        key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
+
+    - name: Build Application
+      run: |
+        cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
+        build-wrapper/build-wrapper --out-dir ${{env.BUILD_DIR}}/bw-output cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}}
+
+    - name: Archive Build Binaries
+      run: |
+        zip -9 -r -q ${{runner.os}}-${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}}/
+        zip -9 -r -q ${{runner.os}}-${{env.BINARIES_ARCHIVE}} ${{env.BUILD_DIR}}/eagle-to-mqtt 
+
+    - name: Upload Build Binaries Archive
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: ${{runner.os}}-artefacts-buildlogs-testbinaries-and-coveragefiles
+        path: |
+          ${{runner.os}}-${{env.BUILD_ARCHIVE}}
+          ${{runner.os}}-${{env.BINARIES_ARCHIVE}}
+        if-no-files-found: error
+
+  #============================================================================
+  #
+  #  Run the unit and integration tests
+  #
+  #============================================================================
+
+    - name: Run Unit and Integration Tests
+      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
+
+  #============================================================================
+  #
+  #  Perform static analysis and upload coverage reports
+  #
+  #============================================================================
+   
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+  
+    - name: Perform SonarCloud Analysis
+      uses: sonarsource/sonarcloud-github-action@master
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: ${{github.workspace}}
+        args: >
+          -Dsonar.organization=iainchesworth
+          -Dsonar.projectKey=iainchesworth_eagle-to-mqtt
+          -Dsonar.cfamily.build-wrapper-output=${{env.BUILD_DIR}}/bw-output
+          -Dsonar.coverageReportPaths=${{env.BUILD_DIR}}/coverage.sonarqube.xml
+          -Dsonar.sources=src/
+          -Dsonar.test.exclusions=tests/**
+          -Dsonar.tests=tests/
+          -Dsonar.verbose=true

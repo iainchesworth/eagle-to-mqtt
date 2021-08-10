@@ -1,0 +1,108 @@
+name: Build Application (Windows)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
+  VCPKG_DEFAULT_TRIPLET: x64-windows
+  BUILD_DIR: ${{github.workspace}}/build-windows
+  BUILD_TYPE: RelWithDebInfo
+  BUILD_ARCHIVE: binaries-with-build-artefacts.zip
+  BINARIES_ARCHIVE: binaries.zip
+
+jobs:      
+
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+  #============================================================================
+  #
+  #  Configure any/all pre-requisites
+  #
+  #============================================================================
+
+    - name: Install CMake
+      uses: lukka/get-cmake@latest
+
+    - name: Install 3rd Party Dependencies
+      shell: pwsh
+      run: |
+        choco install zip
+        # choco install curl pip unzip zip
+        # pip install gcovr
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
+        # curl -L --output ${{github.workspace}}/build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
+        # unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-win-x86.zip
+        # move build-wrapper-win-x86 build-wrapper
+        # move build-wrapper/build-wrapper-win-x86-64.exe build-wrapper/build-wrapper.exe
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: cpp
+
+  #============================================================================
+  #
+  #  (All Platforms) Build the application
+  #
+  #============================================================================      
+
+    - name: Cache vcpkg
+      uses: actions/cache@v2
+      id: cache-vcpkg
+      with:
+        path: |
+          "${{env.VCPKG_DIR}}/buildtrees"
+          "${{env.VCPKG_DIR}}/downloads"
+          "${{env.VCPKG_DIR}}/packages"
+          "${{env.VCPKG_DIR}}/vcpkg*"
+          "${{env.BUILD_DIR}}/vcpkg_installed"
+        key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
+
+    - name: Build Application
+      run: |
+        cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+        cmake --build ${{env.BUILD_DIR}} --config ${{env.BUILD_TYPE}}
+
+    - name: Archive Build Binaries
+      run: |
+        zip -9 -r -q ${{runner.os}}-${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}}/
+        zip -9 -r -q ${{runner.os}}-${{env.BINARIES_ARCHIVE}} ${{env.BUILD_DIR}}/eagle-to-mqtt.exe ${{env.BUILD_DIR}}/*.dll
+
+    - name: Upload Build Binaries Archive
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: ${{runner.os}}-artefacts-buildlogs-testbinaries-and-coveragefiles
+        path: |
+          ${{runner.os}}-${{env.BUILD_ARCHIVE}}
+          ${{runner.os}}-${{env.BINARIES_ARCHIVE}}
+        if-no-files-found: error
+
+  #============================================================================
+  #
+  #  Run the unit and integration tests
+  #
+  #============================================================================
+
+    - name: Run Unit and Integration Tests
+      run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
+
+  #============================================================================
+  #
+  #  Perform static analysis and upload coverage reports
+  #
+  #============================================================================
+   
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

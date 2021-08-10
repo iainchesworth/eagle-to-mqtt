@@ -36,7 +36,7 @@ jobs:
     - name: Install 3rd Party Dependencies
       shell: pwsh
       run: |
-        choco install zip
+        choco install 7zip
         # choco install curl pip unzip zip
         # pip install gcovr
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
@@ -76,8 +76,8 @@ jobs:
 
     - name: Archive Build Binaries
       run: |
-        zip -9 -r -q ${{runner.os}}-${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}}/
-        zip -9 -r -q ${{runner.os}}-${{env.BINARIES_ARCHIVE}} ${{env.BUILD_DIR}}/eagle-to-mqtt.exe ${{env.BUILD_DIR}}/*.dll
+        7za a -tzip ${{runner.os}}-${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}} -mx=9 -mmt=on -mm=Deflate64
+        7za a -tzip ${{runner.os}}-${{env.BINARIES_ARCHIVE}} ${{env.BUILD_DIR}}/eagle-to-mqtt.exe ${{env.BUILD_DIR}}/*.dll -mx=9 -mmt=on -mm=Deflate64
 
     - name: Upload Build Binaries Archive
       uses: actions/upload-artifact@v2

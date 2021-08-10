@@ -28,13 +28,21 @@ jobs:
         include:
           - os: ubuntu-latest
             vcpkg-triplet: "x64-linux"
+            cmake_options: "-DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON"
+            build_command: "build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output"
           - os: windows-latest
             vcpkg-triplet: "x64-windows"
+            cmake_options: ""
+            build_command: ""
           - os: macOS-latest
             vcpkg-triplet: "x64-osx"
+            cmake_options: ""
+            build_command: ""
 
     env:
       VCPKG_DEFAULT_TRIPLET: ${{matrix.vcpkg-triplet}}
+      CMAKE_DEFAULT_OPTIONS: ${{matrix.cmake_options}}
+      BUILD_WRAPPER_CMDLINE: ${{matrix.build_command}}
 
     steps:
     - uses: actions/checkout@v2
@@ -46,12 +54,6 @@ jobs:
       uses: egor-tensin/setup-gcc@v1
       with:
         version: latest
-        platform: x64
-
-    - name: Set up MinGW (Windows)
-      if: runner.os == 'Windows'
-      uses: egor-tensin/setup-mingw@v2
-      with:
         platform: x64
 
     - name: Install 3rd Party Dependencies (Linux)
@@ -70,27 +72,27 @@ jobs:
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
-        choco install curl pip unzip zip
-        pip install gcovr
+        # choco install curl pip unzip zip
+        # pip install gcovr
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
         ${{env.VCPKG_DIR}}/vcpkg integrate install
-        curl -L --output ${{github.workspace}}/build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
-        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-win-x86.zip
-        move build-wrapper-win-x86 build-wrapper
-        move build-wrapper/build-wrapper-win-x86-64.exe build-wrapper/build-wrapper.exe
+        # curl -L --output ${{github.workspace}}/build-wrapper-win-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-win-x86.zip
+        # unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-win-x86.zip
+        # move build-wrapper-win-x86 build-wrapper
+        # move build-wrapper/build-wrapper-win-x86-64.exe build-wrapper/build-wrapper.exe
 
     - name: Install 3rd Party Dependencies (MacOS)
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        brew install gcovr
+        # /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        # brew install gcovr
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
         ${{env.VCPKG_DIR}}/vcpkg integrate install
-        curl -L --output ${{github.workspace}}/build-wrapper-macosx-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip
-        unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-macosx-x86.zip
-        mv build-wrapper-macosx-x86 build-wrapper
-        mv build-wrapper/build-wrapper-macosx-x86 build-wrapper/build-wrapper
+        # curl -L --output ${{github.workspace}}/build-wrapper-macosx-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip
+        # unzip -o -d ${{github.workspace}} ${{github.workspace}}/build-wrapper-macosx-x86.zip
+        # mv build-wrapper-macosx-x86 build-wrapper
+        # mv build-wrapper/build-wrapper-macosx-x86 build-wrapper/build-wrapper
 
     - name: Install CMake
       uses: lukka/get-cmake@v3.20.1
@@ -119,10 +121,10 @@ jobs:
         key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
 
     - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_COMPILER=${{env.CC}} -DCMAKE_CXX_COMPILER=${{env.CXX}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
+      run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake ${{env.CMAKE_DEFAULT_OPTIONS}}
 
     - name: Build Application
-      run: build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}
+      run: ${{env.BUILD_WRAPPER_CMDLINE}} cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}
 
     - name: Archive Test Binaries
       run: zip -9 -r -q ${{runner.os}}-${{env.COVER_ARCHIVE}} ${{env.COVER_DIR}}/
@@ -155,6 +157,7 @@ jobs:
       uses: github/codeql-action/analyze@v1
   
     - name: Perform SonarCloud Analysis
+      if: runner.os == 'Linux'
       uses: sonarsource/sonarcloud-github-action@master
       env: 
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

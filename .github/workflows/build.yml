@@ -28,21 +28,13 @@ jobs:
         include:
           - os: ubuntu-latest
             vcpkg-triplet: "x64-linux"
-            cmake_options: "-DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON"
-            build_command: "build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output"
           - os: windows-latest
             vcpkg-triplet: "x64-windows"
-            cmake_options: ""
-            build_command: ""
           - os: macOS-latest
             vcpkg-triplet: "x64-osx"
-            cmake_options: ""
-            build_command: ""
 
     env:
       VCPKG_DEFAULT_TRIPLET: ${{matrix.vcpkg-triplet}}
-      CMAKE_DEFAULT_OPTIONS: ${{matrix.cmake_options}}
-      BUILD_WRAPPER_CMDLINE: ${{matrix.build_command}}
 
     steps:
     - uses: actions/checkout@v2
@@ -120,11 +112,17 @@ jobs:
           "${{env.COVER_DIR}}/vcpkg_installed"
         key: ${{runner.os}}-${{hashFiles('**/vcpkg.json')}}
 
-    - name: Configure CMake
-      run: cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake ${{env.CMAKE_DEFAULT_OPTIONS}}
+    - name: Build Application (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
+        build-wrapper/build-wrapper --out-dir ${{env.COVER_DIR}}/bw-output cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}
 
-    - name: Build Application
-      run: ${{env.BUILD_WRAPPER_CMDLINE}} cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}
+    - name: Build Application (Windows and MacOS)
+      if: runner.os != 'Linux'
+      run: |
+        cmake -S ${{github.workspace}} -B ${{env.COVER_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+        cmake --build ${{env.COVER_DIR}} --config ${{env.BUILD_TYPE}}
 
     - name: Archive Test Binaries
       run: zip -9 -r -q ${{runner.os}}-${{env.COVER_ARCHIVE}} ${{env.COVER_DIR}}/

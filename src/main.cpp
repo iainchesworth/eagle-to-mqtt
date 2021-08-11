@@ -1,5 +1,6 @@
 ﻿#include <boost/asio/io_context.hpp>
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h> // Enable logging of user-defined types.
 
 #include <exception>
 #include <memory>
@@ -29,21 +30,21 @@ int main(int argc, char* argv[])
 		if (options.StatisticsReportingIsEnabled())
 		{
 			auto route_status = std::make_shared<ApiRoute_Status>();
-			BOOST_LOG_TRIVIAL(debug) << L"Enabling API route: " << route_status;
+			spdlog::debug("Enabling API route: {}", *route_status);
 			http_router.AddRoute(route_status);
 		}
 
 		if (options.FroniusIntegrationIsEnabled())
 		{
 			auto route_fronius = std::make_shared<ApiRoute_Fronius>();
-			BOOST_LOG_TRIVIAL(debug) << L"Enabling API route: " << route_fronius;
+			spdlog::debug("Enabling API route: {}", *route_fronius);
 			http_router.AddRoute(route_fronius);
 		}
 
 		if (options.RainforestIntegrationIsEnabled())
 		{
 			auto route_rainforest = std::make_shared<ApiRoute_Rainforest>();
-			BOOST_LOG_TRIVIAL(debug) << L"Enabling API route: " << route_rainforest;
+			spdlog::debug("Enabling API route: {}", *route_rainforest);
 			http_router.AddRoute(route_rainforest);
 		}
 
@@ -53,13 +54,13 @@ int main(int argc, char* argv[])
 		
 		Application app(ioc, options, bridge, std::move(listeners), std::move(publishers));
 
-		BOOST_LOG_TRIVIAL(info) << L"EAGLE-TO-MQTT - Application Starting";
+		spdlog::info("EAGLE-TO-MQTT - Application Starting");
 
 		app.Run();
 	}
 	catch (const std::exception& ex)
 	{
-		BOOST_LOG_TRIVIAL(fatal) << ex.what() << std::endl;
+		spdlog::critical(ex.what());
 		return -1;
 	}
 

@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/unknown_fragment_type.h"
 #include "metering/devices/rainforest/messages/fragment_types.h"
@@ -38,7 +38,7 @@ Fragments::FragmentTypes Fragments::FromString(const std::string& fragment_strin
 
 	if (0 == fragment_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid FragmentType provided to converter (zero-length)";
+		spdlog::warn("Invalid FragmentType provided to converter (zero-length)");
 		throw UnknownFragmentType("Zero-length fragment type value");
 	}
 	else if (BILLING_PERIOD_LIST == fragment_string)
@@ -87,7 +87,7 @@ Fragments::FragmentTypes Fragments::FromString(const std::string& fragment_strin
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown Fragment Type provided to converter: " << fragment_string;
+		spdlog::warn("Unknown Fragment Type provided to converter: {}", fragment_string);
 		fragment_type = FragmentTypes::Unknown;
 	}
 

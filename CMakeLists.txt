@@ -93,9 +93,10 @@ endif ()
 # Main application
 #-----------------------------------------------------------------------------------------------------------------------
 
-find_package(Boost COMPONENTS log log_setup json program_options system thread unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS json program_options system thread unit_test_framework REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(PahoMqttCpp CONFIG REQUIRED)
+find_package(spdlog REQUIRED)
 find_package(Threads REQUIRED)
 
 # Template the git commit information prior to building the application.
@@ -115,12 +116,16 @@ set(LIBRARY_TARGET "eagle-to-mqtt-core")
 add_library(${LIBRARY_TARGET} STATIC ${PROJECT_SOURCES} ${POST_CONFIGURE_FILE} ${VERSION_CMAKE_DEST_FILE})
 target_compile_definitions(${LIBRARY_TARGET} PRIVATE -DPAHO_MQTTPP_VERSIONS)
 target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
+target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
+target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE ${spdlog_INCLUDE_DIR})
 target_include_directories(${LIBRARY_TARGET} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/deps/date/include") # Support 3rd-party dependencies
 target_include_directories(${LIBRARY_TARGET} PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
 set(APPLICATION_TARGET "eagle-to-mqtt")
 add_executable (${APPLICATION_TARGET} "src/main.cpp")
 target_include_directories(${APPLICATION_TARGET} SYSTEM PRIVATE ${Boost_INCLUDE_DIR})
+target_include_directories(${APPLICATION_TARGET} SYSTEM PRIVATE ${fmt_INCLUDE_DIR})
+target_include_directories(${APPLICATION_TARGET} SYSTEM PRIVATE ${spdlog_INCLUDE_DIR})
 target_include_directories(${APPLICATION_TARGET} SYSTEM PRIVATE "${CMAKE_SOURCE_DIR}/deps/date/include") # Support 3rd-party dependencies
 target_include_directories(${APPLICATION_TARGET} PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
@@ -131,14 +136,13 @@ target_link_libraries(
             eagle-to-mqtt-core
         PRIVATE 
             Boost::boost
-            Boost::log 
-            Boost::log_setup
             Boost::json 
             Boost::program_options
             OpenSSL::Crypto 
             OpenSSL::SSL
             ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT}
             ${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP}
+            spdlog::spdlog_header_only
             Threads::Threads
 )
 

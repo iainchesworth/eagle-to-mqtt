@@ -1,5 +1,5 @@
 #include <boost/beast/http.hpp>
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "upload-api/http_connection.h"
 #include "upload-api/responses/response_400.h"
@@ -43,14 +43,14 @@ void HttpConnection::ProcessRequest()
 			break;
 
 		default:
-			BOOST_LOG_TRIVIAL(warning) << L"Client used an unknown HTTP method";
+			spdlog::warn("Client used an unknown HTTP method");
 			m_Response = make_400<boost::beast::http::string_body>(m_Request, "Unknown HTTP-method", "text/html");
 			break;
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Exception occurred while processing client request: " << ex.what();
+		spdlog::warn("Exception occurred while processing client request: {}", ex.what());
 		m_Response = make_500<boost::beast::http::string_body>(m_Request, ex.what(), "text/html");
 	}
 

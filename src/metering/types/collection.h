@@ -1,8 +1,8 @@
 #ifndef COLLECTION_H
 #define COLLECTION_H
 
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <spdlog/spdlog.h>
 
 #include <cstdint>
 #include <stdexcept>
@@ -52,17 +52,17 @@ NamedCollection<FIELD_TYPE> Collection(const boost::property_tree::ptree& node, 
 	}
 	catch (const std::invalid_argument& ex_ia)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Failed while processing integer string - exception was: " << ex_ia.what();
+		spdlog::debug("Failed while processing integer string - exception was: {}", ex_ia.what());
 		throw;
 	}
 	catch (const boost::property_tree::ptree_error& ex_pte)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Missing field while trying to decode NamedCollection - exception was: " << ex_pte.what();
+		spdlog::debug("Missing field while trying to decode NamedCollection - exception was: {}", ex_pte.what());
 		throw;
 	}
 	catch (const InvalidUnitsOfMeasureValue& iuomv_ex)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Unknown units of measure while decoding NamedCollection";
+		spdlog::debug("Unknown units of measure while decoding NamedCollection");
 		throw;
 	}
 }

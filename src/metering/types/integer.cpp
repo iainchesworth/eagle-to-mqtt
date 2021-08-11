@@ -1,5 +1,3 @@
-#include <boost/log/trivial.hpp>
-
 #include <functional>
 #include <stdexcept>
 

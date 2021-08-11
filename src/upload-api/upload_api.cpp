@@ -1,5 +1,5 @@
 #include <boost/beast/core.hpp>
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <initializer_list>
 #include <memory>
@@ -16,7 +16,7 @@ UploaderAPI::UploaderAPI(boost::asio::io_context& ioc, const Options& options, c
 	m_Acceptor{ m_IOContext, {boost::asio::ip::make_address(m_Options.HttpInterface()), m_Options.HttpPort() } },
 	m_Socket{ m_IOContext }
 {
-	BOOST_LOG_TRIVIAL(info) << L"Starting Uploader API";
+	spdlog::info("Starting Uploader API");
 }
 
 UploaderAPI::~UploaderAPI()
@@ -29,7 +29,7 @@ void UploaderAPI::Run()
 {
 	try
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Listening for data uploader connections on " << m_Options.HttpInterface() << L":" << m_Options.HttpPort();
+		spdlog::debug("Listening for data uploader connections on {}:{}", m_Options.HttpInterface(), m_Options.HttpPort());
 
 		m_Acceptor.async_accept(m_Socket, [this](boost::beast::error_code ec)
 			{
@@ -43,7 +43,7 @@ void UploaderAPI::Run()
 	}
 	catch (const std::runtime_error& ex)
 	{
-		BOOST_LOG_TRIVIAL(error) << L"Exception occurred while running Uploader API - what(): " << ex.what();
+		spdlog::error("Exception occurred while running Uploader API - what(): {}", ex.what());
 	}
 }
 
@@ -51,19 +51,19 @@ void UploaderAPI::Stop()
 {
 	try
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"Closing Uploader API acceptor";
+		spdlog::trace("Closing Uploader API acceptor");
 		m_Acceptor.cancel();
 		m_Acceptor.close();
 
 		if (m_Socket.is_open())
 		{
-			BOOST_LOG_TRIVIAL(trace) << L"Closing Uploader API socket";
+			spdlog::trace("Closing Uploader API socket");
 			m_Socket.cancel();
 			m_Socket.close();
 		}
 	}
 	catch (const std::exception& ex)
 	{
-		BOOST_LOG_TRIVIAL(error) << L"Exception while stopping the Uploader API - what(): " << ex.what();
+		spdlog::error("Exception while stopping the Uploader API - what(): {}", ex.what());
 	}
 }

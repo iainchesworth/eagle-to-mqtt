@@ -1,6 +1,6 @@
-#include <boost/log/trivial.hpp>
 #include <boost/program_options/errors.hpp>
 #include <boost/test/unit_test.hpp>
+#include <spdlog/spdlog.h>
 
 #include <array>
 #include <stdexcept>
@@ -57,23 +57,7 @@ BOOST_AUTO_TEST_CASE(Test_LoggingLevelOptions)
 	};
 
 	Options options_1(default_program_arguments.size(), test_tools::c_array_cast(default_program_arguments));
-	auto options_1_logging_level_triggered = boost::log::trivial::fatal;
-
-	// boost::log::trivial::info <-- default logging level
-
-	BOOST_LOG_TRIVIAL(trace) << ([&options_1_logging_level_triggered]() { options_1_logging_level_triggered = boost::log::trivial::trace; return options_1_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_1_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(debug) << ([&options_1_logging_level_triggered]() { options_1_logging_level_triggered = boost::log::trivial::debug; return options_1_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_1_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(info) << ([&options_1_logging_level_triggered]() { options_1_logging_level_triggered = boost::log::trivial::info; return options_1_logging_level_triggered; }());
-	// NOTE THE CHANGE IN LOGGING LEVEL HERE
-	BOOST_TEST(boost::log::trivial::info == options_1_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(warning) << ([&options_1_logging_level_triggered]() { options_1_logging_level_triggered = boost::log::trivial::warning; return options_1_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::warning == options_1_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(error) << ([&options_1_logging_level_triggered]() { options_1_logging_level_triggered = boost::log::trivial::error; return options_1_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::error == options_1_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(fatal) << ([&options_1_logging_level_triggered]() { options_1_logging_level_triggered = boost::log::trivial::fatal; return options_1_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_1_logging_level_triggered);
+	BOOST_TEST(spdlog::get_level() == spdlog::level::info);
 
 	std::array<char*, 4> debug_logging_level =
 	{
@@ -84,23 +68,7 @@ BOOST_AUTO_TEST_CASE(Test_LoggingLevelOptions)
 	};
 
 	Options options_2(debug_logging_level.size(), test_tools::c_array_cast(debug_logging_level));
-	auto options_2_logging_level_triggered = boost::log::trivial::fatal;
-
-	// boost::log::trivial::debug <-- new logging level
-
-	BOOST_LOG_TRIVIAL(trace) << ([&options_2_logging_level_triggered]() { options_2_logging_level_triggered = boost::log::trivial::trace; return options_2_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_2_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(debug) << ([&options_2_logging_level_triggered]() { options_2_logging_level_triggered = boost::log::trivial::debug; return options_2_logging_level_triggered; }());
-	// NOTE THE CHANGE IN LOGGING LEVEL HERE
-	BOOST_TEST(boost::log::trivial::debug == options_2_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(info) << ([&options_2_logging_level_triggered]() { options_2_logging_level_triggered = boost::log::trivial::info; return options_2_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::info == options_2_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(warning) << ([&options_2_logging_level_triggered]() { options_2_logging_level_triggered = boost::log::trivial::warning; return options_2_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::warning == options_2_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(error) << ([&options_2_logging_level_triggered]() { options_2_logging_level_triggered = boost::log::trivial::error; return options_2_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::error == options_2_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(fatal) << ([&options_2_logging_level_triggered]() { options_2_logging_level_triggered = boost::log::trivial::fatal; return options_2_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_2_logging_level_triggered);
+	BOOST_TEST(spdlog::get_level() == spdlog::level::debug);
 
 	std::array<char*, 4> trace_logging_level =
 	{
@@ -111,25 +79,9 @@ BOOST_AUTO_TEST_CASE(Test_LoggingLevelOptions)
 	};
 
 	Options options_3(trace_logging_level.size(), test_tools::c_array_cast(trace_logging_level));
-	auto options_3_logging_level_triggered = boost::log::trivial::fatal;
+	BOOST_TEST(spdlog::get_level() == spdlog::level::trace);
 
-	// boost::log::trivial::trace <-- new logging level
-
-	// NOTE THE CHANGE IN LOGGING LEVEL HERE
-	BOOST_LOG_TRIVIAL(trace) << ([&options_3_logging_level_triggered]() { options_3_logging_level_triggered = boost::log::trivial::trace; return options_3_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::trace == options_3_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(debug) << ([&options_3_logging_level_triggered]() { options_3_logging_level_triggered = boost::log::trivial::debug; return options_3_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::debug == options_3_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(info) << ([&options_3_logging_level_triggered]() { options_3_logging_level_triggered = boost::log::trivial::info; return options_3_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::info == options_3_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(warning) << ([&options_3_logging_level_triggered]() { options_3_logging_level_triggered = boost::log::trivial::warning; return options_3_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::warning == options_3_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(error) << ([&options_3_logging_level_triggered]() { options_3_logging_level_triggered = boost::log::trivial::error; return options_3_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::error == options_3_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(fatal) << ([&options_3_logging_level_triggered]() { options_3_logging_level_triggered = boost::log::trivial::fatal; return options_3_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_3_logging_level_triggered);
-
-	std::array<char*, 4> fatal_logging_level =
+	std::array<char*, 4> critical_logging_level =
 	{
 		(char*)"Test_HttpOptions",
 		(char*)"--mqtt-host",
@@ -137,24 +89,8 @@ BOOST_AUTO_TEST_CASE(Test_LoggingLevelOptions)
 		(char*)"--quiet"
 	};
 
-	Options options_4(fatal_logging_level.size(), test_tools::c_array_cast(fatal_logging_level));
-	auto options_4_logging_level_triggered = boost::log::trivial::fatal;
-
-	// boost::log::trivial::fatal <-- new logging level
-
-	BOOST_LOG_TRIVIAL(trace) << ([&options_4_logging_level_triggered]() { options_4_logging_level_triggered = boost::log::trivial::trace; return options_4_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_4_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(debug) << ([&options_4_logging_level_triggered]() { options_4_logging_level_triggered = boost::log::trivial::debug; return options_4_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_4_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(info) << ([&options_4_logging_level_triggered]() { options_4_logging_level_triggered = boost::log::trivial::info; return options_4_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_4_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(warning) << ([&options_4_logging_level_triggered]() { options_4_logging_level_triggered = boost::log::trivial::warning; return options_4_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_4_logging_level_triggered);
-	BOOST_LOG_TRIVIAL(error) << ([&options_4_logging_level_triggered]() { options_4_logging_level_triggered = boost::log::trivial::error; return options_4_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_4_logging_level_triggered);
-	// NOTE THE CHANGE IN LOGGING LEVEL HERE
-	BOOST_LOG_TRIVIAL(fatal) << ([&options_4_logging_level_triggered]() { options_4_logging_level_triggered = boost::log::trivial::fatal; return options_4_logging_level_triggered; }());
-	BOOST_TEST(boost::log::trivial::fatal == options_4_logging_level_triggered);
+	Options options_4(critical_logging_level.size(), test_tools::c_array_cast(critical_logging_level));
+	BOOST_TEST(spdlog::get_level() == spdlog::level::critical);
 }
 
 BOOST_AUTO_TEST_CASE(Test_IntegrationOptions)

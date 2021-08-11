@@ -1,5 +1,5 @@
-#include <boost/log/trivial.hpp>
 #include <boost/json.hpp>
+#include <spdlog/spdlog.h>
 
 #include "bridge/bridge_registry.h"
 #include "metering/device_registry.h"
@@ -22,7 +22,7 @@ HttpResponse ApiRoute_Status::Handler(const HttpRequest& request)
 	// Report the bridge information
 	if (auto bridge = BridgeRegistrySingleton()->operator()(); nullptr == bridge)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Cannot serialize bridge - object is not initialized in registry";
+		spdlog::debug("Cannot serialize bridge - object is not initialized in registry");
 	}
 	else
 	{
@@ -34,11 +34,11 @@ HttpResponse ApiRoute_Status::Handler(const HttpRequest& request)
 	{
 		if (!device)
 		{
-			BOOST_LOG_TRIVIAL(debug) << L"Cannot serialize device - object is not initialized in registry";
+			spdlog::debug("Cannot serialize device - object is not initialized in registry");
 		}
 		else
 		{
-            BOOST_LOG_TRIVIAL(debug) << L"Serialising device object";
+            spdlog::debug("Serialising device object");
 			response_object[EthernetMacId::ToString(ethernet_macid)] = device->Serialize();
 		}
 	}

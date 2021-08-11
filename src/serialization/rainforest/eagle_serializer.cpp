@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "serialization/rainforest/deviceconnectivity_serializer.h"
 #include "serialization/rainforest/deviceenergyusage_serializer.h"
@@ -14,7 +14,7 @@ boost::json::object Eagle_Serializer::Serialize() const
 {
 	boost::json::object device_object;
 
-	BOOST_LOG_TRIVIAL(debug) << L"Serializing Eagle";
+	spdlog::debug("Serializing Eagle");
 
 	device_object["ZigbeeId"] = ZigBeeMacId::ToString(m_Serializable.Zigbee_MacId());
 	device_object["Firmware"] = m_Serializable.FirmwareVersion();

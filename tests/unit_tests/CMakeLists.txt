@@ -9,7 +9,8 @@ foreach(PROJECT_TEST_SOURCE_FILE ${PROJECT_TEST_SOURCES})
 		SOURCE 
 			${PROJECT_TEST_SOURCE_FILE} 
 		INCLUDE 
-			${Boost_INCLUDE_DIR} 
+			${Boost_INCLUDE_DIR}
+			${spdlog_INCLUDE_DIR}
 			"${CMAKE_SOURCE_DIR}/deps/date/include" 
 			"${CMAKE_SOURCE_DIR}/src"
 			"${CMAKE_SOURCE_DIR}/tests"
@@ -19,13 +20,12 @@ foreach(PROJECT_TEST_SOURCE_FILE ${PROJECT_TEST_SOURCES})
 		LINK_LIBS
 			Boost::boost 
 			Boost::json 
-			Boost::log 
-            Boost::log_setup
-			Boost::program_options 
+			Boost::program_options
 			OpenSSL::Crypto 
 			OpenSSL::SSL 
 			${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT} 
 			${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTTPP} 
+            spdlog::spdlog_header_only
 			Threads::Threads
 	)
 

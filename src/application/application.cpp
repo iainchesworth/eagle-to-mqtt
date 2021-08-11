@@ -1,7 +1,7 @@
 #include <boost/core/ignore_unused.hpp>
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
-#include <signal.h>
+#include <csignal>
 #include <stdexcept>
 
 #include "application/application.h"
@@ -26,28 +26,28 @@ Application::Application(boost::asio::io_context& ioc, const Options& options, I
 			boost::ignore_unused(ec);
 			boost::ignore_unused(signo);
 
-			BOOST_LOG_TRIVIAL(info) << L"Application termination request received...stopping.";
+			spdlog::info("Application termination request received...stopping.");
 
 			// The server is stopped by canceling all outstanding asynchronous
 			// operations. Once all operations have finished the io_context::run()
 			// call will exit.
 
-			BOOST_LOG_TRIVIAL(debug) << L"Stopping Bridge async handlers";
+			spdlog::debug("Stopping Bridge async handlers");
 			m_Bridge.Stop();
 
-			BOOST_LOG_TRIVIAL(debug) << L"Stopping Listener async handlers";
+			spdlog::debug("Stopping Listener async handlers");
 			for (auto listener : m_Listeners)
 			{
 				listener->Stop();
 			}
 
-			BOOST_LOG_TRIVIAL(debug) << L"Stopping Publisher async handlers";
+			spdlog::debug("Stopping Publisher async handlers");
 			for (auto publisher : m_Publishers)
 			{
 				publisher->Stop();
 			}
 
-			BOOST_LOG_TRIVIAL(trace) << L"Stopping ASIO io_context";
+			spdlog::trace("Stopping ASIO io_context");
 			m_IOContext.stop();
 		});
 }
@@ -60,26 +60,26 @@ void Application::Run()
 		// effectively trigger the publishers if/when an update comes in
 		// and is successfully processed.
 
-		BOOST_LOG_TRIVIAL(debug) << L"Starting Publisher async handlers";
+		spdlog::debug("Starting Publisher async handlers");
 		for (auto publisher : m_Publishers)
 		{
 			publisher->Run();
 		}
 
-		BOOST_LOG_TRIVIAL(debug) << L"Starting Listener async handlers";
+		spdlog::debug("Starting Listener async handlers");
 		for (auto listener : m_Listeners)
 		{
 			listener->Run();
 		}
 
-		BOOST_LOG_TRIVIAL(debug) << L"Starting Bridge async handlers";
+		spdlog::debug("Starting Bridge async handlers");
 		m_Bridge.Run();
 
-		BOOST_LOG_TRIVIAL(trace) << L"Starting ASIO io_context";
+		spdlog::trace("Starting ASIO io_context");
 		m_IOContext.run();
 	}
 	catch (const std::runtime_error& ex)
 	{
-		BOOST_LOG_TRIVIAL(error) << L"Exception occurred while running async tasks - what(): " << ex.what();
+		spdlog::error("Exception occurred while running async tasks - what(): {}", ex.what());
 	}
 }

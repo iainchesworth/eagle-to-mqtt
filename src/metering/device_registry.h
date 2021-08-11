@@ -1,7 +1,7 @@
 #ifndef DEVICE_REGISTRY_H
 #define DEVICE_REGISTRY_H
 
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <memory>
 #include <unordered_map>
@@ -27,12 +27,12 @@ public:
     {
         if (auto device = GetExisting(device_ethernet_mac_id); nullptr == device)
         {
-			BOOST_LOG_TRIVIAL(debug) << L"No existing device with matching Ethernet MAC id...creating a new one";
+			spdlog::debug("No existing device with matching Ethernet MAC id...creating a new one");
             return CreateNew<DEVICE_TYPE>(device_ethernet_mac_id);
         }
         else
         {
-			BOOST_LOG_TRIVIAL(debug) << L"Existing device with matching Ethernet MAC id";
+			spdlog::debug("Existing device with matching Ethernet MAC id");
             return device;
         }
     }
@@ -42,12 +42,12 @@ public:
 	{
 		if (auto it = m_Registry.find(device_ethernet_mac_id); m_Registry.end() == it)
 		{
-			BOOST_LOG_TRIVIAL(trace) << L"Failed to find device with matching Ethernet MAC id";
+			spdlog::trace("Failed to find device with matching Ethernet MAC id");
 			return nullptr;
 		}
 		else
 		{
-			BOOST_LOG_TRIVIAL(trace) << L"Found device with matching Ethernet MAC id";
+			spdlog::trace("Found device with matching Ethernet MAC id");
 		    return it->second;
 		}
 	}
@@ -60,7 +60,7 @@ public:
 		{
 			if (auto result = m_Registry.insert(std::make_pair(device_ethernet_mac_id, DeviceFactory::CreateDevice<DEVICE_TYPE>())); !result.second)
 			{
-				BOOST_LOG_TRIVIAL(warning) << L"Attempted to add multiple devices with the same Ethernet MAC address";
+				spdlog::warn("Attempted to add multiple devices with the same Ethernet MAC address");
 				throw DuplicateDeviceInsertion();
 			}
 			else
@@ -70,7 +70,7 @@ public:
 		}
 		catch (const std::exception& ex)
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Exception occurred: " << ex.what();
+			spdlog::warn("Exception occurred: {}", ex.what());
 			throw;
 		}
 	}

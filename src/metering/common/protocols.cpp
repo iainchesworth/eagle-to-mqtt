@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/invalid_status_value.h"
 #include "metering/common/protocols.h"
@@ -28,7 +28,7 @@ Protocols::ProtocolTypes Protocols::FromString(const std::string& protocol_strin
 
 	if (0 == protocol_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid Protocol provided to converter (zero-length)";
+		spdlog::warn("Invalid Protocol provided to converter (zero-length)");
 		throw InvalidStatusValue("Zero-length protocol value");
 	}
 	else if (ZIGBEE == protocol_string)
@@ -37,7 +37,7 @@ Protocols::ProtocolTypes Protocols::FromString(const std::string& protocol_strin
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown Protocol provided to converter: " << protocol_string;
+		spdlog::warn("Unknown Protocol provided to converter: {}", protocol_string);
 		protocol_type = ProtocolTypes::Unknown;
 	}
 

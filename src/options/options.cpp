@@ -1,7 +1,5 @@
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp> 
 #include <boost/program_options.hpp>
+#include <spdlog/spdlog.h>
 
 #include <cstdint>
 #include <iostream>
@@ -21,17 +19,17 @@ Options::Options(int argc, char* argv[]) :
 {
 	boost::program_options::options_description cmdline_options("Program Arguments");
 
-	auto set_logging_level = [](boost::log::trivial::severity_level log_level) { boost::log::core::get()->set_filter(boost::log::trivial::severity >= log_level); };
-	auto set_debug_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(boost::log::trivial::debug); } };
-	auto set_trace_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(boost::log::trivial::trace); } };
-	auto set_fatal_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(boost::log::trivial::fatal); } };
+	auto set_logging_level = [](spdlog::level::level_enum log_level) { spdlog::set_level(log_level); };
+	auto set_debug_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(spdlog::level::debug); } };
+	auto set_trace_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(spdlog::level::trace); } };
+	auto set_fatal_logging = [set_logging_level](const bool& set_level) { if (set_level) { set_logging_level(spdlog::level::critical); } };
 
 	auto enable_authentication = [this](const std::string&) { this->m_MqttUseAuthentication = true; };
 
 	try
 	{
 		// Set the default logging level before any of the various level options are processed.
-		set_logging_level(boost::log::trivial::info);
+		set_logging_level(spdlog::level::info);
 
 		// Configure the various options for the application,
 		boost::program_options::options_description options_app("Application Options");

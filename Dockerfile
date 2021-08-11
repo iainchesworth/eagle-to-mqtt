@@ -16,31 +16,29 @@ FROM base AS builder
 # Prepare for building of the application and its dependencies
 COPY ./deps /usr/src/eagle-to-mqtt/deps
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates curl gnupg2 file
-RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/clang.sh"]
-RUN /usr/src/eagle-to-mqtt/deps/clang.sh
-RUN APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends clang-12 lld-12
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake doxygen git libssl-dev make
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends build-essential ca-certificates cmake curl doxygen file git gnupg2 libssl-dev make ninja-build tar unzip zip
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
 
-RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 100 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-12 --slave /usr/bin/lld lld /usr/bin/lld-12
-RUN update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 --slave /usr/bin/c++ c++ /usr/bin/clang++ --slave /usr/bin/ld ld /usr/bin/lld
-
-# Build and install the various dependencies 
-RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/boost.latest.sh"]
-RUN /usr/src/eagle-to-mqtt/deps/boost.latest.sh
-RUN ["chmod", "+x", "/usr/src/eagle-to-mqtt/deps/paho.mqtt.sh"]
-RUN /usr/src/eagle-to-mqtt/deps/paho.mqtt.sh
+# Configure vcpkg (and other submodules) ready for the build process 
+RUN /usr/src/eagle-to-mqtt/deps/vcpkg/bootstrap-vcpkg.sh \
+ && /usr/src/eagle-to-mqtt/deps/vcpkg/vcpkg integrate install
 
 # The second stage ....
 #-----------------------------------------------------------------------------------------------------------------------
 
 FROM builder as appbuilder
 
-# Build and install the application
 COPY . /usr/src/eagle-to-mqtt
-RUN cd /usr/src/eagle-to-mqtt && cmake -Bbuild -H. && cmake --build build/ --target install
+ 
+# Build and install the application
+RUN cmake -S /usr/src/eagle-to-mqtt \
+          -B /usr/src/eagle-to-mqtt/build \
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DCMAKE_TOOLCHAIN_FILE=/usr/src/eagle-to-mqtt/deps/vcpkg/scripts/buildsystems/vcpkg.cmake \
+ && cmake --build /usr/src/eagle-to-mqtt/build \
+          --config RelWithDebInfo \
+          --target install
 
 # The third stage ....
 #-----------------------------------------------------------------------------------------------------------------------

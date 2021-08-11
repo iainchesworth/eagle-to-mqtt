@@ -89,7 +89,9 @@
       "remoteCopySources": true,
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
-      "remoteCopySourcesMethod": "rsync"
+      "remoteCopySourcesMethod": "rsync",
+      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "addressSanitizerEnabled": false
     },
     {
       "name": "Linux-Clang-Release",
@@ -108,7 +110,9 @@
       "remoteCopySources": true,
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
-      "remoteCopySourcesMethod": "rsync"
+      "remoteCopySourcesMethod": "rsync",
+      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "addressSanitizerEnabled": false
     },
     {
       "name": "Linux-GCC-Debug",
@@ -116,7 +120,6 @@
       "configurationType": "Debug",
       "cmakeExecutable": "cmake",
       "remoteCopySourcesExclusionList": [ ".vs", ".git", "out" ],
-      "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
@@ -128,7 +131,8 @@
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
       "remoteCopySourcesMethod": "rsync",
-      "variables": []
+      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "addressSanitizerEnabled": false
     },
     {
       "name": "Linux-GCC-Release",
@@ -136,7 +140,6 @@
       "configurationType": "RelWithDebInfo",
       "cmakeExecutable": "cmake",
       "remoteCopySourcesExclusionList": [ ".vs", ".git", "out" ],
-      "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
@@ -148,7 +151,7 @@
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
       "remoteCopySourcesMethod": "rsync",
-      "variables": []
+      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
     }
   ]
 }

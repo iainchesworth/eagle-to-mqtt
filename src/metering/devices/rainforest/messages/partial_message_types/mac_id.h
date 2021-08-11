@@ -6,7 +6,7 @@
 #include <array>
 #include <cstdint>
 #include <iomanip>
-#include <ostream>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -17,7 +17,6 @@
 template<std::size_t ADDRESS_ELEMENTS>
 class MacId
 {
-	static const uint32_t DEVICE_MAC_ID_STRING_LENGTH = (ADDRESS_ELEMENTS * 2) + 2;	// Format expected as "0xFFFFFFFF...."
 	static constexpr std::array<uint8_t, ADDRESS_ELEMENTS> UNKNOWN_DEVICE_MACID { 0x00 };	// Default initialised to zero.
 
 public:
@@ -29,13 +28,19 @@ public:
 	}
 
 public:
+	constexpr uint32_t DEVICE_MAC_ID_STRING_LENGTH()
+	{
+		return (ADDRESS_ELEMENTS * 2) + 2; // Format expected as "0xFFFFFFFF...."
+	}
+
+public:
 	MacId<ADDRESS_ELEMENTS> FromString(const std::string_view& device_mac_id)
 	{
 		MacId<ADDRESS_ELEMENTS> mac_id;
 
-		if (DEVICE_MAC_ID_STRING_LENGTH != device_mac_id.length())
+		if (DEVICE_MAC_ID_STRING_LENGTH() != device_mac_id.length())
 		{
-			spdlog::warn("Invalid Device MAC Id value; length incorrect - was {}; expected {}", device_mac_id.length(), DEVICE_MAC_ID_STRING_LENGTH);
+			spdlog::warn("Invalid Device MAC Id value; length incorrect - was {}; expected {}", device_mac_id.length(), DEVICE_MAC_ID_STRING_LENGTH());
 			throw InvalidMessageValue("Mac Id - incorrect length - got " + std::to_string(device_mac_id.length()));
 		}
 		else if (0 != device_mac_id.compare(0, 2, "0x"))

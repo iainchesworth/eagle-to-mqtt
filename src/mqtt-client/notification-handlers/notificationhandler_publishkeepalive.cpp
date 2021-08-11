@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 
 #include <chrono>
+#include <sstream>
 
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/mqtt_qos.h"

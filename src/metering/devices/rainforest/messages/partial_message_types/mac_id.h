@@ -1,7 +1,7 @@
 #ifndef MAC_ID_H
 #define MAC_ID_H
 
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <array>
 #include <cstdint>
@@ -35,12 +35,12 @@ public:
 
 		if (DEVICE_MAC_ID_STRING_LENGTH != device_mac_id.length())
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Invalid Device MAC Id value; length incorrect - was " << device_mac_id.length() << L"; expected " << DEVICE_MAC_ID_STRING_LENGTH;
+			spdlog::warn("Invalid Device MAC Id value; length incorrect - was {}; expected {}", device_mac_id.length(), DEVICE_MAC_ID_STRING_LENGTH);
 			throw InvalidMessageValue("Mac Id - incorrect length - got " + std::to_string(device_mac_id.length()));
 		}
 		else if (0 != device_mac_id.compare(0, 2, "0x"))
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Invalid Device MAC Id format received";
+			spdlog::warn("Invalid Device MAC Id format received");
 			throw InvalidMessageValue("Mac Id - incorrect format");
 		}
 		else
@@ -55,7 +55,7 @@ public:
 			}
 			catch (const std::invalid_argument& ex_ia)
 			{
-				BOOST_LOG_TRIVIAL(warning) << L"Invalid Device MAC Id content received - what(): " << ex_ia.what();
+				spdlog::warn("Invalid Device MAC Id content received - what(): {}", ex_ia.what());
 				throw InvalidMessageValue("Mac Id - invalid characters present in string");
 			}
 		}

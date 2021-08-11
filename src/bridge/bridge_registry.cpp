@@ -1,11 +1,11 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "bridge/bridge.h"
 #include "bridge/bridge_registry.h"
 
 BridgeRegistry::BridgeRegistry()
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Initialising the BridgeRegistry";
+	spdlog::debug("Initialising the BridgeRegistry");
 }
 
 std::shared_ptr<Bridge> BridgeRegistry::operator()()

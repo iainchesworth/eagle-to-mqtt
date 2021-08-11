@@ -1,5 +1,5 @@
 #include <boost/algorithm/string.hpp>
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <stdexcept>
 
@@ -43,7 +43,7 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 
 		if (0 == uppercase_value_as_string.length())
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Zero-length string value provided to boolean converter...cannot convert";
+			spdlog::warn("Zero-length string value provided to boolean converter...cannot convert");
 			throw InvalidValue("Zero-length string value provided to boolean converter");
 		}
 		else if (
@@ -65,7 +65,7 @@ bool GetValue_Boolean(const boost::property_tree::ptree& node, const std::string
 		else
 		{
 			// Okay, there's something weird going on
-			BOOST_LOG_TRIVIAL(warning) << L"Invalid value provided to boolean converter...cannot convert";
+			spdlog::warn("Invalid value provided to boolean converter...cannot convert");
 			throw InvalidValue("Invalid value provided to boolean converter");
 		}
 	}

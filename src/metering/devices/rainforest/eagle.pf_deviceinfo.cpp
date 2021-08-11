@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/devices/rainforest/eagle.h"
 #include "notifications/notification_manager.h"
@@ -6,7 +6,7 @@
 
 void Eagle::ProcessFragment(const DeviceInfo& device_info)
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing model id and version information";
+	spdlog::debug("Capturing model id and version information");
 
 	auto device_info_notif = std::make_shared<Notification_DeviceInfo>(m_EthernetMacId);
 

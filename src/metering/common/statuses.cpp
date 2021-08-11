@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/invalid_status_value.h"
 #include "metering/common/statuses.h"
@@ -38,7 +38,7 @@ Statuses::StatusTypes Statuses::FromString(const std::string& status_string)
 
 	if (0 == status_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid Status provided to converter (zero-length)";
+		spdlog::warn("Invalid Status provided to converter (zero-length)");
 		throw InvalidStatusValue("Zero-length status value");
 	}
 	else if (INITIALIZING == status_string)
@@ -87,7 +87,7 @@ Statuses::StatusTypes Statuses::FromString(const std::string& status_string)
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown Status provided to converter: " << status_string;
+		spdlog::warn("Unknown Status provided to converter: {}", status_string);
 		status_type = StatusTypes::Unknown;
 	}
 

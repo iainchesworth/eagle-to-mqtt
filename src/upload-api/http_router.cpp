@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "upload-api/http_router.h"
 #include "upload-api/responses/response_400.h"
@@ -28,12 +28,12 @@ HttpResponse HttpRouter::HandleRoute(const HttpRequest& req) const
 
 	if (m_Routes.end() == it)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Attempted to match an unsupported route: " << req.target();
+		spdlog::warn("Attempted to match an unsupported route: {}", req.target().to_string());
 		res = make_400<boost::beast::http::string_body>(req, "Route not supported", "text/html");
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Matched " << req.target() << L" to existing route handler; handling route";
+		spdlog::debug("Matched {} to existing route handler; handling route", req.target().to_string());
 		res = (*it)->Handler(req);
 	}
 

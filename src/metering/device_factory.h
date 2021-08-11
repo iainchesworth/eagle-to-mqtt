@@ -1,7 +1,7 @@
 #ifndef DEVICE_FACTORY_H
 #define DEVICE_FACTORY_H
 
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <memory>
 #include <type_traits>
@@ -14,7 +14,7 @@ namespace DeviceFactory
 	template<typename DEVICE_TYPE, typename std::enable_if_t<std::is_base_of_v<IDevice, DEVICE_TYPE>>* = nullptr>
 	std::unique_ptr<DEVICE_TYPE> CreateDevice()
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Factory is creating new device of type: " << typeid(DEVICE_TYPE).name();
+		spdlog::debug("Factory is creating new device of type: {}", typeid(DEVICE_TYPE).name());
 		return std::make_unique<DEVICE_TYPE>();
 	}
 };

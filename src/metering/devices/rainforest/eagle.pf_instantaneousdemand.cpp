@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/devices/rainforest/eagle.h"
 #include "notifications/notification_manager.h"
@@ -6,7 +6,7 @@
 
 void Eagle::ProcessFragment(const InstantaneousDemand& instantaneous_demand)
 {
-	BOOST_LOG_TRIVIAL(info) << L"Capturing instantaneous demand history element (" << instantaneous_demand.Now().ValueIn<Watts>() << L"W)";
+	spdlog::info("Capturing instantaneous demand history element ({}W)", instantaneous_demand.Now().ValueIn<Watts>());
 
 	auto energy_history_elem = std::make_pair(instantaneous_demand.Timestamp(), instantaneous_demand.Now());
 

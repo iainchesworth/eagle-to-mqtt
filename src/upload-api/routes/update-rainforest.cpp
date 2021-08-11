@@ -1,8 +1,9 @@
 #include <boost/beast/core/buffers_to_string.hpp>
 #include <boost/beast/core/make_printable.hpp>
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h> // Enable logging of user-defined types.
 
 #include <memory>
 #include <sstream>
@@ -27,7 +28,7 @@ ApiRoute_Rainforest::ApiRoute_Rainforest() :
 
 HttpResponse ApiRoute_Rainforest::Handler(const HttpRequest& request)
 {
-	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Rainforest) Payload: " << std::endl << boost::beast::make_printable(request.body().data());
+	spdlog::trace("Received Update (Rainforest) Payload: \n{}", boost::beast::make_printable(request.body().data()));
 
 	std::istringstream iss(boost::beast::buffers_to_string(request.body().data()));
 
@@ -39,7 +40,7 @@ HttpResponse ApiRoute_Rainforest::Handler(const HttpRequest& request)
 		std::shared_ptr<IDevice> eagle_processor(IdentifyAndGetEagleInstance(upload_dataset));
 		if (nullptr == eagle_processor)
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Failed to determine the specific device type reporting data!";
+			spdlog::warn("Failed to determine the specific device type reporting data!");
 		}
 		else
 		{
@@ -48,14 +49,14 @@ HttpResponse ApiRoute_Rainforest::Handler(const HttpRequest& request)
 	}
 	catch (const UnknownFragmentType& ufte)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Failed to match fragment type to known value - fragment: " << ufte.Fragment();
+		spdlog::warn("Failed to match fragment type to known value - fragment: {}", ufte.Fragment());
 
 		// If the requested path ("rainforest") cannot be resolved, get_child throws...
 		return make_500<boost::beast::http::string_body>(request, "Error while processing XML fragments: unknown fragment type", "text/html");
 	}
 	catch (const pt::ptree_error& pte)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Failed to parse XML in upload payload; exception was: " << pte.what();
+		spdlog::warn("Failed to parse XML in upload payload; exception was: {}", pte.what());
 
 		// If the requested path ("rainforest") cannot be resolved, get_child throws...
 		return make_400<boost::beast::http::string_body>(request, "Cannot find top-level upload data element; payload is malformed", "text/html");

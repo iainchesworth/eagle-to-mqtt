@@ -1,8 +1,8 @@
 #ifndef NOTIFICATION_BASE_H
 #define NOTIFICATION_BASE_H
 
-#include <boost/log/trivial.hpp>
 #include <boost/signals2/signal.hpp>
+#include <spdlog/spdlog.h>
 
 #include <memory>
 
@@ -25,7 +25,7 @@ private:
 		auto signal = std::static_pointer_cast<NotificationSignal>(signal_base);
 		if (nullptr == signal)
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Bad conversion to NotificationSignal";
+			spdlog::warn("Bad conversion to NotificationSignal");
 		}
 		else
 		{

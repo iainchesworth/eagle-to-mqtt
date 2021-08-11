@@ -1,7 +1,7 @@
 #ifndef ZIGBEE_ID_HANDLER_H
 #define ZIGBEE_ID_HANDLER_H
 
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <functional>
 #include <optional>
@@ -14,19 +14,19 @@ void ProcessAndSaveZigbeeId(T1 ethernet_mac_id, const T2& src_mac_id, T3& dest_m
 {
 	if (!src_mac_id.has_value())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"Missing " << device_name << L" id in message payload";
+		spdlog::trace("Missing {} id in message payload", device_name);
 	}
 	else if (!src_mac_id.value().IsValid())
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received invalid " << device_name << L" id in message payload";
+		spdlog::debug("Received invalid {} id in message payload", device_name);
 	}
 	else if (dest_mac_id.IsValid())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"Have already received valid " << device_name << L" id; ignoring";
+		spdlog::trace("Have already received valid id; ignoring ", device_name);
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Capturing " << device_name << L" id for Eagle: " << ZigBeeMacId::ToString(src_mac_id.value());
+		spdlog::debug("Capturing {} id for Eagle: {}", device_name, ZigBeeMacId::ToString(src_mac_id.value()));
 		dest_mac_id = src_mac_id.value();
 
 		std::bind(notification_func, notification_ptr, std::placeholders::_1)(dest_mac_id);

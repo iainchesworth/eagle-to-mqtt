@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/invalid_priority_value.h"
 #include "metering/common/priorities.h"
@@ -31,7 +31,7 @@ Priorities::PriorityTypes Priorities::FromString(const std::string& priority_str
 
 	if (0 == priority_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid Priority provided to converter (zero-length)";
+		spdlog::warn("Invalid Priority provided to converter (zero-length)");
 		throw InvalidPriorityValue("Zero-length priority value");
 	}
 	else if (LOW == priority_string)
@@ -52,7 +52,7 @@ Priorities::PriorityTypes Priorities::FromString(const std::string& priority_str
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown Priority provided to converter: " << priority_string;
+		spdlog::warn("Unknown Priority provided to converter: ", priority_string);
 		priority_type = PriorityTypes::Unknown;
 	}
 

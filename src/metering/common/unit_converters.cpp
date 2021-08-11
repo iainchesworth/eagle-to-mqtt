@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include <iomanip>
 #include <limits>
@@ -13,12 +13,12 @@ INTEGER_TYPE hex_string_to_unsigned_integer(const std::string& hex_string)
 {
 	if (0 == hex_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; zero-length string provided";
+		spdlog::warn("Invalid number conversion performed; zero-length string provided");
 		throw InvalidNumberConversion(std::string("Invalid number conversion performed: zero-length source"));
 	}
 	else if (const uint32_t MAX_HEX_STRING_LENGTH = HEX_STRING_LENGTH; MAX_HEX_STRING_LENGTH < hex_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Received hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
+		spdlog::warn("Received hex string that exceeds expected length - was {}; expected {}", hex_string.length(), MAX_HEX_STRING_LENGTH);
 		throw InvalidNumberConversion(std::string("Invalid number conversion performed: invalid length source"));
 	}
 	else
@@ -28,7 +28,7 @@ INTEGER_TYPE hex_string_to_unsigned_integer(const std::string& hex_string)
 			auto converted_value = std::stoull(hex_string, nullptr, 16);
 			if (std::numeric_limits<INTEGER_TYPE>::max() < converted_value)
 			{
-				BOOST_LOG_TRIVIAL(warning) << L"Invalid number conversion performed; too large for destination type";
+				spdlog::warn("Invalid number conversion performed; too large for destination type");
 				throw InvalidNumberConversion(std::string("Invalid number conversion performed: cannot fit ") + hex_string + std::string(" into ") + typeid(INTEGER_TYPE).name());
 			}
 
@@ -36,8 +36,8 @@ INTEGER_TYPE hex_string_to_unsigned_integer(const std::string& hex_string)
 		}
 		catch (const std::invalid_argument& ex_ia)
 		{
-			BOOST_LOG_TRIVIAL(debug) << L"Failed while processing hex string (argument was invalid)";
-			BOOST_LOG_TRIVIAL(debug) << L"Invalid hex string (invalid_argument exception) was: " << hex_string;
+			spdlog::debug("Failed while processing hex string (argument was invalid)");
+			spdlog::debug("Invalid hex string (invalid_argument exception) was: {}", hex_string);
 			throw;
 		}
 	}	
@@ -108,7 +108,7 @@ std::chrono::time_point<std::chrono::system_clock> hex_string_to_timepoint(const
 {
 	if (const uint32_t MAX_HEX_STRING_LENGTH = 10; MAX_HEX_STRING_LENGTH < hex_string.length()) // 0x12345678 is the maximum length
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Received timestamp hex string that exceeds expected length - was " << hex_string.length() << "; expected " << MAX_HEX_STRING_LENGTH;
+		spdlog::debug("Received timestamp hex string that exceeds expected length - was {}; expected {}", hex_string.length(), MAX_HEX_STRING_LENGTH);
 	}
 
 	std::istringstream input(hex_string);

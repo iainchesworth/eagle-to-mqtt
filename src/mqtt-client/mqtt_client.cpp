@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/not_implemented.h"
 #include "mqtt-client/mqtt_client.h"
@@ -10,9 +10,9 @@ MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 	m_Options(options),
 	m_Client(std::make_shared<mqtt::async_client>(MakeConnectionString(), MakeClientId(), mqtt::create_options(MQTTVERSION_DEFAULT)))
 {
-	BOOST_LOG_TRIVIAL(info) << L"Starting MQTT client";
+	spdlog::info("Starting MQTT client");
 
-	BOOST_LOG_TRIVIAL(debug) << L"Configuring connection to MQTT broker";
+	spdlog::debug("Configuring connection to MQTT broker");
 
 	try
 	{
@@ -39,7 +39,7 @@ MqttClient::MqttClient(boost::asio::io_context& ioc, const Options& options) :
 	}
 	catch (const mqtt::exception& mqtt_ex)
 	{
-		BOOST_LOG_TRIVIAL(error) << L"Exception occurred while configuring connection to MQTT broker - what(): " << mqtt_ex.what();
+		spdlog::error("Exception occurred while configuring connection to MQTT broker - what(): {}", mqtt_ex.what());
 		throw;
 	}
 }
@@ -48,12 +48,12 @@ void MqttClient::Run()
 {
 	try
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Connecting to MQTT broker on " << m_Client->get_server_uri();
+		spdlog::debug("Connecting to MQTT broker on {}", m_Client->get_server_uri());
 		m_Connection->Start();
 	}
 	catch (const mqtt::exception& mqtt_ex)
 	{
-		BOOST_LOG_TRIVIAL(error) << L"Exception occurred while running MQTT Client - what(): " << mqtt_ex.what();
+		spdlog::error("Exception occurred while running MQTT Client - what(): {}", mqtt_ex.what());
 	}
 }
 

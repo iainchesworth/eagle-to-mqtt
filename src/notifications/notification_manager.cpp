@@ -1,22 +1,22 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "notifications/notification_manager.h"
 
 NotificationManager::NotificationManager()
 {
-	BOOST_LOG_TRIVIAL(info) << L"Starting Notification Manager";
+	spdlog::info("Starting Notification Manager");
 }
 
 void NotificationManager::Dispatch(std::shared_ptr<INotification> notification)
 {
-	BOOST_LOG_TRIVIAL(trace) << L"Dispatching notification";
+	spdlog::trace("Dispatching notification");
 	std::scoped_lock guard(m_GuardMutex);
 	m_Queue.push(notification);
 }
 
 void NotificationManager::Poll()
 {
-	BOOST_LOG_TRIVIAL(trace) << L"Triggering " << m_Queue.size() << L" notifications";
+	spdlog::trace("Triggering {} notifications", m_Queue.size());
 
 	std::scoped_lock guard(m_GuardMutex);
 
@@ -26,11 +26,11 @@ void NotificationManager::Poll()
 
 		if (auto ptr = notification.get(); nullptr == ptr)
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Discovered nullptr while attempting to process notification";
+			spdlog::warn("Discovered nullptr while attempting to process notification");
 		}
 		else if (auto iter = m_Signals.find(typeid(*ptr).name()); m_Signals.end() == iter)
 		{
-			BOOST_LOG_TRIVIAL(debug) << L"No subscribers to notification; not actioning trigger";
+			spdlog::debug("No subscribers to notification; not actioning trigger");
 		}
 		else
 		{

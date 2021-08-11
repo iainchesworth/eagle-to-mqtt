@@ -1,5 +1,5 @@
-#include <boost/log/trivial.hpp>
 #include <date/date.h>
+#include <spdlog/spdlog.h>
 
 #include <chrono>
 
@@ -8,15 +8,15 @@
 
 void MqttConnection::NotificationHandler_PublishKeepAlive(const std::chrono::seconds& uptime)
 {
-	BOOST_LOG_TRIVIAL(trace) << L"Notification_PublishKeepAlive() -> Notification received by MQTT Connection";
+	spdlog::trace("Notification_PublishKeepAlive() -> Notification received by MQTT Connection");
 
 	if (nullptr == m_ClientPtr)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"MQTT client was null; cannot send PublishKeepAlive message to broker";
+		spdlog::warn("MQTT client was null; cannot send PublishKeepAlive message to broker");
 	}
 	else if (!m_ClientPtr->is_connected())
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"MQTT client is not connected; cannot send PublishKeepAlive message to broker";
+		spdlog::debug("MQTT client is not connected; cannot send PublishKeepAlive message to broker");
 	}
 	else
 	{

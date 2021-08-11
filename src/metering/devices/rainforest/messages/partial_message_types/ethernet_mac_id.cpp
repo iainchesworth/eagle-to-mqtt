@@ -1,5 +1,4 @@
 #include <boost/container_hash/hash.hpp>
-#include <boost/log/trivial.hpp>
 
 #include "exceptions/missing_message_key.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"

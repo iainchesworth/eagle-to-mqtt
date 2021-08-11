@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/invalid_currency_value.h"
 #include "metering/common/currency_codes.h"
@@ -31,7 +31,7 @@ CurrencyCodes::ISO4127_CurrencyCodes CurrencyCodes::FromString(const std::string
 
 	if (6 != currency_code_string.length()) // Format is 0x1234
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown string value provided for currency code";
+		spdlog::warn("Unknown string value provided for currency code");
 		throw InvalidCurrencyValue("Currency value has invalid length - expected 6, got " + std::to_string(currency_code_string.length()));
 	}
 	else
@@ -44,7 +44,7 @@ CurrencyCodes::ISO4127_CurrencyCodes CurrencyCodes::FromString(const std::string
 		case 999: currency_code = ISO4127_CurrencyCodes::XXX; break;
 
 		default:
-			BOOST_LOG_TRIVIAL(warning) << L"Unknown currency code provided to converter: " << currency_code_string;
+			spdlog::warn("Unknown currency code provided to converter: {}", currency_code_string);
 			currency_code = ISO4127_CurrencyCodes::Unknown;
 			break;
 		}

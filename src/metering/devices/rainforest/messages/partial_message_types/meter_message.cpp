@@ -1,3 +1,5 @@
+#include <spdlog/spdlog.h>
+
 #include "metering/devices/rainforest/messages/partial_message_types/meter_message.h"
 #include "metering/types/boolean.h"
 #include "metering/types/essential.h"
@@ -69,7 +71,7 @@ MeterMessage MeterMessage::ExtractFromPayload(const boost::property_tree::ptree&
 	}
 	else if (auto raw_pri = IsOptional<Priorities>(node, "PRI"); raw_pri.has_value())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Eagle Bug: Priority field uses incorrect field name \"PRI\" (refer to EAGLE-200 API documentation, section 4.6.1)";
+		spdlog::warn("Eagle Bug: Priority field uses incorrect field name \"PRI\" (refer to EAGLE-200 API documentation, section 4.6.1)");
 		priority = raw_pri.value();
 	}
 	else

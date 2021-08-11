@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/devices/rainforest/eagle.h"
 #include "notifications/notification_manager.h"
@@ -6,7 +6,7 @@
 
 void Eagle::ProcessFragment(const CurrentSummation& current_summation)
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing total summation values (delivered and received)";
+	spdlog::debug("Capturing total summation values (delivered and received)");
 
 	auto energy_usage = std::make_shared<Notification_EnergyUsage>(m_EthernetMacId);
 

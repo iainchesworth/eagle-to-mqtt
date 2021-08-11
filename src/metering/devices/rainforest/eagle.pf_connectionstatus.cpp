@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/devices/rainforest/eagle.h"
 #include "metering/devices/rainforest/zigbee_id_handler.h"
@@ -8,7 +8,7 @@
 
 void Eagle::ProcessFragment(const ConnectionStatus& connection_status)
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Capturing meter connection details and statistics";
+	spdlog::debug("Capturing meter connection details and statistics");
 
 	auto connection_status_notif = std::make_shared<Notification_Connectivity>(m_EthernetMacId);
 

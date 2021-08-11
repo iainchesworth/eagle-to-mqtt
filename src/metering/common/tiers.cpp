@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/invalid_pricing_tier_value.h"
 #include "metering/common/tiers.h"
@@ -49,7 +49,7 @@ Tiers::SupportedTiers Tiers::FromString(const std::string& pricing_tier_string)
 		break;
 
 	default:
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown string value provided for pricing tier";
+		spdlog::warn("Unknown string value provided for pricing tier");
 		throw InvalidPricingTierValue("Pricing tier value has invalid length - expected 1, 2 or 4, got " + std::to_string(pricing_tier_string.length()));
 	}
 
@@ -64,7 +64,7 @@ Tiers::SupportedTiers Tiers::FromString(const std::string& pricing_tier_string)
 	case 5: tier = SupportedTiers::Tier_5; break;
 
 	default:
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown pricing tier provided to converter: " << pricing_tier_string;
+		spdlog::warn("Unknown pricing tier provided to converter: {}", pricing_tier_string);
 		tier = SupportedTiers::Unknown;
 		break;
 	}

@@ -1,5 +1,5 @@
 #include <boost/algorithm/string.hpp>
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "exceptions/invalid_unitsofmeasure_value.h"
 #include "metering/common/units_of_measure.h"
@@ -32,7 +32,7 @@ UnitsOfMeasure::Units UnitsOfMeasure::FromString(const std::string& units_string
 
 	if (0 == units_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid Units provided to converter (zero-length)";
+		spdlog::warn("Invalid Units provided to converter (zero-length)");
 		throw InvalidUnitsOfMeasureValue("Zero-length units value");
 	}
 	else if ((boost::iequals(units_string, "W")) || (boost::iequals(units_string, "WATTS")))
@@ -53,7 +53,7 @@ UnitsOfMeasure::Units UnitsOfMeasure::FromString(const std::string& units_string
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown Units provided to converter: " << units_string;
+		spdlog::warn("Unknown Units provided to converter:{} ", units_string);
 		units = Units::Unknown;
 	}
 

@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "serialization/rainforest/deviceenergyusage_serializer.h"
 
@@ -13,13 +13,13 @@ boost::json::object DeviceEnergyUsage_Serializer::Serialize() const
 {
 	boost::json::object device_stats;
 
-	BOOST_LOG_TRIVIAL(debug) << L"Serializing Rainforest::DeviceEnergyUsage";
+	spdlog::debug("Serializing Rainforest::DeviceEnergyUsage");
 
 	device_stats["TotalDelivered_kWh"] = static_cast<std::int64_t>(m_Serializable.TotalDelivered.ValueIn<KilowattHours>());
 	device_stats["TotalReceived_kWh"] = static_cast<std::int64_t>(m_Serializable.TotalReceived.ValueIn<KilowattHours>());
 	device_stats["InstantaneousDemand_Watts"] = static_cast<std::int64_t>(m_Serializable.Now.ValueIn<Watts>());
 
-	BOOST_LOG_TRIVIAL(trace) << L"Serializing " << m_Serializable.History.size() << L" history elements";
+	spdlog::trace("Serializing {} history elements", m_Serializable.History.size());
 
 	boost::json::object history;
 

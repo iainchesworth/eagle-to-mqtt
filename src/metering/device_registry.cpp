@@ -1,8 +1,8 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/device_registry.h"
 
 DeviceRegistry::DeviceRegistry()
 {
-	BOOST_LOG_TRIVIAL(debug) << L"Initialising the DeviceRegistry";
+	spdlog::debug("Initialising the DeviceRegistry");
 }

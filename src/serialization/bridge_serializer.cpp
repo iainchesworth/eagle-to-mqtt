@@ -1,5 +1,5 @@
-#include <boost/log/trivial.hpp>
 #include <date/date.h>
+#include <spdlog/spdlog.h>
 
 #include <sstream>
 
@@ -17,7 +17,7 @@ boost::json::object Bridge_Serializer::Serialize() const
 
 	boost::json::object bridge_object;
 
-	BOOST_LOG_TRIVIAL(debug) << L"Serializing bridge";
+	spdlog::debug("Serializing bridge");
 
 	// Bridge uptime statistics
 	std::ostringstream oss;

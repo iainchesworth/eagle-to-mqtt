@@ -1,7 +1,6 @@
 #ifndef MQTT_CONNECTION_H
 #define MQTT_CONNECTION_H
 
-#include <boost/log/trivial.hpp>
 #include <boost/asio.hpp>
 #include <mqtt/async_client.h>
 

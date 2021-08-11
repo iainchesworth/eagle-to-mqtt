@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/devices/fronius/common/symo_messages.h"
 
@@ -31,7 +31,7 @@ SymoMessages::SymoMessageTypes SymoMessages::FromPayload(const boost::property_t
 {
 	if (const auto scope_node = node.get_optional<std::string>("Head.RequestArguments.Scope"); (!scope_node.is_initialized()) || "System" != scope_node.get())
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot find scope node";
+		spdlog::debug("SymoMessages::FromPayload - cannot find scope node");
 
 		// Check for message payloads that don't have anything in the header.requestarguments...
 		return MessageCheck_3(node);
@@ -46,7 +46,7 @@ SymoMessages::SymoMessageTypes SymoMessages::FromPayload(const boost::property_t
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"SymoMessages::FromPayload - cannot determine message type";
+		spdlog::debug("SymoMessages::FromPayload - cannot determine message type");
 		return SymoMessageTypes::Unknown;
 	}
 }
@@ -83,31 +83,31 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_1(const boost::propert
 
 	if (const auto query_node = node.get_optional<std::string>("Head.RequestArguments.Query"); !query_node.is_initialized())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot find query node";
+		spdlog::trace("SymoMessages::MessageCheck_1 - cannot find query node");
 	}
 	else if ("Inverter" == query_node.get())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Inverter";
+		spdlog::trace("SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Inverter");
 		message_type = SymoMessageTypes::SolarAPI_CurrentData_Inverter;
 	}
 	else if ("Meter" == query_node.get())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Meter";
+		spdlog::trace("SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - CurrentData - Meter");
 		message_type = SymoMessageTypes::SolarAPI_CurrentData_Meter;
 	}
 	else if ("Inverter+SensorCard+Meter" == query_node.get())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - LogData - Data";
+		spdlog::trace("SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - LogData - Data");
 		message_type = SymoMessageTypes::SolarAPI_LogData_Data;
 	}
 	else if ("Errors+Events" == query_node.get())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - Errors And Events";
+		spdlog::trace("SymoMessages::MessageCheck_1 - found message: SolarAPI v1 - Errors And Events");
 		message_type = SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents;
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_1 - cannot determine message type";
+		spdlog::trace("SymoMessages::MessageCheck_1 - cannot determine message type");
 	}
 
 	return message_type;
@@ -119,21 +119,21 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_2(const boost::propert
 
 	if (const auto device_class_node = node.get_optional<std::string>("Head.RequestArguments.DeviceClass"); !device_class_node.is_initialized())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot find device class node";
+		spdlog::trace("SymoMessages::MessageCheck_2 - cannot find device class node");
 	}
 	else if ("SensorCard" == device_class_node.get())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - SensorCard";
+		spdlog::trace("SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - SensorCard");
 		message_type = SymoMessageTypes::SolarAPI_CurrentData_SensorCard;
 	}
 	else if ("StringControl" == device_class_node.get())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - StringControl";
+		spdlog::trace("SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - StringControl");
 		message_type = SymoMessageTypes::SolarAPI_CurrentData_StringControl;
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - cannot determine message type";
+		spdlog::trace("SymoMessages::MessageCheck_2 - cannot determine message type");
 	}
 
 	return message_type;
@@ -145,11 +145,11 @@ SymoMessages::SymoMessageTypes SymoMessages::MessageCheck_3(const boost::propert
 
 	if (const auto body_inverters_node = node.get_child_optional("Body.Inverters"); !body_inverters_node.is_initialized())
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_3 - cannot find body.inverters node";
+		spdlog::trace("SymoMessages::MessageCheck_3 - cannot find body.inverters node");
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - PowerFlow";
+		spdlog::trace("SymoMessages::MessageCheck_2 - found message: SolarAPI v1 - CurrentData - PowerFlow");
 		message_type = SymoMessageTypes::SolarAPI_CurrentData_PowerFlow;
 	}
 

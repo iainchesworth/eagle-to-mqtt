@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "serialization/fronius/devicestatistics_serializer.h"
 #include "serialization/fronius/symo_serializer.h"
@@ -12,7 +12,7 @@ boost::json::object Symo_Serializer::Serialize() const
 {
 	boost::json::object device_object;
 
-	BOOST_LOG_TRIVIAL(debug) << L"Serializing Symo";
+	spdlog::debug("Serializing Symo");
 
 	// Device Statistics
 	Fronius::DeviceStatistics_Serializer ds_serializer(m_Serializable.m_Statistics);

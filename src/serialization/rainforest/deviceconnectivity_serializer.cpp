@@ -13,7 +13,7 @@ boost::json::object DeviceConnectivity_Serializer::Serialize() const
 {
 	boost::json::object device_connectivity;
 
-	BOOST_LOG_TRIVIAL(debug) << L"Serializing Rainforest::DeviceConnectivity";
+	spdlog::debug("Serializing Rainforest::DeviceConnectivity");
 
 	device_connectivity["Meter_MacId"] = ZigBeeMacId::ToString(m_Serializable.ZigBee.Meter_MacId);
 	device_connectivity["Extended_PanId"] = ZigBeeMacId::ToString(m_Serializable.ZigBee.Extended_PanId);

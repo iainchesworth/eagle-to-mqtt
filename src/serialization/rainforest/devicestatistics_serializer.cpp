@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "serialization/rainforest/devicestatistics_serializer.h"
 
@@ -13,7 +13,7 @@ boost::json::object DeviceStatistics_Serializer::Serialize() const
 {
 	boost::json::object device_stats;
 
-	BOOST_LOG_TRIVIAL(debug) << L"Serializing Rainforest::DeviceStatistics";
+	spdlog::debug("Serializing Rainforest::DeviceStatistics");
 
 	device_stats["LastMessageTimestamp"] = UnixTimepoint::ToString(m_Serializable.LastMessageTimestamp);
 	device_stats["MessageCount"] = m_Serializable.MessageCount;

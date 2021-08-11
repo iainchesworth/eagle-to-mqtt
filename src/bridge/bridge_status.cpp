@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "bridge/bridge_status.h"
 #include "exceptions/invalid_bridge_status_value.h"
@@ -30,7 +30,7 @@ BridgeStatus::BridgeStatusTypes BridgeStatus::FromString(const std::string& stat
 
 	if (0 == status_string.length())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Invalid Bridge Status provided to converter (zero-length)";
+		spdlog::warn("Invalid Bridge Status provided to converter (zero-length)");
 		throw InvalidBridgeStatusValue("Zero-length priority value");
 	}
 	else if (ONLINE == status_string)
@@ -43,7 +43,7 @@ BridgeStatus::BridgeStatusTypes BridgeStatus::FromString(const std::string& stat
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown Bridge Status provided to converter: " << status_string;
+		spdlog::warn("Unknown Bridge Status provided to converter: {}", status_string);
 		status_type = BridgeStatusTypes::Unknown;
 	}
 

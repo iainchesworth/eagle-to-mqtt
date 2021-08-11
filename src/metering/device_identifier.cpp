@@ -1,6 +1,6 @@
 #include <boost/core/ignore_unused.hpp>
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <spdlog/spdlog.h>
 
 #include <memory>
 #include <optional>
@@ -27,25 +27,25 @@ std::shared_ptr<IDevice> IdentifyAndGetEagleInstance(const boost::property_tree:
 
 	if (const auto rainforest_child = device_payload.get_child_optional("rainforest"); !rainforest_child)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"No version present in the payload; cannot determine device type!";
+		spdlog::warn("No version present in the payload; cannot determine device type!");
 	}
 	else if (raw_ethernet_mac = IsOptional<std::string>(rainforest_child.get(), "<xmlattr>.macId"); !raw_ethernet_mac.has_value())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"No ethernet mac id present in the payload; cannot determine device type!";
+		spdlog::warn("No ethernet mac id present in the payload; cannot determine device type!");
 	}
 	else if (processor_v1 = IsOptional<std::string>(rainforest_child.get(), "<xmlattr>.version"); processor_v1.has_value() && (0 == processor_v1.value().compare("undefined")))
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Detected RFA-Z109";
+		spdlog::debug("Detected RFA-Z109");
 		processor = DeviceRegistrySingleton()->GetOrCreate<RFA_Z109>(EthernetMacId(raw_ethernet_mac.value()));
 	}
 	else if (processor_v2 = IsOptional<double>(rainforest_child.get(), "<xmlattr>.version"); processor_v2.has_value() && (2.0 == processor_v2.value()))
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Detected EAGLE-200";
+		spdlog::debug("Detected EAGLE-200");
 		processor = DeviceRegistrySingleton()->GetOrCreate<Eagle200>(EthernetMacId(raw_ethernet_mac.value()));
 	}
 	else
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Unknown version present in the payload; halting processing";
+		spdlog::warn("Unknown version present in the payload; halting processing");
 	}
 
 	return processor;

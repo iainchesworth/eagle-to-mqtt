@@ -1,5 +1,5 @@
-#include <boost/log/trivial.hpp>
 #include <date/date.h>
+#include <spdlog/spdlog.h>
 
 #include <chrono>
 #include <string>
@@ -20,49 +20,49 @@ void Symo::ProcessPayload(const boost::property_tree::ptree& node)
 		switch (SymoMessages::FromPayload(node))
 		{
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_Inverter:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_CurrentData_Inverter fragment";
+			spdlog::debug("Processing SolarAPI_CurrentData_Inverter fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_CurrentData_InverterCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_SensorCard:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_CurrentData_SensorCard fragment";
+			spdlog::debug("Processing SolarAPI_CurrentData_SensorCard fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_CurrentData_SensorCardCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_StringControl:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_CurrentData_StringControl fragment";
+			spdlog::debug("Processing SolarAPI_CurrentData_StringControl fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_CurrentData_StringControlCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_Meter:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_CurrentData_Meter fragment";
+			spdlog::debug("Processing SolarAPI_CurrentData_Meter fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_CurrentData_MeterCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_PowerFlow:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_CurrentData_PowerFlow fragment";
+			spdlog::debug("Processing SolarAPI_CurrentData_PowerFlow fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_CurrentData_PowerFlowCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_LogData_Data:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_LogData_Data fragment";
+			spdlog::debug("Processing SolarAPI_LogData_Data fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_LogData_DataCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents:
-			BOOST_LOG_TRIVIAL(debug) << L"Processing SolarAPI_LogData_Data fragment";
+			spdlog::debug("Processing SolarAPI_LogData_Data fragment");
 			//ProcessFragment(X(Y));
 			++m_Statistics.SolarAPI_LogData_ErrorsAndEventsCount;
 			break;
 
 		default:
-			BOOST_LOG_TRIVIAL(debug) << L"Ignoring unhandled message type in upload data set";
+			spdlog::debug("Ignoring unhandled message type in upload data set");
 			++m_Statistics.UnknownMessageCount;
 			break;
 		}
@@ -75,14 +75,14 @@ void Symo::ProcessPayload(const boost::property_tree::ptree& node)
 	}
 	catch (const boost::property_tree::ptree_error& pte)
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"Missing payload field while processing payload...capturing error and re-throwing";
+		spdlog::trace("Missing payload field while processing payload...capturing error and re-throwing");
 		++m_Statistics.MissingPayloadFields;
 		++m_Statistics.ErrorsWhileProcessing;
 		throw;
 	}
 	catch (const std::exception& ex)
 	{
-		BOOST_LOG_TRIVIAL(trace) << L"General error occurred while processing payload...capturing error and re-throwing";
+		spdlog::trace("General error occurred while processing payload...capturing error and re-throwing");
 		++m_Statistics.ErrorsWhileProcessing;
 		throw;
 	}
@@ -94,7 +94,7 @@ void Symo::ProcessHeaderAttributes(const boost::property_tree::ptree& header_att
 	const auto timestamp = header_attributes.get_optional<std::string>("Head.Timestamp");
 	if (!timestamp.is_initialized())
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Missing expected field (timestamp) in head.timestamp payload";
+		spdlog::warn("Missing expected field (timestamp) in head.timestamp payload");
 	}
 	else
 	{

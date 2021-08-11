@@ -1,4 +1,4 @@
-#include <boost/log/trivial.hpp>
+#include <spdlog/spdlog.h>
 
 #include "metering/devices/rainforest/messages/device_info.h"
 #include "metering/types/optional.h"
@@ -27,11 +27,11 @@ DeviceInfo::DeviceInfo(const boost::property_tree::ptree& node) :
 	const auto datecode_and_lotnumber = IsOptional<std::string>(node, FIELDNAME_DATECODE);
 	if (!datecode_and_lotnumber.has_value())
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Manufacturer date code and lot number don't exist in payload with key: DateCode";
+		spdlog::debug("Manufacturer date code and lot number don't exist in payload with key: DateCode");
 	}
 	else if (16 != datecode_and_lotnumber.value().length())
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Invalid length for manufacturer date code and lot number - expected 16; got " << datecode_and_lotnumber.value().length();
+		spdlog::debug("Invalid length for manufacturer date code and lot number - expected 16; got {}", datecode_and_lotnumber.value().length());
 	}
 	else
 	{

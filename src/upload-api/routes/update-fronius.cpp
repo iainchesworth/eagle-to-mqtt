@@ -1,8 +1,9 @@
 #include <boost/beast/core/buffers_to_string.hpp>
 #include <boost/beast/core/make_printable.hpp>
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h> // Enable logging of user-defined types.
 
 #include <memory>
 #include <sstream>
@@ -24,7 +25,7 @@ ApiRoute_Fronius::ApiRoute_Fronius() :
 
 HttpResponse ApiRoute_Fronius::Handler(const HttpRequest& request)
 {
-	BOOST_LOG_TRIVIAL(trace) << L"Received Update (Fronius) Payload: " << std::endl << boost::beast::make_printable(request.body().data());
+	spdlog::trace("Received Update (Fronius) Payload: \n{}", boost::beast::make_printable(request.body().data()));
 
 	std::istringstream iss(boost::beast::buffers_to_string(request.body().data()));
 
@@ -36,7 +37,7 @@ HttpResponse ApiRoute_Fronius::Handler(const HttpRequest& request)
 		std::shared_ptr<IDevice> symo_processor(IdentifyAndGetSymoInstance(upload_dataset));
 		if (nullptr == symo_processor)
 		{
-			BOOST_LOG_TRIVIAL(warning) << L"Failed to determine the specific device type reporting data!";
+			spdlog::warn("Failed to determine the specific device type reporting data!");
 		}
 		else
 		{
@@ -45,7 +46,7 @@ HttpResponse ApiRoute_Fronius::Handler(const HttpRequest& request)
 	}
 	catch (const pt::ptree_error& pte)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Failed to parse XML in upload payload; exception was: " << pte.what();
+		spdlog::warn("Failed to parse XML in upload payload; exception was: {}", pte.what());
 		return make_400<boost::beast::http::string_body>(request, "Cannot find top-level upload data element; payload is malformed", "text/html");
 	}
 

@@ -1,7 +1,6 @@
 #ifndef IFRAGMENTPROCESSOR_H
 #define IFRAGMENTPROCESSOR_H
 
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include <optional>

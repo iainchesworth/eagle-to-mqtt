@@ -1,8 +1,8 @@
 #ifndef PRESENCE_HELPERS_H
 #define PRESENCE_HELPERS_H
 
-#include <boost/log/trivial.hpp>
 #include <boost/property_tree/ptree.hpp>
+#include <spdlog/spdlog.h>
 
 #include <cstdint>
 #include <functional>
@@ -43,17 +43,17 @@ FIELD_TYPE RetrieveValue(GETTER_FUNC getter)
 	}
 	catch (const std::invalid_argument& ia)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Exception (std::invalid_argument) while retrieving essential field - what(): " << ia.what();
+		spdlog::warn("Exception (std::invalid_argument) while retrieving essential field - what(): {}", ia.what());
 		throw;
 	}
 	catch (const boost::property_tree::ptree_error& pterr)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Exception (boost::property_tree::ptree_error) while retrieving essential field - what(): " << pterr.what();
+		spdlog::warn("Exception (boost::property_tree::ptree_error) while retrieving essential field - what(): {}", pterr.what());
 		throw;
 	}
 	catch (const MissingMessageKey& mmk)
 	{
-		BOOST_LOG_TRIVIAL(warning) << L"Exception (MissingMessageKey - " << mmk.MissingKey() << L") while retrieving essential field - what() : " << mmk.what();
+		spdlog::warn("Exception (MissingMessageKey - {} while retrieving essential field - what() : {}", mmk.MissingKey(), mmk.what());
 		throw;
 	}
 }
@@ -124,15 +124,15 @@ std::optional<FIELD_TYPE> TryAndRetrieveValue(GETTER_FUNC getter)
 	}
 	catch (const std::invalid_argument& ia)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Exception (std::invalid_argument) while retrieving optional field - what(): " << ia.what();
+		spdlog::debug("Exception (std::invalid_argument) while retrieving optional field - what(): {}", ia.what());
 	}
 	catch (const boost::property_tree::ptree_error& pterr)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Exception (boost::property_tree::ptree_error) while retrieving optional field - what(): " << pterr.what();
+		spdlog::debug("Exception (boost::property_tree::ptree_error) while retrieving optional field - what(): {}", pterr.what());
 	}
 	catch (const MissingMessageKey& mmk)
 	{
-		BOOST_LOG_TRIVIAL(debug) << L"Exception (MissingMessageKey - " << mmk.MissingKey() << L") while retrieving optional field - what(): " << mmk.what();
+		spdlog::debug("Exception (MissingMessageKey - {} while retrieving optional field - what() : {}", mmk.MissingKey(), mmk.what());
 	}
 
 	return optional_value;

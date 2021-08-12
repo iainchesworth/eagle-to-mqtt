@@ -1,0 +1,78 @@
+name: SonarQube Analysis (Linux)
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
+  VCPKG_DEFAULT_TRIPLET: x64-linux
+  BUILD_DIR: ${{github.workspace}}/build-coverage
+  BUILD_TYPE: Debug
+
+jobs:  
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+  #============================================================================
+  #
+  #  Configure any/all pre-requisites
+  #
+  #============================================================================  
+
+    - name: Set up GCC (Linux)
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+        platform: x64
+
+    - name: Install CMake
+      uses: lukka/get-cmake@latest
+
+    - name: Install 3rd Party Dependencies
+      shell: bash
+      run: |
+        # Core dependencies
+        sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev make pkg-config unzip
+        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
+        ${{env.VCPKG_DIR}}/vcpkg integrate install
+        # SonarQube scanner
+        wget -nv https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+        unzip -q sonar-scanner-cli-4.6.2.2472-linux.zip
+        echo "${PWD}/sonar-scanner-4.6.2.2472-linux/bin/" >> $GITHUB_PATH
+        # SonarQube build wrapper
+        wget -nv https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+        unzip -q build-wrapper-linux-x86.zip
+        echo "${PWD}/build-wrapper-linux-x86" >> $GITHUB_PATH
+
+  #============================================================================
+  #
+  #  (All Platforms) Build the application
+  #
+  #============================================================================      
+
+    - name: Build Application
+      run: |
+        cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake -DE2M_OPTION_CODE_COVERAGE=ON -DE2M_OPTION_SUPPORT_SONARQUBE=ON
+        build-wrapper-linux-x86-64 --out-dir ${{env.BUILD_DIR}}/bw-output cmake --build ${{env.BUILD_DIR}} --parallel 4 --config ${{env.BUILD_TYPE}} --target coverage
+
+  #============================================================================
+  #
+  #  Perform static analysis and upload coverage reports
+  #
+  #============================================================================
+  
+    - name: Perform SonarCloud Analysis
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        sonar-scanner -Dsonar.login="$SONAR_TOKEN" -Dsonar.cfamily.build-wrapper-output=${{env.BUILD_DIR}}/bw-output -Dsonar.coverageReportPaths=${{env.BUILD_DIR}}/coverage.sonarqube.xml -X

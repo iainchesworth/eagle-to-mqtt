@@ -10,7 +10,7 @@ env:
   VCPKG_DIR: ${{github.workspace}}/deps/vcpkg
   VCPKG_DEFAULT_TRIPLET: x64-windows
   BUILD_DIR: ${{github.workspace}}/build-windows
-  BUILD_TYPE: Release
+  BUILD_TYPE: RelWithDebInfo
   BUILD_ARCHIVE: binaries-with-build-artefacts.zip
   BINARIES_ARCHIVE: binaries.zip
 
@@ -39,11 +39,6 @@ jobs:
         choco install 7zip
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
         ${{env.VCPKG_DIR}}/vcpkg integrate install
-
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v1
-      with:
-        languages: cpp
 
   #============================================================================
   #
@@ -76,14 +71,20 @@ jobs:
         C:\ProgramData\chocolatey\bin\7z.exe a -tzip ${{runner.os}}-${{env.BUILD_ARCHIVE}} ${{env.BUILD_DIR}} -mx9 -mmt
         C:\ProgramData\chocolatey\bin\7z.exe a -tzip ${{runner.os}}-${{env.BINARIES_ARCHIVE}} ${{env.BUILD_DIR}}/eagle-to-mqtt.exe ${{env.BUILD_DIR}}/*.dll -mx9 -mmt
 
-    - name: Upload Build Binaries Archive
+    - name: Upload Build Artefacts Archive
       uses: actions/upload-artifact@v2
       if: success()
       with:
         name: ${{runner.os}}-artefacts-buildlogs-testbinaries-and-coveragefiles
-        path: |
-          ${{runner.os}}-${{env.BUILD_ARCHIVE}}
-          ${{runner.os}}-${{env.BINARIES_ARCHIVE}}
+        path: ${{runner.os}}-${{env.BUILD_ARCHIVE}}
+        if-no-files-found: warn
+
+    - name: Upload Build Binaries Archive
+      uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: ${{runner.os}}-binaries
+        path: ${{runner.os}}-${{env.BINARIES_ARCHIVE}}
         if-no-files-found: error
 
   #============================================================================
@@ -94,12 +95,3 @@ jobs:
 
     - name: Run Unit and Integration Tests
       run: ctest -C ${{env.BUILD_TYPE}} --test-dir ${{env.BUILD_DIR}}
-
-  #============================================================================
-  #
-  #  Perform static analysis and upload coverage reports
-  #
-  #============================================================================
-   
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v1

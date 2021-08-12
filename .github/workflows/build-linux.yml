@@ -125,16 +125,5 @@ jobs:
       env: 
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: >
-        sonar-scanner 
-          -Dsonar.host.url="https://sonarcloud.io"
-          -Dsonar.login="$SONAR_TOKEN"
-          -Dsonar.organization=iainchesworth
-          -Dsonar.projectKey=iainchesworth_eagle-to-mqtt
-          -Dsonar.cfamily.build-wrapper-output=${{env.BUILD_DIR}}/bw-output
-          -Dsonar.coverageReportPaths=${{env.BUILD_DIR}}/coverage.sonarqube.xml
-          -Dsonar.sources=src/
-          -Dsonar.test.exclusions=tests/**
-          -Dsonar.tests=tests/
-          -Dsonar.verbose=true
-          -X
+      run: |
+        sonar-scanner -Dsonar.login="$SONAR_TOKEN" -Dsonar.cfamily.build-wrapper-output=${{env.BUILD_DIR}}/bw-output -Dsonar.coverageReportPaths=${{env.BUILD_DIR}}/coverage.sonarqube.xml -X

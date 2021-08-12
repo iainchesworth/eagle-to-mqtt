@@ -8,6 +8,7 @@
 #                [LINK_TARGETS [items1...]
 #                [LINK_LIBS [items1...]
 #                [PREFIX <string>])
+#                [TEST_TARGET <target>]
 #
 #   SOURCE is the source file containing the test
 #   INCLUDE is an optional list of include directories
@@ -27,7 +28,7 @@
 function(add_boost_test)
 
     set(options OPTIONS)
-    set(oneValueArgs SOURCE PREFIX)
+    set(oneValueArgs SOURCE PREFIX TEST_TARGET)
     set(multiValueArgs INCLUDE LINK_TARGETS LINK_LIBS)
 
     cmake_parse_arguments(param "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -44,6 +45,11 @@ function(add_boost_test)
     target_compile_definitions(${TEST_EXECUTABLE_NAME} PRIVATE -DBOOST_TEST_MODULE="${TEST_EXECUTABLE_NAME}")
     target_include_directories(${TEST_EXECUTABLE_NAME} PRIVATE ${param_INCLUDE} ${Boost_INCLUDE_DIRS})
     target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE ${param_LINK_TARGETS} PRIVATE ${param_LINK_LIBS} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+    if(NOT ${param_TEST_TARGET} STREQUAL "")
+      # Bind this target to the provided test target
+      add_dependencies(${param_TEST_TARGET} ${TEST_EXECUTABLE_NAME})
+    endif()
 
     # Test_case must be always contained in a test_suite
     file(READ "${param_SOURCE}" SOURCE_FILE_CONTENTS)

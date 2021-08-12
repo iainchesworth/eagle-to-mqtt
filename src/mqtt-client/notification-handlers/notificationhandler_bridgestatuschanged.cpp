@@ -1,5 +1,7 @@
 #include <spdlog/spdlog.h>
 
+#include <sstream>
+
 #include "bridge/bridge_status.h"
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/mqtt_qos.h"

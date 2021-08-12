@@ -1,3 +1,4 @@
+#include <sstream>
 #include <string>
 
 #include "mqtt-client/mqtt_connection.h"

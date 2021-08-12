@@ -162,7 +162,7 @@ if (E2M_OPTION_SUPPORT_SONARQUBE)
 endif ()
 
     set(COVERAGE_EXCLUDES "${CMAKE_SOURCE_DIR}/tests")
-    setup_target_for_coverage_gcovr_xml(NAME coverage EXECUTABLE eagle-to-mqtt-tests DEPENDENCIES ${TEST_TARGET})
+    setup_target_for_coverage_gcovr_xml(NAME coverage EXECUTABLE ctest DEPENDENCIES unit-tests)
 
 endif ()
 

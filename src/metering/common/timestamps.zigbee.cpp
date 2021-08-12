@@ -1,5 +1,7 @@
 #include <date/date.h>
 
+#include <sstream>
+
 #include "metering/common/timestamps.h"
 #include "metering/common/unit_converters.h"
 

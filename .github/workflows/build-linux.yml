@@ -42,7 +42,7 @@ jobs:
     - name: Install 3rd Party Dependencies
       shell: bash
       run: |
-        sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev pkg-config unzip
+        sudo apt-get install -y --no-install-recommends curl gcovr libicu66 libssl1.1 libssl-dev make pkg-config unzip
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
         ${{env.VCPKG_DIR}}/vcpkg integrate install
         curl -L --output ${{github.workspace}}/build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip

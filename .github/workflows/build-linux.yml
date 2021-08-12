@@ -25,7 +25,7 @@ jobs:
         submodules: true
     
     - name: Get number of CPU cores
-      uses: SimenB/github-actions-cpu-cores@latest
+      uses: SimenB/github-actions-cpu-cores@v1
       id: cpu-core-count
 
   #============================================================================

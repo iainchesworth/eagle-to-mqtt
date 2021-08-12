@@ -127,6 +127,7 @@ jobs:
           -Dsonar.organization=iainchesworth
           -Dsonar.projectKey=iainchesworth_eagle-to-mqtt
           -Dsonar.cfamily.build-wrapper-output=${{env.BUILD_DIR}}/bw-output
+          -Dsonar.coverageReportPaths=${{env.BUILD_DIR}}/coverage.sonarqube.xml
           -Dsonar.sources=src/
           -Dsonar.test.exclusions=tests/**
           -Dsonar.tests=tests/

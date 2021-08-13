@@ -1,9 +1,12 @@
 #include <boost/program_options.hpp>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h> // Enable logging of user-defined types.
+#include <spdlog/sinks/ostream_sink.h>
 
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "options/options.h"
 #include "options/option_validators.h"
@@ -26,8 +29,16 @@ Options::Options(int argc, char* argv[]) :
 
 	auto enable_authentication = [this](const std::string&) { this->m_MqttUseAuthentication = true; };
 
+	auto cout_sink = std::make_shared<spdlog::sinks::ostream_sink_mt>(std::cout);
+	auto out_logger = std::make_shared<spdlog::logger>("std::cout", cout_sink);
+	out_logger->set_pattern("%v");
+	auto cerr_sink = std::make_shared<spdlog::sinks::ostream_sink_mt>(std::cerr);
+	auto err_logger = std::make_shared<spdlog::logger>("std::cerr", cerr_sink);
+	err_logger->set_pattern("%v");
+
 	try
 	{
+
 		// Set the default logging level before any of the various level options are processed.
 		set_logging_level(spdlog::level::info);
 
@@ -73,33 +84,35 @@ Options::Options(int argc, char* argv[]) :
 
 		if (vm.count("help"))
 		{
-			std::cout << VersionInfo::ProjectName() << ": " << VersionInfo::ProjectDescription() << std::endl;
-			std::cout << cmdline_options;
+			out_logger->info("{}: {}", VersionInfo::ProjectName(), VersionInfo::ProjectDescription());
+			out_logger->info("{}", cmdline_options);
 			std::exit(EXIT_SUCCESS);
 		}
 		else if (vm.count("version"))
 		{
-			std::cout << VersionInfo::ProjectName() << " v" << VersionInfo::ProjectVersion();
+			std::ostringstream version_oss;
+			version_oss << VersionInfo::ProjectName() << " v" << VersionInfo::ProjectVersion();
 			
 			if (GitMetadata::Populated())
 			{
-				std::cout << " (" << GitMetadata::Describe() << ": " << GitMetadata::CommitDate() << ")" << std::endl << std::endl;
+				version_oss << " (" << GitMetadata::Describe() << ": " << GitMetadata::CommitDate() << ")" << std::endl << std::endl;
 
-				std::cout << "Commit " << GitMetadata::CommitSHA1() << " (HEAD)" << std::endl;
-				std::cout << "Author: " << GitMetadata::AuthorName() << " <" << GitMetadata::AuthorEmail() << ">" << std::endl;
+				version_oss << "Commit " << GitMetadata::CommitSHA1() << " (HEAD)" << std::endl;
+				version_oss << "Author: " << GitMetadata::AuthorName() << " <" << GitMetadata::AuthorEmail() << ">" << std::endl;
 
 				if (GitMetadata::AnyUncommittedChanges())
 				{
-					std::cerr << "WARNING: there were uncommitted changes at build-time" << std::endl;
+					out_logger->info("{}", version_oss.str());
+					err_logger->warn("WARNING: there were uncommitted changes at build-time");
 					std::exit(EXIT_FAILURE);
 				}
 			}
 			else
 			{
-				std::cout << " (" << "No git commit information found" << ")" << std::endl;
+				version_oss << " (" << "No git commit information found" << ")" << std::endl;
 			}
 
-			std::cout << std::endl;
+			out_logger->info("{}", version_oss.str());
 			std::exit(EXIT_SUCCESS);
 		}
 		else
@@ -114,21 +127,21 @@ Options::Options(int argc, char* argv[]) :
 	{
 		if (0 == roex.get_option_name().compare("mqtt-host"))
 		{
-			std::cerr << "Must specify the MQTT host!" << std::endl;
+			err_logger->critical("Must specify the MQTT host!");
 		}
 		else
 		{
-			std::cerr << "Missing required argument: " << roex.get_option_name() << std::endl;
+			err_logger->critical("Missing required argument: {}", roex.get_option_name());
 		}
 
-		std::cerr << cmdline_options;
+		err_logger->critical("{}", cmdline_options);
 		throw; // Re-throw to propagate the exception up to the main application (so it terminates).
 	}
 	catch (const boost::program_options::error& poex)
 	{
 		// Display the help information then re-throw the exception...
-		std::cerr << "Failed to process provided arguments: " << poex.what() << std::endl;
-		std::cerr << cmdline_options;
+		err_logger->critical("Failed to process provided arguments: {}", poex.what());
+		err_logger->critical("{}", cmdline_options);
 		throw; // Re-throw to propagate the exception up to the main application (so it terminates).
 	}
 }

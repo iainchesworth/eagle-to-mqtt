@@ -1,11 +1,11 @@
 #ifndef MAC_ID_H
 #define MAC_ID_H
 
+#include <fmt/format.h>
 #include <spdlog/spdlog.h>
 
 #include <array>
 #include <cstdint>
-#include <iomanip>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -28,7 +28,7 @@ public:
 	}
 
 public:
-	constexpr uint32_t DEVICE_MAC_ID_STRING_LENGTH()
+	constexpr uint32_t DEVICE_MAC_ID_STRING_LENGTH() const
 	{
 		return (ADDRESS_ELEMENTS * 2) + 2; // Format expected as "0xFFFFFFFF...."
 	}
@@ -70,17 +70,11 @@ public:
 
 	static std::string ToString(const MacId<ADDRESS_ELEMENTS>& mac_id)
 	{
-		static const uint32_t HEX_BUF_STRING_LENGTH = 3; // <CHAR> + <CHAR> + NULL;
-
 		std::ostringstream oss;
 
 		for(uint32_t i = 0; i < ADDRESS_ELEMENTS; ++i)
 		{
-			char hex_value_buffer[HEX_BUF_STRING_LENGTH] = { 0 };
-
-			std::snprintf(hex_value_buffer, HEX_BUF_STRING_LENGTH, "%.2hhX", mac_id.m_DeviceMacId[i]);
-
-			oss << hex_value_buffer;
+			oss << fmt::format("{:02X}", mac_id.m_DeviceMacId[i]);
 
 			if ((mac_id.m_DeviceMacId.size() - 1) > i)
 			{

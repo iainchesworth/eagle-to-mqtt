@@ -34,7 +34,7 @@ jobs:
       uses: lukka/get-cmake@latest
 
     - name: Configure MSBuild
-      uses: microsoft/setup-msbuild@v1
+      uses: ilammy/msvc-dev-cmd@v1
 
     - name: Install 3rd Party Dependencies
       shell: pwsh

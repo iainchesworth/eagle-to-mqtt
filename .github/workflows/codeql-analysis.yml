@@ -41,7 +41,7 @@ jobs:
       shell: bash
       run: |
         # Core dependencies
-        sudo apt-get install -y --no-install-recommends curl libicu66 libssl1.1 libssl-dev make pkg-config unzip
+        sudo apt-get install -y --no-install-recommends curl libicu66 libssl1.1 libssl-dev make ninja-build pkg-config unzip
         ${{env.VCPKG_DIR}}/bootstrap-vcpkg.sh
         ${{env.VCPKG_DIR}}/vcpkg integrate install
 
@@ -58,7 +58,7 @@ jobs:
 
     - name: Build Application
       run: |
-        cmake -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+        cmake -G Ninja -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
         cmake --build ${{env.BUILD_DIR}} --parallel 4 --config ${{env.BUILD_TYPE}}
 
   #============================================================================

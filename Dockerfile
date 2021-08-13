@@ -16,7 +16,7 @@ FROM base AS builder
 # Prepare for building of the application and its dependencies
 COPY ./deps /usr/src/eagle-to-mqtt/deps
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates cmake curl file gcc-11 g++-11 git gnupg2 pkg-config libssl-dev make tar unzip zip
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ca-certificates cmake curl file gcc-11 g++-11 git gnupg2 ninja-build pkg-config libssl-dev make tar unzip zip
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11
 RUN update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11
 
@@ -33,7 +33,7 @@ FROM builder as appbuilder
 # Build and install the application
 COPY . /usr/src/eagle-to-mqtt
  
-RUN cmake -S /usr/src/eagle-to-mqtt -B /usr/src/eagle-to-mqtt/build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_TOOLCHAIN_FILE=/usr/src/eagle-to-mqtt/deps/vcpkg/scripts/buildsystems/vcpkg.cmake
+RUN cmake -G Ninja -S /usr/src/eagle-to-mqtt -B /usr/src/eagle-to-mqtt/build -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_TOOLCHAIN_FILE=/usr/src/eagle-to-mqtt/deps/vcpkg/scripts/buildsystems/vcpkg.cmake
 RUN cmake --build /usr/src/eagle-to-mqtt/build --config RelWithDebInfo --target install
 
 # The third stage ....

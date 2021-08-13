@@ -23,7 +23,6 @@ foreach(PROJECT_TEST_SOURCE_FILE ${PROJECT_TEST_SOURCES})
 			Boost::boost 
 			Boost::json 
 			Boost::program_options
-			Boost::unit_test_framework
 			OpenSSL::Crypto 
 			OpenSSL::SSL 
 			${PLATFORM_SPECIFIC_LINK_TARGET_PAHO_MQTT} 

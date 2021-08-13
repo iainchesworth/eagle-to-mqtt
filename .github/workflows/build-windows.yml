@@ -33,6 +33,9 @@ jobs:
     - name: Install CMake
       uses: lukka/get-cmake@latest
 
+    - name: Configure MSBuild
+      uses: microsoft/setup-msbuild@v1
+
     - name: Install 3rd Party Dependencies
       shell: pwsh
       run: |
@@ -64,7 +67,7 @@ jobs:
 
     - name: Build Application
       run: |
-        cmake -G Ninja -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\ninja.exe -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+        cmake -G Ninja -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\ninja.exe -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
         cmake --build ${{env.BUILD_DIR}} --parallel 4 --config ${{env.BUILD_TYPE}}
 
     - name: Archive Build Binaries

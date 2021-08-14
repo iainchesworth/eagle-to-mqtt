@@ -21,43 +21,43 @@ void Symo::ProcessPayload(const boost::property_tree::ptree& node)
 		{
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_Inverter:
 			spdlog::debug("Processing SolarAPI_CurrentData_Inverter fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_CurrentData_Inverter(node));
 			++m_Statistics.SolarAPI_CurrentData_InverterCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_SensorCard:
 			spdlog::debug("Processing SolarAPI_CurrentData_SensorCard fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_CurrentData_SensorCard(node));
 			++m_Statistics.SolarAPI_CurrentData_SensorCardCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_StringControl:
 			spdlog::debug("Processing SolarAPI_CurrentData_StringControl fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_CurrentData_StringControl(node));
 			++m_Statistics.SolarAPI_CurrentData_StringControlCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_Meter:
 			spdlog::debug("Processing SolarAPI_CurrentData_Meter fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_CurrentData_Meter(node));
 			++m_Statistics.SolarAPI_CurrentData_MeterCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_CurrentData_PowerFlow:
 			spdlog::debug("Processing SolarAPI_CurrentData_PowerFlow fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_CurrentData_PowerFlow(node));
 			++m_Statistics.SolarAPI_CurrentData_PowerFlowCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_LogData_Data:
 			spdlog::debug("Processing SolarAPI_LogData_Data fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_LogData_Data(node));
 			++m_Statistics.SolarAPI_LogData_DataCount;
 			break;
 
 		case SymoMessages::SymoMessageTypes::SolarAPI_LogData_ErrorsAndEvents:
 			spdlog::debug("Processing SolarAPI_LogData_Data fragment");
-			//ProcessFragment(X(Y));
+			ProcessFragment(SolarApi_LogData_ErrorsAndEvents(node));
 			++m_Statistics.SolarAPI_LogData_ErrorsAndEventsCount;
 			break;
 

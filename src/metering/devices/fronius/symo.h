@@ -4,6 +4,7 @@
 #include <boost/property_tree/ptree.hpp>
 
 #include <memory>
+#include <vector>
 
 #include "interfaces/idevice.h"
 #include "interfaces/iserializer.h"
@@ -16,6 +17,11 @@
 #include "metering/devices/fronius/messages/solarapi_currentdata_stringcontrol.h"
 #include "metering/devices/fronius/messages/solarapi_logdata_data.h"
 #include "metering/devices/fronius/messages/solarapi_logdata_errorsandevents.h"
+#include "metering/devices/fronius/messages/partial_message_types/inverter_data.h"
+#include "metering/devices/fronius/messages/partial_message_types/powerflow_versions.h"
+#include "metering/devices/fronius/messages/partial_message_types/secondary_meters.h"
+#include "metering/devices/fronius/messages/partial_message_types/smartload.h"
+#include "metering/devices/fronius/site/site.h"
 
 class Symo : public IDevice
 {
@@ -40,6 +46,20 @@ public:
 
 private:
 	Fronius::DeviceStatistics m_Statistics;
+
+public:
+	PowerFlowVersions PowerFlowVersion() const;
+	Site LocalSite() const;
+	std::vector<InverterData> Inverters() const;
+	std::vector<SecondaryMeter> SecondaryMeters() const;
+	std::vector<SmartLoad> SmartLoads() const;
+
+private:
+	PowerFlowVersions m_PowerFlowVersion;
+	std::shared_ptr<Site> m_LocalSite;
+	std::vector<InverterData> m_Inverters{};
+	std::vector<SecondaryMeter> m_SecondaryMeters{};
+	std::vector<SmartLoad> m_SmartLoads{};
 
 public:
 	friend class Symo_Serializer;

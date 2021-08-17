@@ -5,11 +5,11 @@
 
 #include <string>
 
-#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
+#include "notifications/common/notification_payload_types.h"
 #include "notifications/metering/notification_publishpayload.h"
 
-class Notification_DeviceInfo : public Notification_PublishPayload
+class Notification_DeviceInfo : public EagleNotification_PublishPayload
 {
 	static const std::string MAPKEY_DEVICEMACID;
 	static const std::string MAPKEY_FIRMWAREVERSION;
@@ -17,7 +17,7 @@ class Notification_DeviceInfo : public Notification_PublishPayload
 	static const std::string MAPKEY_MODELID;
 
 public:
-	explicit Notification_DeviceInfo(EthernetMacId device_id);
+	explicit Notification_DeviceInfo(EagleNotification_PublishPayload::Types::DeviceId device_id);
 
 public:
 	Notification_DeviceInfo& Device_MacId(const ZigBeeMacId& device_macid);

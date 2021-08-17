@@ -6,8 +6,8 @@ const std::string Notification_Connectivity::MAPKEY_STATUS{ "status" };
 const std::string Notification_Connectivity::MAPKEY_CHANNEL{ "channel" };
 const std::string Notification_Connectivity::MAPKEY_LINKSTRENGTH{ "link_strength" };
 
-Notification_Connectivity::Notification_Connectivity(EthernetMacId device_id) :
-	Notification_PublishPayload(device_id)
+Notification_Connectivity::Notification_Connectivity(EagleNotification_PublishPayload::Types::DeviceId device_id) :
+	EagleNotification_PublishPayload(device_id)
 {
 }
 

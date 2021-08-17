@@ -1,5 +1,4 @@
 #include "metering/devices/fronius/messages/solarapi_currentdata_inverter.h"
-#include "metering/types/collection.h"
 #include "metering/types/optional.h"
 
 SolarApi_CurrentData_Inverter::SolarApi_CurrentData_Inverter(const boost::property_tree::ptree& node) :

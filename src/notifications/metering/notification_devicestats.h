@@ -8,10 +8,10 @@
 
 #include "metering/common/timestamps.h"
 #include "metering/devices/rainforest/common/device_stats.h"
-#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
+#include "notifications/common/notification_payload_types.h"
 #include "notifications/metering/notification_publishpayload.h"
 
-class Notification_DeviceStats : public Notification_PublishPayload
+class Notification_DeviceStats : public EagleNotification_PublishPayload
 {
 	static const std::string MAPKEY_LASTMESSAGETIMESTAMP;
 	static const std::string MAPKEY_MISSINGPAYLOADFIELDS;
@@ -29,7 +29,7 @@ class Notification_DeviceStats : public Notification_PublishPayload
 	static const std::string MAPKEY_UNKNOWNMESSAGECOUNT;
 
 public:
-	explicit Notification_DeviceStats(EthernetMacId device_id);
+	explicit Notification_DeviceStats(EagleNotification_PublishPayload::Types::DeviceId device_id);
 
 public:
 	Notification_DeviceStats& DeviceStats(const Rainforest::DeviceStatistics& statistics);

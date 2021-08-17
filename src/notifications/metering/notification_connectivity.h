@@ -7,11 +7,11 @@
 #include <string>
 
 #include "metering/common/statuses.h"
-#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
+#include "notifications/common/notification_payload_types.h"
 #include "notifications/metering/notification_publishpayload.h"
 
-class Notification_Connectivity : public Notification_PublishPayload
+class Notification_Connectivity : public EagleNotification_PublishPayload
 {
 	static const std::string MAPKEY_METERMACID;
 	static const std::string MAPKEY_EXTENDEDPANID;
@@ -20,7 +20,7 @@ class Notification_Connectivity : public Notification_PublishPayload
 	static const std::string MAPKEY_LINKSTRENGTH;
 
 public:
-	explicit Notification_Connectivity(EthernetMacId device_id);
+	explicit Notification_Connectivity(EagleNotification_PublishPayload::Types::DeviceId device_id);
 
 public:
 	Notification_Connectivity& Meter_MacId(const ZigBeeMacId& meter_macid);

@@ -3,9 +3,9 @@
 
 #include "mqtt-client/mqtt_connection.h"
 #include "mqtt-client/mqtt_qos.h"
-#include "notifications/common/metering_payload_types.h"
+#include "notifications/common/notification_payload_types.h"
 
-void MqttConnection::NotificationHandler_PublishPayload(const std::string& topic_prefix, const MeteringPayload& metering_payload)
+void MqttConnection::NotificationHandler_PublishPayload(const std::string& topic_prefix, const EagleNotification_PublishPayload::Types::Payload& metering_payload)
 {
 	for (auto& [key, value] : metering_payload.second)
 	{

@@ -16,8 +16,8 @@ const std::string Notification_DeviceStats::MAPKEY_PRICECLUSTERCOUNT{ "price_clu
 const std::string Notification_DeviceStats::MAPKEY_TIMECLUSTERCOUNT{ "time_cluster_count" };
 const std::string Notification_DeviceStats::MAPKEY_UNKNOWNMESSAGECOUNT{ "unknown_message_count" };
 
-Notification_DeviceStats::Notification_DeviceStats(EthernetMacId device_id) :
-	Notification_PublishPayload(device_id)
+Notification_DeviceStats::Notification_DeviceStats(EagleNotification_PublishPayload::Types::DeviceId device_id) :
+	EagleNotification_PublishPayload(device_id)
 {
 }
 

@@ -12,7 +12,7 @@
 #include <unordered_map>
 
 #include "bridge/bridge_status.h"
-#include "notifications/common/metering_payload_types.h"
+#include "notifications/common/notification_payload_types.h"
 #include "options/options.h"
 
 class MqttConnection : public std::enable_shared_from_this<MqttConnection>, public mqtt::callback
@@ -27,13 +27,13 @@ public:
 	void Stop();
 
 private:
-	void NotificationHandler_PublishPayload(const std::string& topic_prefix, const MeteringPayload& metering_payload);
+	void NotificationHandler_PublishPayload(const std::string& topic_prefix, const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_BridgeStatusChange(const BridgeStatus& bridge_status);
-	void NotificationHandler_Connectivity(const MeteringPayload& metering_payload);
-	void NotificationHandler_DeviceInfo(const MeteringPayload& metering_payload);
-	void NotificationHandler_DeviceStats(const MeteringPayload& metering_payload);
+	void NotificationHandler_Connectivity(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
+	void NotificationHandler_DeviceInfo(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
+	void NotificationHandler_DeviceStats(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_PublishKeepAlive(const std::chrono::seconds& uptime);
-	void NotificationHandler_EnergyUsage(const MeteringPayload& metering_payload);
+	void NotificationHandler_EnergyUsage(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 
 private:
 	void Connect();

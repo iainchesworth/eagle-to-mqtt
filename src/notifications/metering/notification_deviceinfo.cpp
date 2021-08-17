@@ -5,8 +5,8 @@ const std::string Notification_DeviceInfo::MAPKEY_FIRMWAREVERSION{ "firmware" };
 const std::string Notification_DeviceInfo::MAPKEY_HARDWAREVERSION{ "hardware" };
 const std::string Notification_DeviceInfo::MAPKEY_MODELID{ "model" };
 
-Notification_DeviceInfo::Notification_DeviceInfo(EthernetMacId device_id) :
-	Notification_PublishPayload(device_id)
+Notification_DeviceInfo::Notification_DeviceInfo(EagleNotification_PublishPayload::Types::DeviceId device_id) :
+	EagleNotification_PublishPayload(device_id)
 {
 }
 

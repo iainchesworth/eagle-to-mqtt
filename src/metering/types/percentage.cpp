@@ -75,6 +75,6 @@ double Percentage::operator()() const
 
 std::ostream& operator<<(std::ostream& os, const Percentage& percentage)
 {
-	os << std::fixed << std::setprecision(2) << percentage << "%";
+	os << std::fixed << std::setprecision(2) << percentage.m_Percentage << "%";
 	return os;
 }

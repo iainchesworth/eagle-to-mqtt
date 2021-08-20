@@ -19,6 +19,7 @@ public:
 	Production Today{ 0.0f };
 	Production Year{ 0.0f };
 	Production AllTime{ 0.0f };
+	Power InstantaneousGeneration{ 0.0f };
 
 public:
 	virtual boost::json::object Serialize() const;

@@ -4,10 +4,12 @@
 #include <boost/json.hpp>
 
 #include <cstdint>
+#include <unordered_map>
 #include <vector>
 
 #include "interfaces/iserializable.h"
 #include "metering/devices/fronius/energy_management/energy_production_stats.h"
+#include "metering/devices/fronius/messages_types/inverter_data.h"
 
 namespace Fronius
 {
@@ -19,7 +21,7 @@ public:
 	virtual ~EnergyProduction() = default;
 
 public:
-	std::vector<EnergyProductionStats> Inverters;
+	std::unordered_map<InverterData::InverterId, EnergyProductionStats> Inverters;
 	EnergyProductionStats Site;
 
 public:

@@ -3,20 +3,42 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include <any>
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <unordered_map>
+#include <variant>
 
-#include "metering/devices/fronius/energy_measurement/energy_measurement.h"
-#include "metering/devices/fronius/messages/partial_message_types/operating_modes.h"
-#include "metering/devices/fronius/messages/partial_message_types/meter_locations.h"
-#include "metering/devices/fronius/messages/partial_message_types/powerflow_versions.h"
-#include "metering/types/percentage.h"
+#include "metering/common/energy_value.h"
+#include "metering/devices/fronius/common/symo_payloads.h"
+#include "metering/devices/fronius/energy_management/grid_energy_measurement.h"
+#include "metering/devices/fronius/energy_management/load_energy_measurement.h"
+#include "metering/devices/fronius/energy_management/akku_energy_measurement.h"
+#include "metering/devices/fronius/energy_management/pv_energy_measurement.h"
+#include "metering/devices/fronius/messages_types/operating_modes.h"
+#include "metering/devices/fronius/messages_types/meter_locations.h"
+#include "metering/devices/fronius/messages_types/percentage.h"
+#include "metering/devices/fronius/messages_types/powerflow_versions.h"
 
-class Site
+class Site : public SymoPayload
 {
-public:
-	Site(OperatingModes mode, std::optional<bool> battery_in_standby, std::optional<bool> backup_mode, GridEnergyMeasurement powerflow_grid, LoadEnergyMeasurement powerflow_generation, AkkuEnergyMeasurement powerflow_battery, PVEnergyMeasurement powerflow_production, std::optional<Percentage> self_consumption, std::optional<Percentage> relative_autonomy, std::optional<MeterLocations> meter_location, std::optional<double> generatedenergy_day, std::optional<double> generatedenergy_year, std::optional<double> generatedenergy_total);
+	static const std::string FIELDNAME_MODE;
+	static const std::string FIELDNAME_BATTERYSTANDBY;
+	static const std::string FIELDNAME_BACKUPMODE;
+	static const std::string FIELDNAME_PGRID;
+	static const std::string FIELDNAME_PLOAD;
+	static const std::string FIELDNAME_PAKKU;
+	static const std::string FIELDNAME_PPV;
+	static const std::string FIELDNAME_SELFCONSUMPTION;
+	static const std::string FIELDNAME_AUTONOMY;
+	static const std::string FIELDNAME_METERLOCATION;
+	static const std::string FIELDNAME_DAY;
+	static const std::string FIELDNAME_YEAR;
+	static const std::string FIELDNAME_TOTAL;
+
+private:
+	Site();
 
 public:
 	OperatingModes Mode() const;
@@ -28,25 +50,31 @@ public:
 	PVEnergyMeasurement PowerFlow_Production() const;
 	std::optional<Percentage> SelfConsumption() const;
 	std::optional<Percentage> RelativeAutonomy() const;
-	std::optional<MeterLocations> MeterLocation() const;
-	std::optional<double> GeneratedEnergy_Day() const;
-	std::optional<double> GeneratedEnergy_Year() const;
-	std::optional<double> GeneratedEnergy_Total() const;
+	MeterLocations MeterLocation() const;
+	std::optional<Production> GeneratedEnergy_Day() const;
+	std::optional<Production> GeneratedEnergy_Year() const;
+	std::optional<Production> GeneratedEnergy_Total() const;
 
 private:
-	OperatingModes m_Mode;
-	std::optional<bool> m_BatteryInStandby;
-	std::optional<bool> m_BackupMode;
-	GridEnergyMeasurement m_PowerFlow_Grid;
-	LoadEnergyMeasurement m_PowerFlow_Generation;
-	AkkuEnergyMeasurement m_PowerFlow_Battery;
-	PVEnergyMeasurement m_PowerFlow_Production;
-	std::optional<Percentage> m_SelfConsumption;
-	std::optional<Percentage> m_RelativeAutonomy;
-	std::optional<MeterLocations> m_MeterLocation;
-	std::optional<double> m_GeneratedEnergy_Day_InWh;
-	std::optional<double> m_GeneratedEnergy_Year_InWh;
-	std::optional<double> m_GeneratedEnergy_Total_InWh;
+	using SitePayloadFieldTypes = std::variant<OperatingModes, std::optional<bool>, GridEnergyMeasurement, LoadEnergyMeasurement, AkkuEnergyMeasurement, PVEnergyMeasurement, std::optional<Percentage>, MeterLocations, std::optional<Production>>;
+	using SitePayloadFields = std::unordered_map<std::string, SitePayloadFieldTypes>;
+	SitePayloadFields m_SitePayloadFields
+	{
+		{ FIELDNAME_MODE, OperatingModes(OperatingModes::Modes::NotSpecified) },
+		{ FIELDNAME_BATTERYSTANDBY, std::optional<bool>() },
+		{ FIELDNAME_BACKUPMODE, std::optional<bool>() },
+		{ FIELDNAME_PGRID, GridEnergyMeasurement(std::string("0.0")) },
+		{ FIELDNAME_PLOAD, LoadEnergyMeasurement(std::string("0.0")) },
+		{ FIELDNAME_PAKKU, AkkuEnergyMeasurement(std::string("0.0")) },
+		{ FIELDNAME_PPV, PVEnergyMeasurement(std::string("0.0")) },
+		{ FIELDNAME_SELFCONSUMPTION, std::optional<Percentage>() },
+		{ FIELDNAME_AUTONOMY, std::optional<Percentage>() },
+		{ FIELDNAME_METERLOCATION, MeterLocations(MeterLocations::Locations::Unknown) },
+		{ FIELDNAME_DAY, std::optional<Production>() },
+		{ FIELDNAME_YEAR, std::optional<Production>() },
+		{ FIELDNAME_TOTAL, std::optional<Production>() }
+
+	};
 
 public:
 	static Site ExtractFromPayload(const boost::property_tree::ptree& node, PowerFlowVersions powerflow_version);

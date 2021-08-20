@@ -2,6 +2,7 @@
 #define ENERGY_MEASUREMENT_FLOWS_H
 
 #include <cmath>
+#include <ostream>
 
 template<typename FLOW_DIRECTIONS>
 class EnergyFlowBase
@@ -35,8 +36,8 @@ protected:
 
 enum class GridFlowDirections
 {
-	FromGrid, // Positive
-	ToGrid	  // Negative
+	FromGrid,	// Positive
+	ToGrid		// Negative
 };
 
 class GridFlow : public EnergyFlowBase<GridFlowDirections>
@@ -46,6 +47,8 @@ private:
 	FlowMeanings Value_LessThanZero() const final;
 };
 
+std::ostream& operator<<(std::ostream& os, GridFlowDirections direction);
+
 //-----------------------------------------------------------------------------
 //
 // Power flows
@@ -54,8 +57,8 @@ private:
 
 enum class LoadFlowDirections
 {
-	Producer,
-	Consumer
+	Producer,	// Positive
+	Consumer	// Negative
 };
 
 class LoadFlow : public EnergyFlowBase<LoadFlowDirections>
@@ -65,6 +68,8 @@ private:
 	FlowMeanings Value_LessThanZero() const final;
 };
 
+std::ostream& operator<<(std::ostream& os, LoadFlowDirections direction);
+
 //-----------------------------------------------------------------------------
 //
 // Power flows
@@ -73,8 +78,8 @@ private:
 
 enum class ChargeFlowDirections
 {
-	Discharging,
-	Charging
+	Discharging,	// Positive
+	Charging		// Negative
 };
 
 class ChargeFlow : public EnergyFlowBase<ChargeFlowDirections>
@@ -84,6 +89,8 @@ private:
 	FlowMeanings Value_LessThanZero() const final;
 };
 
+std::ostream& operator<<(std::ostream& os, ChargeFlowDirections direction);
+
 //-----------------------------------------------------------------------------
 //
 // Power flows
@@ -92,8 +99,8 @@ private:
 
 enum class ProductionFlowDirections
 {
-	Producing,
-	Unknown
+	Producing,	// Positive
+	Unknown		// Negative
 };
 
 class ProductionFlow : public EnergyFlowBase<ProductionFlowDirections>
@@ -102,5 +109,7 @@ private:
 	FlowMeanings Value_ZeroOrMore() const final;
 	FlowMeanings Value_LessThanZero() const final;
 };
+
+std::ostream& operator<<(std::ostream& os, ProductionFlowDirections direction);
 
 #endif // ENERGY_MEASUREMENT_FLOWS_H

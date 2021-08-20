@@ -1,7 +1,7 @@
 #include <boost/algorithm/string.hpp>
 #include <spdlog/spdlog.h>
 
-#include "metering/devices/fronius/messages/partial_message_types/meter_locations.h"
+#include "metering/devices/fronius/messages_types/meter_locations.h"
 
 const std::string MeterLocations::NOT_SPECIFIED{ "Not Specified" };
 const std::string MeterLocations::LOAD{ "Load" };

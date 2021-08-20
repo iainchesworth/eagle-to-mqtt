@@ -1,4 +1,4 @@
-#include "metering/devices/fronius/messages/partial_message_types/smartload.h"
+#include "metering/devices/fronius/messages_types/smartload.h"
 
 SmartLoad::SmartLoad()
 {

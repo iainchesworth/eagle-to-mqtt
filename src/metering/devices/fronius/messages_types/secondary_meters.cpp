@@ -1,4 +1,4 @@
-#include "metering/devices/fronius/messages/partial_message_types/secondary_meters.h"
+#include "metering/devices/fronius/messages_types/secondary_meters.h"
 
 SecondaryMeter::SecondaryMeter()
 {

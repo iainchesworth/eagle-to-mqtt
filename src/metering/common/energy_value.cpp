@@ -44,6 +44,11 @@ Usage::Usage(uint32_t raw_energy_value, uint32_t multiplier, uint32_t divisor, u
 {
 }
 
+Production::Production(double production_in_watt_hours) :
+	Energy(production_in_watt_hours)
+{
+}
+
 //=====================================================================================================================
 //
 //

@@ -1,6 +1,6 @@
 #include <spdlog/spdlog.h>
 
-#include "metering/devices/fronius/messages/partial_message_types/powerflow_versions.h"
+#include "metering/devices/fronius/messages_types/powerflow_versions.h"
 
 const std::string PowerFlowVersions::NOT_SPECIFIED{ "Not Specified" };
 const std::string PowerFlowVersions::VERSION_10{ "Version 10" };

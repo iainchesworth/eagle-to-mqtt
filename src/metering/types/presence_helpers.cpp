@@ -7,11 +7,8 @@
 #include "metering/common/timestamps.h"
 #include "metering/types/boolean.h"
 #include "metering/types/integer.h"
-#include "metering/types/percentage.h"
 #include "metering/types/presence_helpers.h"
-#include "metering/devices/fronius/energy_measurement/energy_measurement.h"
-#include "metering/devices/fronius/messages/partial_message_types/meter_locations.h"
-#include "metering/devices/fronius/messages/partial_message_types/operating_modes.h"
+#include "metering/devices/fronius/energy_management/energy_measurement.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/devices/rainforest/messages/partial_message_types/pricing_tier.h"
 #include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
@@ -85,21 +82,6 @@ template<>
 EthernetMacId PresenseHelpers::RetrieveValue<EthernetMacId>(const boost::property_tree::ptree& node, const std::string& field)
 {
 	return RetrieveValue<EthernetMacId>([&node, &field]() { return node.get<EthernetMacId>(field, EthernetMacId::PropertyTreeTranslator()); });
-}
-template<>
-MeterLocations PresenseHelpers::RetrieveValue<MeterLocations>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return RetrieveValue<MeterLocations>([&node, &field]() { return MeterLocations::FromString(node.get<std::string>(field)); });
-}
-template<>
-OperatingModes PresenseHelpers::RetrieveValue<OperatingModes>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return RetrieveValue<OperatingModes>([&node, &field]() { return OperatingModes::FromString(node.get<std::string>(field)); });
-}
-template<>
-Percentage PresenseHelpers::RetrieveValue<Percentage>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return RetrieveValue<Percentage>([&node, &field]() { return Percentage(node.get<double>(field)); });
 }
 template<>
 Priorities PresenseHelpers::RetrieveValue<Priorities>(const boost::property_tree::ptree& node, const std::string& field)
@@ -211,21 +193,6 @@ template<>
 std::optional<EthernetMacId> PresenseHelpers::TryAndRetrieveValue<EthernetMacId>(const boost::property_tree::ptree& node, const std::string& field)
 {
 	return TryAndRetrieveValue<EthernetMacId>([&node, &field]() { return node.get<EthernetMacId>(field, EthernetMacId::PropertyTreeTranslator()); });
-}
-template<>
-std::optional<MeterLocations> PresenseHelpers::TryAndRetrieveValue<MeterLocations>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return TryAndRetrieveValue<MeterLocations>([&node, &field]() { return MeterLocations::FromString(node.get<std::string>(field)); });
-}
-template<>
-std::optional<OperatingModes> PresenseHelpers::TryAndRetrieveValue<OperatingModes>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return TryAndRetrieveValue<OperatingModes>([&node, &field]() { return OperatingModes::FromString(node.get<std::string>(field)); });
-}
-template<>
-std::optional<Percentage> PresenseHelpers::TryAndRetrieveValue<Percentage>(const boost::property_tree::ptree& node, const std::string& field)
-{
-	return TryAndRetrieveValue<Percentage>([&node, &field]() { return Percentage(node.get<double>(field)); });
 }
 template<>
 std::optional<Priorities> PresenseHelpers::TryAndRetrieveValue<Priorities>(const boost::property_tree::ptree& node, const std::string& field)

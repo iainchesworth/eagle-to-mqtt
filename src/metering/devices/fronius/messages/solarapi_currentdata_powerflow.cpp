@@ -1,6 +1,7 @@
 #include <spdlog/spdlog.h>
 
 #include <cstdint>
+#include <string>
 
 #include "metering/devices/fronius/messages/solarapi_currentdata_powerflow.h"
 
@@ -20,7 +21,18 @@ SolarApi_CurrentData_PowerFlow::SolarApi_CurrentData_PowerFlow(const boost::prop
 
 		for(const auto& [elem_name, elem_node] : inverter_node.value())
 		{
-			m_Inverters.push_back(InverterData::ExtractFromPayload(elem_node));
+			try
+			{
+				m_Inverters.insert_or_assign(std::stoull(elem_name), InverterData::ExtractFromPayload(elem_node));
+			}
+			catch (const std::invalid_argument& ex_ia)
+			{
+				spdlog::warn("Failed to convert inverter id: {}", elem_name);
+			}
+			catch (const std::out_of_range& ex_oor)
+			{
+				spdlog::warn("Inverter id cannot be represented in internal type; provided id was {}", elem_name);
+			}
 		}
 	}
 
@@ -66,12 +78,12 @@ PowerFlowVersions SolarApi_CurrentData_PowerFlow::PowerFlowVersion() const
 	return m_PowerFlowVersion;
 }
 
-Site SolarApi_CurrentData_PowerFlow::LocalSite() const
+const Site& SolarApi_CurrentData_PowerFlow::LocalSite() const
 {
 	return m_LocalSite;
 }
 
-std::vector<InverterData> SolarApi_CurrentData_PowerFlow::Inverters() const
+const InverterData::InverterMap& SolarApi_CurrentData_PowerFlow::Inverters() const
 {
 	return m_Inverters;
 }

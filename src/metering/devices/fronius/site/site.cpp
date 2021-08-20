@@ -2,115 +2,107 @@
 #include <spdlog/fmt/ostr.h> // Enable logging of user-defined types.
 
 #include "metering/devices/fronius/site/site.h"
-#include "metering/types/essential.h"
-#include "metering/types/optional.h"
 
-Site::Site(OperatingModes mode, std::optional<bool> battery_in_standby, std::optional<bool> backup_mode, GridEnergyMeasurement powerflow_grid, LoadEnergyMeasurement powerflow_generation, AkkuEnergyMeasurement powerflow_battery, PVEnergyMeasurement powerflow_production, std::optional<Percentage> self_consumption, std::optional<Percentage> relative_autonomy, std::optional<MeterLocations> meter_location, std::optional<double> generatedenergy_day, std::optional<double> generatedenergy_year, std::optional<double> generatedenergy_total) :
-	m_Mode(mode),
-	m_BatteryInStandby(battery_in_standby),
-	m_BackupMode(backup_mode),
-	m_PowerFlow_Grid(powerflow_grid),
-	m_PowerFlow_Generation(powerflow_generation),
-	m_PowerFlow_Battery(powerflow_battery),
-	m_PowerFlow_Production(powerflow_production),
-	m_SelfConsumption(self_consumption),
-	m_RelativeAutonomy(relative_autonomy),
-	m_MeterLocation(meter_location),
-	m_GeneratedEnergy_Day_InWh(generatedenergy_day),
-	m_GeneratedEnergy_Year_InWh(generatedenergy_year),
-	m_GeneratedEnergy_Total_InWh(generatedenergy_total)
+const std::string Site::FIELDNAME_MODE{ "Mode" };
+const std::string Site::FIELDNAME_BATTERYSTANDBY{ "BatteryStandby" };
+const std::string Site::FIELDNAME_BACKUPMODE{ "BackupMode" };
+const std::string Site::FIELDNAME_PGRID{ "P_Grid" };
+const std::string Site::FIELDNAME_PLOAD{ "P_Load" };
+const std::string Site::FIELDNAME_PAKKU{ "P_Akku" };
+const std::string Site::FIELDNAME_PPV{ "P_PV" };
+const std::string Site::FIELDNAME_SELFCONSUMPTION{ "rel_SelfConsumption" };
+const std::string Site::FIELDNAME_AUTONOMY{ "rel_Autonomy" };
+const std::string Site::FIELDNAME_METERLOCATION{ "Meter_Location" };
+const std::string Site::FIELDNAME_DAY{ "E_Day" };
+const std::string Site::FIELDNAME_YEAR{ "E_Year" };
+const std::string Site::FIELDNAME_TOTAL{ "E_Total" };
+
+Site::Site() :
+	SymoPayload()
 {
 }
 
 OperatingModes Site::Mode() const
 {
-	return m_Mode;
+	return std::get<OperatingModes>(m_SitePayloadFields.at(FIELDNAME_MODE));
 }
 
 std::optional<bool> Site::BatteryInStandby() const
 {
-	return m_BatteryInStandby;
+	return std::get<std::optional<bool>>(m_SitePayloadFields.at(FIELDNAME_BATTERYSTANDBY));
 }
 
 std::optional<bool> Site::BackupMode() const
 {
-	return m_BackupMode;
+	return std::get<std::optional<bool>>(m_SitePayloadFields.at(FIELDNAME_BACKUPMODE));
 }
 
 GridEnergyMeasurement Site::PowerFlow_Grid() const
 {
-	return m_PowerFlow_Grid;
+	return std::get<GridEnergyMeasurement>(m_SitePayloadFields.at(FIELDNAME_PGRID));
 }
 
 LoadEnergyMeasurement Site::PowerFlow_Generation() const
 {
-	return m_PowerFlow_Generation;
+	return std::get<LoadEnergyMeasurement>(m_SitePayloadFields.at(FIELDNAME_PLOAD));
 }
 
 AkkuEnergyMeasurement Site::PowerFlow_Battery() const
 {
-	return m_PowerFlow_Battery;
+	return std::get<AkkuEnergyMeasurement>(m_SitePayloadFields.at(FIELDNAME_PAKKU));
 }
 
 PVEnergyMeasurement Site::PowerFlow_Production() const
 {
-	return m_PowerFlow_Production;
+	return std::get<PVEnergyMeasurement>(m_SitePayloadFields.at(FIELDNAME_PPV));
 }
 
 std::optional<Percentage> Site::SelfConsumption() const
 {
-	return m_SelfConsumption;
+	return std::get<std::optional<Percentage>>(m_SitePayloadFields.at(FIELDNAME_SELFCONSUMPTION));
 }
 
 std::optional<Percentage> Site::RelativeAutonomy() const
 {
-	return m_RelativeAutonomy;
+	return std::get<std::optional<Percentage>>(m_SitePayloadFields.at(FIELDNAME_AUTONOMY));
 }
 
-std::optional<MeterLocations> Site::MeterLocation() const
+MeterLocations Site::MeterLocation() const
 {
-	return m_MeterLocation;
+	return std::get<MeterLocations>(m_SitePayloadFields.at(FIELDNAME_METERLOCATION));
 }
 
-std::optional<double> Site::GeneratedEnergy_Day() const
+std::optional<Production> Site::GeneratedEnergy_Day() const
 {
-	return m_GeneratedEnergy_Day_InWh;
+	return std::get<std::optional<Production>>(m_SitePayloadFields.at(FIELDNAME_DAY));
 }
 
-std::optional<double> Site::GeneratedEnergy_Year() const
+std::optional<Production> Site::GeneratedEnergy_Year() const
 {
-	return m_GeneratedEnergy_Year_InWh;
+	return std::get<std::optional<Production>>(m_SitePayloadFields.at(FIELDNAME_YEAR));
 }
 
-std::optional<double> Site::GeneratedEnergy_Total() const
+std::optional<Production> Site::GeneratedEnergy_Total() const
 {
-	return m_GeneratedEnergy_Total_InWh;
+	return std::get<std::optional<Production>>(m_SitePayloadFields.at(FIELDNAME_TOTAL));
 }
 
 Site Site::ExtractFromPayload(const boost::property_tree::ptree& node, PowerFlowVersions powerflow_version)
 {
+	Site local_site;
+
 	switch (powerflow_version())
 	{
 	case PowerFlowVersions::Versions::Version10:
 	case PowerFlowVersions::Versions::Version11:
 	case PowerFlowVersions::Versions::Version12:
+		spdlog::debug("Hydrating Fronius -> Site (version: {})", powerflow_version);
+		for (auto& field : local_site.m_SitePayloadFields)
 		{
-			auto mode = IsEssential<OperatingModes>(node, "Mode");
-			auto battery_standby = IsOptional<bool>(node, "BatteryStandby");
-			auto backup_mode = IsOptional<bool>(node, "BackupMode");
-			auto grid_em = GridEnergyMeasurement(node.get<std::string>("P_Grid"));
-			auto load_em = LoadEnergyMeasurement(node.get<std::string>("P_Load"));
-			auto akku_em = AkkuEnergyMeasurement(node.get<std::string>("P_Akku"));
-			auto pv_em = PVEnergyMeasurement(node.get<std::string>("P_PV"));
-			auto self_consumption = IsOptional<Percentage>(node, "rel_SelfConsumption");
-			auto autonomy = IsOptional<Percentage>(node, "rel_Autonomy");
-			auto meter_location = IsOptional<MeterLocations>(node, "Meter_Location");
-			auto generated_day = IsOptional<double>(node, "E_Day");
-			auto generated_year = IsOptional<double>(node, "E_Year");
-			auto generated_total = IsOptional<double>(node, "E_Total");
+			auto& field_name = field.first;
+			auto& field_variant = field.second;
 
-			spdlog::debug("Hydrating Fronius -> Site (version: {})", powerflow_version);
-			return Site(mode, battery_standby, backup_mode, grid_em, load_em, akku_em, pv_em, self_consumption, autonomy, meter_location, generated_day, generated_year, generated_total);
+			std::visit([&field_name, &node](auto& field_element) { GetField(field_name, field_element, node); }, field_variant);
 		}
 		break;
 
@@ -121,5 +113,5 @@ Site Site::ExtractFromPayload(const boost::property_tree::ptree& node, PowerFlow
 		break;
 	}
 
-	throw; ///FIXME
+	return local_site;
 }

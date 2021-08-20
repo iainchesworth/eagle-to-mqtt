@@ -83,6 +83,19 @@ public:
 	}
 };
 
+class Production : public Energy
+{
+public:
+	explicit Production(double production_in_watt_hours);
+
+public:
+	template<typename ENERGY_TYPE, std::enable_if_t<std::is_base_of_v<EnergyTimeUnits, ENERGY_TYPE>, bool> = true>
+	double ValueIn() const
+	{
+		return ENERGY_TYPE()(Value());
+	}
+};
+
 //=====================================================================================================================
 //
 // Some example usage --> Power(10.0f).ValueIn<Watts>();

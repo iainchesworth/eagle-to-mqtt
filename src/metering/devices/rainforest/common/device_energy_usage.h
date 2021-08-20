@@ -2,6 +2,7 @@
 #define RAINFOREST_DEVICE_ENERGY_USAGE_H
 
 #include <boost/circular_buffer.hpp>
+#include <boost/json.hpp>
 
 #include <utility>
 

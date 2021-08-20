@@ -16,9 +16,6 @@
 // Forward declarations
 class CurrencyCodes;
 class EthernetMacId;
-class MeterLocations;
-class OperatingModes;
-class Percentage;
 class Priorities;
 class Protocols;
 class Queues;
@@ -97,12 +94,6 @@ template<>
 CurrencyCodes RetrieveValue<CurrencyCodes>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 EthernetMacId RetrieveValue<EthernetMacId>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
-MeterLocations RetrieveValue<MeterLocations>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
-OperatingModes RetrieveValue<OperatingModes>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
-Percentage RetrieveValue<Percentage>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 Priorities RetrieveValue<Priorities>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
@@ -187,12 +178,6 @@ template<>
 std::optional<CurrencyCodes> TryAndRetrieveValue<CurrencyCodes>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 std::optional<EthernetMacId> TryAndRetrieveValue<EthernetMacId>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
-std::optional<MeterLocations> TryAndRetrieveValue<MeterLocations>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
-std::optional<OperatingModes> TryAndRetrieveValue<OperatingModes>(const boost::property_tree::ptree& node, const std::string& field);
-template<>
-std::optional<Percentage> TryAndRetrieveValue<Percentage>(const boost::property_tree::ptree& node, const std::string& field);
 template<>
 std::optional<Priorities> TryAndRetrieveValue<Priorities>(const boost::property_tree::ptree& node, const std::string& field);
 template<>

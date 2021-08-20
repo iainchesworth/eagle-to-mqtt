@@ -4,12 +4,12 @@
 #include <boost/optional.hpp>
 #include <spdlog/spdlog.h>
 
-#include <string>
 #include <ostream>
+#include <string>
 #include <tuple>
 
 #include "metering/common/energy_value.h"
-#include "metering/devices/fronius/energy_measurement/energy_measurement_flows.h"
+#include "metering/devices/fronius/energy_management/energy_measurement_flows.h"
 #include "metering/devices/fronius/hardware/battery.h"
 #include "metering/devices/fronius/hardware/inverter.h"
 #include "metering/devices/fronius/hardware/smart_meter.h"
@@ -112,30 +112,6 @@ public:
 private:
 	REQUIRED_HARDWARE m_RequiredHardware;
 	EnergyMeasurement m_EnergyMeasurement;
-};
-
-class GridEnergyMeasurement : public EnergyMeasurementBase<SmartMeter, GridFlow>
-{
-public:
-	GridEnergyMeasurement(const std::string& grid_energy_measurement);
-};
-
-class LoadEnergyMeasurement : public EnergyMeasurementBase<SmartMeter, LoadFlow>
-{
-public:
-	LoadEnergyMeasurement(const std::string& load_energy_measurement);
-};
-
-class AkkuEnergyMeasurement : public EnergyMeasurementBase<Battery, ChargeFlow>
-{
-public:
-	AkkuEnergyMeasurement(const std::string& akku_energy_measurement);
-};
-
-class PVEnergyMeasurement : public EnergyMeasurementBase<Inverter, ProductionFlow>
-{
-public:
-	PVEnergyMeasurement(const std::string& pv_energy_measurement);
 };
 
 #endif // ENERGY_MEASUREMENT_H

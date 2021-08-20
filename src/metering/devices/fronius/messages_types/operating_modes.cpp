@@ -1,7 +1,7 @@
 #include <boost/algorithm/string.hpp>
 #include <spdlog/spdlog.h>
 
-#include "metering/devices/fronius/messages/partial_message_types/operating_modes.h"
+#include "metering/devices/fronius/messages_types/operating_modes.h"
 
 const std::string OperatingModes::NOT_SPECIFIED{ "Not Specified" };
 const std::string OperatingModes::PRODUCE_ONLY{ "Produce-Only" };

@@ -109,6 +109,11 @@ const Fronius::DeviceStatistics& Symo::Statistics() const
 	return m_Statistics;
 }
 
+const Fronius::EnergyProduction& Symo::EnergyProduction() const
+{
+	return m_EnergyProduction;
+}
+
 boost::json::object Symo::Serialize() const
 {
 	return Symo_Serializer(*this).Serialize();

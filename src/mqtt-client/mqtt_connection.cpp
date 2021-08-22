@@ -10,6 +10,7 @@
 #include "notifications/metering/notification_connectivity.h"
 #include "notifications/metering/notification_deviceinfo.h"
 #include "notifications/metering/notification_devicestats.h"
+#include "notifications/metering/notification_energygeneration.h"
 #include "notifications/metering/notification_energyusage.h"
 
 MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& options, mqtt::async_client_ptr client_ptr, mqtt::connect_options_ptr connect_options_ptr) :
@@ -32,6 +33,9 @@ MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& opti
 	NotificationManagerSingleton()->RegisterCallback<Notification_DeviceStats>(std::bind(&MqttConnection::NotificationHandler_DeviceStats, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyUsage>(std::bind(&MqttConnection::NotificationHandler_EnergyUsage, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_PublishKeepAlive>(std::bind(&MqttConnection::NotificationHandler_PublishKeepAlive, this, std::placeholders::_1));
+
+	///
+	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyGeneration>(std::bind(&MqttConnection::NotifcationHandler_EnergyGeneration, this, std::placeholders::_1));
 }
 
 void MqttConnection::Start()

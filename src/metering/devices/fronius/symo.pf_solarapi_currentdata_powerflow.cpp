@@ -4,13 +4,11 @@
 #include "metering/devices/fronius/symo.h"
 #include "metering/devices/fronius/energy_management/energy_production_stats.h"
 #include "notifications/notification_manager.h"
-#include "notifications/metering/notification_solarapi_powerflow.h"
+#include "notifications/metering/notification_energygeneration.h"
 
 void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
 {
 	spdlog::debug("Capturing SolarAPI PowerFlow information");
-
-	auto solarapi_powerflow_notif = std::make_shared<Notification_SolarApi_PowerFlow>(0);
 
 	spdlog::trace("Transferring inverter production information");
 	for (const auto& [inverter_id, inverter_data] : solarapi_currentdata_powerflow.Inverters())
@@ -99,29 +97,35 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_curren
 		m_EnergyProduction.Inverters.insert_or_assign(inverter_id, updated_energy_stats);
 	}
 
+	auto energygeneration_notif = std::make_shared<Notification_EnergyGeneration>(0);
+
 	if (solarapi_currentdata_powerflow.LocalSite().GeneratedEnergy_Day().has_value())
 	{
 		spdlog::trace("Processing site daily production...");
 		m_EnergyProduction.Site.Today = solarapi_currentdata_powerflow.LocalSite().GeneratedEnergy_Day().value();
+		energygeneration_notif->DailyProduction(m_EnergyProduction.Site.Today);
 	}
 
 	if (solarapi_currentdata_powerflow.LocalSite().GeneratedEnergy_Year().has_value())
 	{
 		spdlog::trace("Processing site annual production...");
 		m_EnergyProduction.Site.Year = solarapi_currentdata_powerflow.LocalSite().GeneratedEnergy_Year().value();
+		energygeneration_notif->AnnualProduction(m_EnergyProduction.Site.Year);
 	}
 
 	if (solarapi_currentdata_powerflow.LocalSite().GeneratedEnergy_Total().has_value())
 	{
 		spdlog::trace("Processing site all-time production...");
 		m_EnergyProduction.Site.AllTime = solarapi_currentdata_powerflow.LocalSite().GeneratedEnergy_Total().value();
+		energygeneration_notif->AllTimeProduction(m_EnergyProduction.Site.AllTime);
 	}
 
 	if (solarapi_currentdata_powerflow.LocalSite().PowerFlow_Production().Hardware().IsInstalled())
 	{
 		spdlog::trace("Processing site instantaneous power production...");
 		m_EnergyProduction.Site.InstantaneousGeneration = Power(solarapi_currentdata_powerflow.LocalSite().PowerFlow_Production().Measurement().Power);
+		energygeneration_notif->InstantaneousDemand(m_EnergyProduction.Site.InstantaneousGeneration);
 	}
 
-	NotificationManagerSingleton()->Dispatch(solarapi_powerflow_notif);
+	NotificationManagerSingleton()->Dispatch(energygeneration_notif);
 }

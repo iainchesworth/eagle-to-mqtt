@@ -7,11 +7,14 @@
 #include <chrono>
 #include <memory>
 #include <mutex>
+#include <sstream>
 #include <string>
 #include <typeindex>
 #include <unordered_map>
 
 #include "bridge/bridge_status.h"
+#include "mqtt-client/mqtt_connection.h"
+#include "mqtt-client/mqtt_qos.h"
 #include "notifications/common/notification_payload_types.h"
 #include "options/options.h"
 
@@ -27,13 +30,37 @@ public:
 	void Stop();
 
 private:
-	void NotificationHandler_PublishPayload(const std::string& topic_prefix, const EagleNotification_PublishPayload::Types::Payload& metering_payload);
+	template<typename PAYLOAD_TYPE>
+	void NotificationHandler_PublishPayload(const std::string& topic_prefix, const PAYLOAD_TYPE& metering_payload)
+	{
+		for (auto& [key, value] : metering_payload.second)
+		{
+			auto topic = topic_prefix + key;
+
+			std::ostringstream payload_oss;
+			payload_oss << value;
+
+			Publish(
+				mqtt::message_ptr_builder()
+				.topic(topic)
+				.payload(payload_oss.str())
+				.qos(static_cast<int>(MqttQosLevels::AtMostOnce))
+				.retained(false)
+				.finalize()
+			);
+		}
+	}
+
+private:
 	void NotificationHandler_BridgeStatusChange(const BridgeStatus& bridge_status);
 	void NotificationHandler_Connectivity(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_DeviceInfo(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_DeviceStats(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_PublishKeepAlive(const std::chrono::seconds& uptime);
 	void NotificationHandler_EnergyUsage(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
+
+public:
+	void NotifcationHandler_EnergyGeneration(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
 
 private:
 	void Connect();

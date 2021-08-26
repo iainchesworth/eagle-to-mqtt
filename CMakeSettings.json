@@ -90,7 +90,6 @@
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
       "remoteCopySourcesMethod": "rsync",
-      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake",
       "addressSanitizerEnabled": false
     },
     {
@@ -111,7 +110,6 @@
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
       "remoteCopySourcesMethod": "rsync",
-      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake",
       "addressSanitizerEnabled": false
     },
     {
@@ -131,7 +129,6 @@
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
       "remoteCopySourcesMethod": "rsync",
-      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake",
       "addressSanitizerEnabled": false
     },
     {
@@ -150,8 +147,7 @@
       "remoteCopySources": true,
       "rsyncCommandArgs": "-t --delete --delete-excluded",
       "remoteCopyBuildOutput": false,
-      "remoteCopySourcesMethod": "rsync",
-      "cmakeToolchain": "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      "remoteCopySourcesMethod": "rsync"
     }
   ]
 }

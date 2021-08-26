@@ -44,6 +44,8 @@ endif()
 # System dependent settings
 #-----------------------------------------------------------------------------------------------------------------------
 
+set(CMAKE_TOOLCHAIN_FILE "${PROJECT_SOURCE_DIR}/deps/vcpkg/scripts/buildsystems/vcpkg.cmake")
+
 if (UNIX)
     set(Boost_USE_STATIC_LIBS OFF)
     set(Boost_USE_MULTITHREADED ON)

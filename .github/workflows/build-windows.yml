@@ -41,8 +41,6 @@ jobs:
       run: |
         # Core dependencies
         choco install 7zip ninja
-        ${{env.VCPKG_DIR}}/bootstrap-vcpkg.bat
-        ${{env.VCPKG_DIR}}/vcpkg integrate install
 
   #============================================================================
   #
@@ -67,7 +65,7 @@ jobs:
 
     - name: Build Application
       run: |
-        cmake -G Ninja -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\ninja.exe -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{env.VCPKG_DIR}}/scripts/buildsystems/vcpkg.cmake
+        cmake -G Ninja -S ${{github.workspace}} -B ${{env.BUILD_DIR}} -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\ninja.exe -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         cmake --build ${{env.BUILD_DIR}} --parallel 4 --config ${{env.BUILD_TYPE}}
 
     - name: Archive Build Binaries

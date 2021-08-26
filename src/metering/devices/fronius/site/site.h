@@ -11,7 +11,6 @@
 #include <variant>
 
 #include "metering/common/energy_value.h"
-#include "metering/devices/fronius/common/symo_payloads.h"
 #include "metering/devices/fronius/energy_management/grid_energy_measurement.h"
 #include "metering/devices/fronius/energy_management/load_energy_measurement.h"
 #include "metering/devices/fronius/energy_management/akku_energy_measurement.h"
@@ -21,7 +20,7 @@
 #include "metering/devices/fronius/messages_types/percentage.h"
 #include "metering/devices/fronius/messages_types/powerflow_versions.h"
 
-class Site : public SymoPayload
+class Site
 {
 	static const std::string FIELDNAME_MODE;
 	static const std::string FIELDNAME_BATTERYSTANDBY;

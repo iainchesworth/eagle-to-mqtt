@@ -10,6 +10,21 @@ SolarApi_CurrentData_PowerFlow::SolarApi_CurrentData_PowerFlow(const boost::prop
 	m_LocalSite(Site::ExtractFromPayload(node.get_child("Body.Site"), m_PowerFlowVersion)),
 	m_Inverters{}
 {
+	ProcessPayload_Inverters(node);
+
+	if (PowerFlowVersions::Versions::Version10 <= m_PowerFlowVersion)
+	{
+		ProcessPayload_SmartLoads(node);
+
+		if (PowerFlowVersions::Versions::Version11 <= m_PowerFlowVersion)
+		{
+			ProcessPayload_SecondaryMeters(node);
+		}
+	}
+}
+
+void SolarApi_CurrentData_PowerFlow::ProcessPayload_Inverters(const boost::property_tree::ptree& node)
+{
 	const auto inverter_node = node.get_child_optional("Body.Inverters");
 	if (!inverter_node.is_initialized())
 	{
@@ -19,11 +34,12 @@ SolarApi_CurrentData_PowerFlow::SolarApi_CurrentData_PowerFlow(const boost::prop
 	{
 		spdlog::debug("SolarApi_CurrentData_PowerFlow - Retrieving inverter data");
 
-		for(const auto& [elem_name, elem_node] : inverter_node.value())
+		for (const auto& [elem_name, elem_node] : inverter_node.value())
 		{
 			try
 			{
-				m_Inverters.insert_or_assign(std::stoull(elem_name), InverterData::ExtractFromPayload(elem_node));
+				HardwareBase::HardwareId id = std::stoull(elem_name);
+				m_Inverters.insert_or_assign(id, InverterData::ExtractFromPayload(elem_node, id));
 			}
 			catch (const std::invalid_argument& ex_ia)
 			{
@@ -35,40 +51,40 @@ SolarApi_CurrentData_PowerFlow::SolarApi_CurrentData_PowerFlow(const boost::prop
 			}
 		}
 	}
+}
 
-	if (PowerFlowVersions::Versions::Version10 <= m_PowerFlowVersion)
+void SolarApi_CurrentData_PowerFlow::ProcessPayload_SmartLoads(const boost::property_tree::ptree& node)
+{
+	const auto smartload_node = node.get_child_optional("Body.Smartloads");
+	if (!smartload_node.is_initialized())
 	{
-		const auto smartload_node = node.get_child_optional("Body.Smartloads");
-		if (!smartload_node.is_initialized())
+		spdlog::debug("SolarApi_CurrentData_PowerFlow: no smart load information found");
+	}
+	else
+	{
+		spdlog::debug("SolarApi_CurrentData_PowerFlow - Retrieving smart load data");
+
+		for (const auto& [elem_name, elem_node] : smartload_node.value())
 		{
-			spdlog::debug("SolarApi_CurrentData_PowerFlow: no smart load information found");
+			///FIXME m_SmartLoads.push_back(SmartLoad::ExtractFromPayload(elem_node));
 		}
-		else
+	}
+}
+
+void SolarApi_CurrentData_PowerFlow::ProcessPayload_SecondaryMeters(const boost::property_tree::ptree& node)
+{
+	const auto secondary_meters = node.get_child_optional("Body.SecondaryMeters");
+	if (!secondary_meters.is_initialized())
+	{
+		spdlog::debug("SolarApi_CurrentData_PowerFlow: no secondary meter information found");
+	}
+	else
+	{
+		spdlog::debug("SolarApi_CurrentData_PowerFlow - Retrieving secondary meter data");
+
+		for (const auto& [elem_name, elem_node] : secondary_meters.value())
 		{
-			spdlog::debug("SolarApi_CurrentData_PowerFlow - Retrieving smart load data");
-
-			for (const auto& [elem_name, elem_node] : smartload_node.value())
-			{
-				m_SmartLoads.push_back(SmartLoad::ExtractFromPayload(elem_node));
-			}
-		}
-
-		if (PowerFlowVersions::Versions::Version11 <= m_PowerFlowVersion)
-		{
-			const auto secondary_meters = node.get_child_optional("Body.SecondaryMeters");
-			if (!secondary_meters.is_initialized())
-			{
-				spdlog::debug("SolarApi_CurrentData_PowerFlow: no secondary meter information found");
-			}
-			else
-			{
-				spdlog::debug("SolarApi_CurrentData_PowerFlow - Retrieving secondary meter data");
-
-				for (const auto& [elem_name, elem_node] : smartload_node.value())
-				{
-					m_SecondaryMeters.push_back(SecondaryMeter::ExtractFromPayload(elem_node));
-				}
-			}
+			///FIXME m_SecondaryMeters.push_back(SecondaryMeter::ExtractFromPayload(elem_node));
 		}
 	}
 }
@@ -83,17 +99,17 @@ const Site& SolarApi_CurrentData_PowerFlow::LocalSite() const
 	return m_LocalSite;
 }
 
-const InverterData::InverterMap& SolarApi_CurrentData_PowerFlow::Inverters() const
+const std::unordered_map<HardwareBase::HardwareId, InverterData>& SolarApi_CurrentData_PowerFlow::Inverters() const
 {
 	return m_Inverters;
 }
 
-std::vector<SecondaryMeter> SolarApi_CurrentData_PowerFlow::SecondaryMeters() const
+const std::unordered_map<HardwareBase::HardwareId, SecondaryMeterData>& SolarApi_CurrentData_PowerFlow::SecondaryMeters() const
 {
 	return m_SecondaryMeters;
 }
 
-std::vector<SmartLoad> SolarApi_CurrentData_PowerFlow::SmartLoads() const
+const std::unordered_map<HardwareBase::HardwareId, SmartLoadData>& SolarApi_CurrentData_PowerFlow::SmartLoads() const
 {
 	return m_SmartLoads;
 }

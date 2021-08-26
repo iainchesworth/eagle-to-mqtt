@@ -3,7 +3,6 @@
 
 #include "metering/devices/fronius/messages_types/inverter_data.h"
 
-const std::string InverterData::FIELDNAME_DEVICEID{ "DID" };
 const std::string InverterData::FIELDNAME_DEVICETYPE{ "DT" };
 const std::string InverterData::FIELDNAME_POWER{ "P" };
 const std::string InverterData::FIELDNAME_STATEOFCHARGE{ "SOC" };
@@ -13,19 +12,14 @@ const std::string InverterData::FIELDNAME_DAY{ "E_Day" };
 const std::string InverterData::FIELDNAME_YEAR{ "E_Year" };
 const std::string InverterData::FIELDNAME_TOTAL{ "E_Total" };
 
-InverterData::InverterData() :
-	SymoPayload()
+InverterData::InverterData(const HardwareBase::HardwareId& id) :
+	SymoPayload(id)
 {
 }
 
-InverterId InverterData::Id() const
+std::optional<int32_t> InverterData::DeviceType() const
 {
-	return std::get<InverterId>(m_InverterDataPayloadFields.at(FIELDNAME_DEVICEID));
-}
-
-int32_t InverterData::DeviceType() const
-{
-	return std::get<int32_t>(m_InverterDataPayloadFields.at(FIELDNAME_DEVICETYPE));
+	return std::get<std::optional<int32_t>>(m_InverterDataPayloadFields.at(FIELDNAME_DEVICETYPE));
 }
 
 std::optional<Power> InverterData::InstananeousPower() const
@@ -38,9 +32,9 @@ std::optional<Percentage> InverterData::StateOfCharge() const
 	return std::get<std::optional<Percentage>>(m_InverterDataPayloadFields.at(FIELDNAME_STATEOFCHARGE));
 }
 
-uint32_t InverterData::ComponentId() const
+std::optional<uint32_t> InverterData::ComponentId() const
 {
-	return std::get<uint32_t>(m_InverterDataPayloadFields.at(FIELDNAME_COMPONENTID));
+	return std::get<std::optional<uint32_t>>(m_InverterDataPayloadFields.at(FIELDNAME_COMPONENTID));
 }
 
 std::optional<std::string> InverterData::BatteryMode() const
@@ -63,12 +57,12 @@ std::optional<Production> InverterData::GeneratedEnergy_Total() const
 	return std::get<std::optional<Production>>(m_InverterDataPayloadFields.at(FIELDNAME_TOTAL));
 }
 
-
-InverterData InverterData::ExtractFromPayload(const boost::property_tree::ptree& node)
+InverterData InverterData::ExtractFromPayload(const boost::property_tree::ptree& node, const HardwareBase::HardwareId& id)
 {
-	InverterData inverter_data;
+	InverterData inverter_data(id);
 
 	spdlog::debug("Hydrating Fronius -> Inverter Data)");
+
 	for (auto& field : inverter_data.m_InverterDataPayloadFields)
 	{
 		auto& field_name = field.first;

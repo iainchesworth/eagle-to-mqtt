@@ -3,9 +3,9 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <cstdint>
-
-#include "metering/types/collection.h"
+#include "metering/devices/fronius/energy_management/energy_production_stats.h"
+#include "metering/devices/fronius/hardware/hardware.h"
+#include "metering/devices/fronius/messages_types/inverter_generation_data.h"
 
 class SolarApi_CurrentData_Inverter
 {
@@ -14,16 +14,10 @@ public:
 	virtual ~SolarApi_CurrentData_Inverter() = default;
 
 public:
-	NamedCollection<int64_t> Power_AC() const;
-	NamedCollection<double> GeneratedEnergy_Day() const;
-	NamedCollection<double> GeneratedEnergy_Year() const;
-	NamedCollection<double> GeneratedEnergy_AllTime() const;
+	const InverterGenerationData& CurrentData() const;
 
 private:
-	NamedCollection<int64_t> m_Power_AC;
-	NamedCollection<double> m_GeneratedEnergy_Day;
-	NamedCollection<double> m_GeneratedEnergy_Year;
-	NamedCollection<double> m_GeneratedEnergy_AllTime;
+	InverterGenerationData m_CurrentData;
 };
 
 #endif // SOLARAPI_CURRENTDATA_INVERTER_H

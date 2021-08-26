@@ -12,6 +12,7 @@
 #include "notifications/metering/notification_devicestats.h"
 #include "notifications/metering/notification_energygeneration.h"
 #include "notifications/metering/notification_energyusage.h"
+#include "notifications/metering/notification_inverterinfo.h"
 
 MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& options, mqtt::async_client_ptr client_ptr, mqtt::connect_options_ptr connect_options_ptr) :
 	m_IOContext(ioc),
@@ -36,6 +37,7 @@ MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& opti
 
 	///
 	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyGeneration>(std::bind(&MqttConnection::NotifcationHandler_EnergyGeneration, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Notification_InverterInfo>(std::bind(&MqttConnection::NotifcationHandler_InverterInfo, this, std::placeholders::_1));
 }
 
 void MqttConnection::Start()

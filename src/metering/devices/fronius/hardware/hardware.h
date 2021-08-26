@@ -1,11 +1,15 @@
 #ifndef HARDWARE_H
 #define HARDWARE_H
 
+#include <cstdint>
 #include <ostream>
 #include <string>
 
 class HardwareBase
 {
+public:
+	using HardwareId = uint32_t;
+
 public:
 	HardwareBase(bool is_installed);
 

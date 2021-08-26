@@ -61,6 +61,7 @@ private:
 
 public:
 	void NotifcationHandler_EnergyGeneration(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
+	void NotifcationHandler_InverterInfo(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
 
 private:
 	void Connect();

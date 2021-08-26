@@ -35,6 +35,12 @@ protected:
 	virtual void ProcessFragment(const SolarApi_LogData_ErrorsAndEvents& solarapi_logdata_errorsandevents);
 	virtual void ProcessHeaderAttributes(const boost::property_tree::ptree& header_attributes);
 
+private:
+	void ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow);
+	void ProcessFragment_PowerFlow_Site(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow);
+	void ProcessFragment_PowerFlow_SmartLoads(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow);
+	void ProcessFragment_PowerFlow_SecondaryMeters(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow);
+
 public:
 	const Fronius::DeviceStatistics& Statistics() const;
 	const Fronius::EnergyProduction& EnergyProduction() const;

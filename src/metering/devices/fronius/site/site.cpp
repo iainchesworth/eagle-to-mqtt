@@ -1,6 +1,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h> // Enable logging of user-defined types.
 
+#include "metering/devices/fronius/common/symo_payloads.h"
 #include "metering/devices/fronius/site/site.h"
 
 const std::string Site::FIELDNAME_MODE{ "Mode" };
@@ -17,8 +18,7 @@ const std::string Site::FIELDNAME_DAY{ "E_Day" };
 const std::string Site::FIELDNAME_YEAR{ "E_Year" };
 const std::string Site::FIELDNAME_TOTAL{ "E_Total" };
 
-Site::Site() :
-	SymoPayload()
+Site::Site()
 {
 }
 
@@ -102,7 +102,7 @@ Site Site::ExtractFromPayload(const boost::property_tree::ptree& node, PowerFlow
 			auto& field_name = field.first;
 			auto& field_variant = field.second;
 
-			std::visit([&field_name, &node](auto& field_element) { GetField(field_name, field_element, node); }, field_variant);
+			std::visit([&field_name, &node](auto& field_element) { SymoPayload::GetField(field_name, field_element, node); }, field_variant);
 		}
 		break;
 

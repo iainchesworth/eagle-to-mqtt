@@ -5,32 +5,36 @@
 #include "metering/devices/fronius/energy_management/energy_production_stats.h"
 #include "notifications/notification_manager.h"
 #include "notifications/metering/notification_energygeneration.h"
+#include "notifications/metering/notification_inverterinfo.h"
 
 void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
 {
 	spdlog::debug("Capturing SolarAPI PowerFlow information");
 
+	ProcessFragment_PowerFlow_Site(solarapi_currentdata_powerflow);
+	ProcessFragment_PowerFlow_Inverters(solarapi_currentdata_powerflow);
+	ProcessFragment_PowerFlow_SmartLoads(solarapi_currentdata_powerflow);
+	ProcessFragment_PowerFlow_SecondaryMeters(solarapi_currentdata_powerflow);
+}
+
+void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
+{
 	spdlog::trace("Transferring inverter production information");
+
 	for (const auto& [inverter_id, inverter_data] : solarapi_currentdata_powerflow.Inverters())
 	{
 		spdlog::trace("Processing inverter {}...", inverter_id);
 
-		auto inverter_it = solarapi_currentdata_powerflow.Inverters().find(inverter_id);
+		auto inverterinfo_notif = std::make_shared<Notification_InverterInfo>(inverter_id);
 		Fronius::EnergyProductionStats updated_energy_stats;
 
 		if (inverter_data.GeneratedEnergy_Day().has_value())
 		{
 			spdlog::debug("Updating inverter {} day's generation value to {} watt-hours", inverter_id, inverter_data.GeneratedEnergy_Day().value().ValueIn<WattHours>());
 			updated_energy_stats.Today = Production(inverter_data.GeneratedEnergy_Day().value().ValueIn<WattHours>());
-		} 
-		else if (solarapi_currentdata_powerflow.Inverters().end() == inverter_it)
-		{
-			spdlog::debug("Unknown inverter {} has never been seen before (and had an invalid day generation value...ignoring", inverter_id);
-		}
-		else if ((*inverter_it).second.GeneratedEnergy_Day().has_value())
-		{
-			spdlog::debug("Unknown inverter {} has an invalid day generation value; re-using existing value...");
-			updated_energy_stats.Today = Production((*inverter_it).second.GeneratedEnergy_Day().value().ValueIn<WattHours>());
+
+			// There's potentially been a change to the production statistics...report it.
+			inverterinfo_notif->DailyProduction(updated_energy_stats.Today);
 		}
 		else
 		{
@@ -41,15 +45,9 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_curren
 		{
 			spdlog::debug("Updating inverter {} year's generation value to {} watt-hours", inverter_id, inverter_data.GeneratedEnergy_Year().value().ValueIn<WattHours>());
 			updated_energy_stats.Year = Production(inverter_data.GeneratedEnergy_Year().value().ValueIn<WattHours>());
-		}
-		else if (solarapi_currentdata_powerflow.Inverters().end() == inverter_it)
-		{
-			spdlog::debug("Unknown inverter {} has never been seen before (and had an invalid year generation value...ignoring", inverter_id);
-		}
-		else if ((*inverter_it).second.GeneratedEnergy_Year().has_value())
-		{
-			spdlog::debug("Unknown inverter {} has an invalid year generation value; re-using existing value...");
-			updated_energy_stats.Year = Production((*inverter_it).second.GeneratedEnergy_Year().value().ValueIn<WattHours>());
+
+			// There's potentially been a change to the production statistics...report it.
+			inverterinfo_notif->AnnualProduction(updated_energy_stats.Year);
 		}
 		else
 		{
@@ -60,15 +58,9 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_curren
 		{
 			spdlog::debug("Updating inverter {} all time generation value to {} watt-hours", inverter_id, inverter_data.GeneratedEnergy_Total().value().ValueIn<WattHours>());
 			updated_energy_stats.AllTime = Production(inverter_data.GeneratedEnergy_Total().value().ValueIn<WattHours>());
-		}
-		else if (solarapi_currentdata_powerflow.Inverters().end() == inverter_it)
-		{
-			spdlog::debug("Unknown inverter {} has never been seen before (and had an invalid all time generation value...ignoring", inverter_id);
-		}
-		else if ((*inverter_it).second.GeneratedEnergy_Total().has_value())
-		{
-			spdlog::debug("Unknown inverter {} has an invalid all time generation value; re-using existing value...");
-			updated_energy_stats.AllTime = Production((*inverter_it).second.GeneratedEnergy_Total().value().ValueIn<WattHours>());
+
+			// There's potentially been a change to the production statistics...report it.
+			inverterinfo_notif->AllTimeProduction(updated_energy_stats.AllTime);
 		}
 		else
 		{
@@ -79,15 +71,9 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_curren
 		{
 			spdlog::debug("Updating inverter {} instantaneous power value to {} watts", inverter_id, inverter_data.InstananeousPower().value().ValueIn<Watts>());
 			updated_energy_stats.InstantaneousGeneration = Power(inverter_data.InstananeousPower().value().ValueIn<Watts>());
-		}
-		else if (solarapi_currentdata_powerflow.Inverters().end() == inverter_it)
-		{
-			spdlog::debug("Unknown inverter {} has never been seen before (and had an invalid instantaneous power generation value...ignoring", inverter_id);
-		}
-		else if ((*inverter_it).second.InstananeousPower().has_value())
-		{
-			spdlog::debug("Unknown inverter {} has an invalid instantaneous power generation value; re-using existing value...");
-			updated_energy_stats.InstantaneousGeneration = Power((*inverter_it).second.InstananeousPower().value().ValueIn<Watts>());
+
+			// There's potentially been a change to the production statistics...report it.
+			inverterinfo_notif->InstantaneousDemand(updated_energy_stats.InstantaneousGeneration);
 		}
 		else
 		{
@@ -95,7 +81,14 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_curren
 		}
 
 		m_EnergyProduction.Inverters.insert_or_assign(inverter_id, updated_energy_stats);
+
+		NotificationManagerSingleton()->Dispatch(inverterinfo_notif);
 	}
+}
+
+void Symo::ProcessFragment_PowerFlow_Site(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
+{
+	spdlog::trace("Transferring site production information");
 
 	auto energygeneration_notif = std::make_shared<Notification_EnergyGeneration>(0);
 
@@ -128,4 +121,16 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_curren
 	}
 
 	NotificationManagerSingleton()->Dispatch(energygeneration_notif);
+}
+
+void Symo::ProcessFragment_PowerFlow_SecondaryMeters(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
+{
+	spdlog::trace("Transferring secondary meter information");
+
+}
+
+void Symo::ProcessFragment_PowerFlow_SmartLoads(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
+{
+	spdlog::trace("Transferring smart load information");
+
 }

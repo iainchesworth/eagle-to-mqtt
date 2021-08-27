@@ -3,7 +3,9 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-class SolarApi_LogData_Data
+#include "metering/devices/fronius/messages/solarapi_base_message.h"
+
+class SolarApi_LogData_Data : public SolarApi_Base_Message
 {
 public:
 	explicit SolarApi_LogData_Data(const boost::property_tree::ptree& node);

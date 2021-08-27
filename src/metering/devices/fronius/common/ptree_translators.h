@@ -9,6 +9,7 @@
 
 #include "exceptions/not_implemented.h"
 #include "metering/common/energy_value.h"
+#include "metering/common/timestamps.h"
 #include "metering/devices/fronius/energy_management/akku_energy_measurement.h"
 #include "metering/devices/fronius/energy_management/grid_energy_measurement.h"
 #include "metering/devices/fronius/energy_management/load_energy_measurement.h"
@@ -266,6 +267,32 @@ struct translator_between<std::string, PVEnergyMeasurement>
 			}
 
 			return boost::optional<PVEnergyMeasurement>(str);
+		}
+
+		boost::optional<internal_type> put_value(const external_type& obj)
+		{
+			throw NotImplemented();
+		}
+	};
+};
+
+template<>
+struct translator_between<std::string, UnixTimepoint>
+{
+	struct type
+	{
+		using internal_type = std::string;
+		using external_type = UnixTimepoint;
+
+		boost::optional<external_type> get_value(const internal_type& str)
+		{
+			if (str.empty())
+			{
+				spdlog::debug("Cannot extract UnixTimepoint...zero-length string provided");
+				return boost::optional<external_type>(boost::none);
+			}
+
+			return boost::optional<UnixTimepoint>(UnixTimepoint::FromRFC3339String(str));
 		}
 
 		boost::optional<internal_type> put_value(const external_type& obj)

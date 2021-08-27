@@ -17,7 +17,7 @@ void MqttConnection::NotificationHandler_DeviceInfo(const EagleNotification_Publ
 	}
 	else
 	{
-		const std::string TOPIC{ m_Options.MqttTopic() + "/" + EagleNotification_PublishPayload::Types::DeviceId::ToString(metering_payload.first) + "/"};
+		const std::string TOPIC{ m_Options.MqttTopic() + "/hardware/rainforest/" + EagleNotification_PublishPayload::Types::DeviceId::ToString(metering_payload.first) + "/"};
 		NotificationHandler_PublishPayload(TOPIC, metering_payload);
 	}
 }

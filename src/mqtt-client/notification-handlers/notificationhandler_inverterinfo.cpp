@@ -3,7 +3,7 @@
 #include "mqtt-client/mqtt_connection.h"
 #include "notifications/common/notification_payload_types.h"
 
-void MqttConnection::NotifcationHandler_InverterInfo(const SymoNotification_PublishPayload::Types::Payload& metering_payload)
+void MqttConnection::NotificationHandler_InverterInfo(const SymoNotification_PublishPayload::Types::Payload& metering_payload)
 {
 	spdlog::trace("NotifcationHandler_InverterInfo() -> Notification received by MQTT Connection");
 

@@ -3,7 +3,9 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-class SolarApi_CurrentData_SensorCard
+#include "metering/devices/fronius/messages/solarapi_base_message.h"
+
+class SolarApi_CurrentData_SensorCard : public SolarApi_Base_Message
 {
 public:
 	explicit SolarApi_CurrentData_SensorCard(const boost::property_tree::ptree& node);

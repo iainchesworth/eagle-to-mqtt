@@ -11,7 +11,7 @@ UnixTimepoint::UnixTimepoint() :
 }
 
 UnixTimepoint::UnixTimepoint(const std::string& unix_timepoint) :
-	UnixTimepoint(FromString(unix_timepoint))
+	UnixTimepoint(FromHexString(unix_timepoint))
 {
 }
 
@@ -20,9 +20,19 @@ UnixTimepoint::UnixTimepoint(const std::chrono::time_point<std::chrono::system_c
 {
 }
 
-UnixTimepoint UnixTimepoint::FromString(const std::string& unix_timepoint_string)
+UnixTimepoint UnixTimepoint::FromHexString(const std::string& unix_timepoint_string)
 {
 	return UnixTimepoint(hex_string_to_timepoint(unix_timepoint_string));
+}
+
+UnixTimepoint UnixTimepoint::FromRFC3339String(const std::string& unix_timepoint_string)
+{
+	std::istringstream iss{ unix_timepoint_string };
+	date::sys_seconds tp;
+
+	iss >> date::parse("%FT%T%Ez", tp);
+
+	return UnixTimepoint(tp);
 }
 
 std::string UnixTimepoint::ToString(const UnixTimepoint& unix_timepoint)

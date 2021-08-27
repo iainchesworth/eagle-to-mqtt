@@ -6,9 +6,10 @@
 #include "metering/devices/fronius/messages/solarapi_currentdata_inverter.h"
 #include "metering/types/optional.h"
 
-SolarApi_CurrentData_Inverter::SolarApi_CurrentData_Inverter(const boost::property_tree::ptree& node)
+SolarApi_CurrentData_Inverter::SolarApi_CurrentData_Inverter(const boost::property_tree::ptree& node) :
+	SolarApi_Base_Message(node)
 {
-	spdlog::debug("Hydrating Fronius -> Inverter Generation Data)");
+	spdlog::debug("Processing SolarApi_CurrentData_Inverter() - inverter generation data");
 
 	std::unordered_map<HardwareBase::HardwareId, Production> m_DailyProduction{};
 	std::unordered_map<HardwareBase::HardwareId, Production> m_AnnualProduction{};

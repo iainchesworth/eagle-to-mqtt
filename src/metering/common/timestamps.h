@@ -18,7 +18,8 @@ private:
 	explicit ZigbeeTimepoint(const std::chrono::time_point<std::chrono::system_clock>& zigbee_timepoint);
 
 public:
-	static ZigbeeTimepoint FromString(const std::string& zigbee_timepoint_string);
+	static ZigbeeTimepoint FromHexString(const std::string& zigbee_timepoint_string);
+	static ZigbeeTimepoint FromRFC3339String(const std::string& zigbee_timepoint_string);
 	static std::string ToString(const ZigbeeTimepoint& zigbee_timepoint);
 
 public:
@@ -49,7 +50,8 @@ private:
 	explicit UnixTimepoint(const std::chrono::time_point<std::chrono::system_clock>& unix_timepoint);
 
 public:
-	static UnixTimepoint FromString(const std::string& unix_timepoint_string);
+	static UnixTimepoint FromHexString(const std::string& unix_timepoint_string);
+	static UnixTimepoint FromRFC3339String(const std::string& unix_timepoint_string);
 	static std::string ToString(const UnixTimepoint& unix_timepoint);
 
 public:

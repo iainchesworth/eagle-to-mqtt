@@ -6,10 +6,12 @@
 #include "metering/devices/fronius/messages/solarapi_currentdata_powerflow.h"
 
 SolarApi_CurrentData_PowerFlow::SolarApi_CurrentData_PowerFlow(const boost::property_tree::ptree& node) :
+	SolarApi_Base_Message(node),
 	m_PowerFlowVersion(node.get<uint32_t>("Body.Version")),
-	m_LocalSite(Site::ExtractFromPayload(node.get_child("Body.Site"), m_PowerFlowVersion)),
-	m_Inverters{}
+	m_LocalSite(Site::ExtractFromPayload(node.get_child("Body.Site"), m_PowerFlowVersion))
 {
+	spdlog::debug("Processing SolarApi_CurrentData_PowerFlow() - powerflow data");
+
 	ProcessPayload_Inverters(node);
 
 	if (PowerFlowVersions::Versions::Version10 <= m_PowerFlowVersion)

@@ -9,10 +9,11 @@
 #include "notifications/bridge/notification_publishkeepalive.h"
 #include "notifications/metering/notification_connectivity.h"
 #include "notifications/metering/notification_deviceinfo.h"
-#include "notifications/metering/notification_devicestats.h"
 #include "notifications/metering/notification_energygeneration.h"
 #include "notifications/metering/notification_energyusage.h"
 #include "notifications/metering/notification_inverterinfo.h"
+#include "notifications/metering/fronius/notification_devicestats.h"
+#include "notifications/metering/rainforest/notification_devicestats.h"
 
 MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& options, mqtt::async_client_ptr client_ptr, mqtt::connect_options_ptr connect_options_ptr) :
 	m_IOContext(ioc),
@@ -31,13 +32,14 @@ MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& opti
 	NotificationManagerSingleton()->RegisterCallback<Notification_BridgeStatusChanged>(std::bind(&MqttConnection::NotificationHandler_BridgeStatusChange, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_Connectivity>(std::bind(&MqttConnection::NotificationHandler_Connectivity, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_DeviceInfo>(std::bind(&MqttConnection::NotificationHandler_DeviceInfo, this, std::placeholders::_1));
-	NotificationManagerSingleton()->RegisterCallback<Notification_DeviceStats>(std::bind(&MqttConnection::NotificationHandler_DeviceStats, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyUsage>(std::bind(&MqttConnection::NotificationHandler_EnergyUsage, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_PublishKeepAlive>(std::bind(&MqttConnection::NotificationHandler_PublishKeepAlive, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Rainforest::Notification_DeviceStats>(std::bind(&MqttConnection::NotificationHandler_RainforestDeviceStats, this, std::placeholders::_1));
 
 	///
-	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyGeneration>(std::bind(&MqttConnection::NotifcationHandler_EnergyGeneration, this, std::placeholders::_1));
-	NotificationManagerSingleton()->RegisterCallback<Notification_InverterInfo>(std::bind(&MqttConnection::NotifcationHandler_InverterInfo, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyGeneration>(std::bind(&MqttConnection::NotificationHandler_EnergyGeneration, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Notification_InverterInfo>(std::bind(&MqttConnection::NotificationHandler_InverterInfo, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Fronius::Notification_DeviceStats>(std::bind(&MqttConnection::NotificationHandler_FroniusDeviceStats, this, std::placeholders::_1));
 }
 
 void MqttConnection::Start()
@@ -96,7 +98,7 @@ void MqttConnection::Publish(const mqtt::message_ptr& message_to_send)
 				}
 				else
 				{
-					spdlog::trace("Publishing MQTT message");
+					spdlog::trace("Publishing MQTT message: {}", (*message_to_send).get_topic());
 					self->m_ClientPtr->publish(message_to_send)->wait();
 				}
 			}

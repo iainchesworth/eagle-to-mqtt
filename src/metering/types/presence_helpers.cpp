@@ -121,7 +121,7 @@ ZigBeeMacId PresenseHelpers::RetrieveValue<ZigBeeMacId>(const boost::property_tr
 template<>
 ZigbeeTimepoint PresenseHelpers::RetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field)
 {
-	return RetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromString(node.get<std::string>(field)); });
+	return RetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromHexString(node.get<std::string>(field)); });
 }
 
 //=====================================================================================================================
@@ -232,5 +232,5 @@ std::optional<ZigBeeMacId> PresenseHelpers::TryAndRetrieveValue<ZigBeeMacId>(con
 template<>
 std::optional<ZigbeeTimepoint> PresenseHelpers::TryAndRetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field)
 {
-	return TryAndRetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromString(node.get<std::string>(field)); });
+	return TryAndRetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromHexString(node.get<std::string>(field)); });
 }

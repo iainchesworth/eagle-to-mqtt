@@ -11,7 +11,7 @@
 #include "metering/devices/rainforest/messages/fragment_types.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "notifications/notification_manager.h"
-#include "notifications/metering/notification_devicestats.h"
+#include "notifications/metering/rainforest/notification_devicestats.h"
 #include "serialization/rainforest/eagle_serializer.h"
 
 Eagle::Eagle() :
@@ -30,7 +30,7 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 		}
 		else
 		{
-			auto device_stats_notif = std::make_shared<Notification_DeviceStats>(m_EthernetMacId);
+			auto device_stats_notif = std::make_shared<Rainforest::Notification_DeviceStats>(m_EthernetMacId);
 
 			BOOST_FOREACH(const boost::property_tree::ptree::value_type & v, rainforest_node.get())
 			{
@@ -43,7 +43,7 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 				if (0 == v.first.compare("<xmlattr>"))
 				{
 					ProcessHeaderAttributes(node_data);
-					++m_Statistics.MessageCount;
+					++m_Statistics.TotalMessageCount;
 				}
 				else
 				{
@@ -126,6 +126,10 @@ void Eagle::ProcessPayload(const boost::property_tree::ptree& node)
 					}
 				}
 			}
+
+			// Increment the total message count
+			++m_Statistics.TotalMessageCount;
+			device_stats_notif->TotalMessageCount(m_Statistics.TotalMessageCount);
 
 			// Capture the last message time (i.e. "now").
 			m_Statistics.LastMessageTimestamp = std::chrono::system_clock::now();

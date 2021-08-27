@@ -1,6 +1,7 @@
 #ifndef SYMO_H
 #define SYMO_H
 
+#include <boost/json.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include "interfaces/idevice.h"
@@ -56,7 +57,6 @@ private:
 	PowerFlowVersions m_PowerFlowVersion;
 
 public:
-	friend class Symo_Serializer;
 	boost::json::object Serialize() const override;
 };
 

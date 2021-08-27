@@ -103,7 +103,7 @@ public:
 		}
 		else
 		{
-			os << m_RequiredHardware; // Output the installation status of the required hardware (i.e. NOT)
+			os << energy_measurement.m_RequiredHardware; // Output the installation status of the required hardware (i.e. NOT)
 		}
 
 		return os;

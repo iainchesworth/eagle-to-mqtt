@@ -37,9 +37,9 @@ std::optional<uint32_t> InverterData::ComponentId() const
 	return std::get<std::optional<uint32_t>>(m_InverterDataPayloadFields.at(FIELDNAME_COMPONENTID));
 }
 
-std::optional<std::string> InverterData::BatteryMode() const
+std::optional<BatteryModes> InverterData::BatteryMode() const
 {
-	return std::get<std::optional<std::string>>(m_InverterDataPayloadFields.at(FIELDNAME_BATTERYMODE));
+	return std::get<std::optional<BatteryModes>>(m_InverterDataPayloadFields.at(FIELDNAME_BATTERYMODE));
 }
 
 std::optional<Production> InverterData::GeneratedEnergy_Day() const

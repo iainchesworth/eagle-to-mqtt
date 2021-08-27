@@ -14,6 +14,7 @@
 #include "metering/devices/fronius/energy_management/grid_energy_measurement.h"
 #include "metering/devices/fronius/energy_management/load_energy_measurement.h"
 #include "metering/devices/fronius/energy_management/pv_energy_measurement.h"
+#include "metering/devices/fronius/messages_types/battery_modes.h"
 #include "metering/devices/fronius/messages_types/meter_locations.h"
 #include "metering/devices/fronius/messages_types/operating_modes.h"
 #include "metering/devices/fronius/messages_types/percentage.h"
@@ -38,6 +39,32 @@ struct translator_between<std::string, AkkuEnergyMeasurement>
 			}
 
 			return boost::optional<AkkuEnergyMeasurement>(str);
+		}
+
+		boost::optional<internal_type> put_value(const external_type& obj)
+		{
+			throw NotImplemented();
+		}
+	};
+};
+
+template<>
+struct translator_between<std::string, BatteryModes>
+{
+	struct type
+	{
+		using internal_type = std::string;
+		using external_type = BatteryModes;
+
+		boost::optional<external_type> get_value(const internal_type& str)
+		{
+			if (str.empty())
+			{
+				spdlog::debug("Cannot extract BatteryModes...zero-length string provided");
+				return boost::optional<external_type>(boost::none);
+			}
+
+			return boost::optional<BatteryModes>(BatteryModes::FromString(str));
 		}
 
 		boost::optional<internal_type> put_value(const external_type& obj)

@@ -12,6 +12,7 @@
 #include "metering/common/energy_value.h"
 #include "metering/devices/fronius/common/symo_payloads.h"
 #include "metering/devices/fronius/hardware/hardware.h"
+#include "metering/devices/fronius/messages_types/battery_modes.h"
 #include "metering/devices/fronius/messages_types/percentage.h"
 
 class InverterData : public SymoPayload
@@ -33,13 +34,13 @@ public:
 	std::optional<Power> InstananeousPower() const;
 	std::optional<Percentage> StateOfCharge() const;
 	std::optional<uint32_t> ComponentId() const;
-	std::optional<std::string> BatteryMode() const;
+	std::optional<BatteryModes> BatteryMode() const;
 	std::optional<Production> GeneratedEnergy_Day() const;
 	std::optional<Production> GeneratedEnergy_Year() const;
 	std::optional<Production> GeneratedEnergy_Total() const;
 
 private:
-	using InverterDataPayloadFieldTypes = std::variant<std::optional<uint32_t>, std::optional<int32_t>, std::optional<Power>, std::optional<Percentage>, std::optional<std::string>, std::optional<Production>>;
+	using InverterDataPayloadFieldTypes = std::variant<std::optional<uint32_t>, std::optional<int32_t>, std::optional<Power>, std::optional<Percentage>, std::optional<BatteryModes>, std::optional<Production>>;
 	using InverterDataPayloadFields = std::unordered_map<std::string, InverterDataPayloadFieldTypes>;
 	InverterDataPayloadFields m_InverterDataPayloadFields
 	{
@@ -47,7 +48,7 @@ private:
 		{ FIELDNAME_POWER, std::optional<Power>() },
 		{ FIELDNAME_STATEOFCHARGE, std::optional<Percentage>() },
 		{ FIELDNAME_COMPONENTID, std::optional<uint32_t>() },
-		{ FIELDNAME_BATTERYMODE, std::optional<std::string>() },
+		{ FIELDNAME_BATTERYMODE, std::optional<BatteryModes>() },
 		{ FIELDNAME_DAY, std::optional<Production>() },
 		{ FIELDNAME_YEAR, std::optional<Production>() },
 		{ FIELDNAME_TOTAL, std::optional<Production>() }

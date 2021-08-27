@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "metering/devices/fronius/messages/solarapi_currentdata_powerflow.h"
+#include "metering/devices/fronius/messages_types/battery_modes.h"
 
 #include "test_tools/test_tools_solarapi_generator.h"
 
@@ -66,7 +67,7 @@ BOOST_AUTO_TEST_CASE(Test_PowerFlow, *boost::unit_test::tolerance(0.00001)) // T
         BOOST_TEST(sacdpf_hybrid.Inverters().at(1).StateOfCharge().value() == 55.0l);
         BOOST_TEST(!sacdpf_hybrid.Inverters().at(1).ComponentId().has_value());
         BOOST_TEST(sacdpf_hybrid.Inverters().at(1).BatteryMode().has_value());
-        BOOST_TEST(sacdpf_hybrid.Inverters().at(1).BatteryMode().value() == std::string("normal"));
+        BOOST_TEST(sacdpf_hybrid.Inverters().at(1).BatteryMode().value() == BatteryModes(BatteryModes::Modes::Normal));
         BOOST_TEST(sacdpf_hybrid.Inverters().at(1).GeneratedEnergy_Day().has_value());
         BOOST_TEST(sacdpf_hybrid.Inverters().at(1).GeneratedEnergy_Day().value().ValueIn<WattHours>() == 6758.0l);
         BOOST_TEST(sacdpf_hybrid.Inverters().at(1).GeneratedEnergy_Year().has_value());
@@ -196,7 +197,7 @@ BOOST_AUTO_TEST_CASE(Test_PowerFlow, *boost::unit_test::tolerance(0.00001)) // T
         BOOST_TEST(sacdpf_gen24.Inverters().at(1).StateOfCharge().value() == 30.600000381469727l);
         BOOST_TEST(!sacdpf_gen24.Inverters().at(1).ComponentId().has_value());
         BOOST_TEST(sacdpf_gen24.Inverters().at(1).BatteryMode().has_value());
-        BOOST_TEST(sacdpf_gen24.Inverters().at(1).BatteryMode().value() == std::string("normal"));
+        BOOST_TEST(sacdpf_gen24.Inverters().at(1).BatteryMode().value() == BatteryModes(BatteryModes::Modes::Normal));
         BOOST_TEST(!sacdpf_gen24.Inverters().at(1).GeneratedEnergy_Day().has_value());
         BOOST_TEST(!sacdpf_gen24.Inverters().at(1).GeneratedEnergy_Year().has_value());
         BOOST_TEST(!sacdpf_gen24.Inverters().at(1).GeneratedEnergy_Total().has_value());

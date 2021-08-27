@@ -32,7 +32,7 @@ OperatingModes::Modes OperatingModes::FromString(const std::string& mode_string)
 
 	if (0 == mode_string.length())
 	{
-		spdlog::warn("Invalid Modes provided to converter (zero-length)");
+		spdlog::warn("Invalid OperatingModes::Modes provided to converter (zero-length)");
 		throw std::runtime_error("Zero-length mode value");
 	}
 	else if (boost::iequals(PRODUCE_ONLY, mode_string))
@@ -57,7 +57,7 @@ OperatingModes::Modes OperatingModes::FromString(const std::string& mode_string)
 	}
 	else
 	{
-		spdlog::warn("Unknown Mode provided to converter: {}", mode_string);
+		spdlog::warn("Unknown OperatingModes::Mode provided to converter: {}", mode_string);
 		mode_type = Modes::Unknown;
 	}
 

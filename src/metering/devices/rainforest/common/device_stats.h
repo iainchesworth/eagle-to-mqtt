@@ -17,27 +17,27 @@ public:
 	DeviceStatistics();
 
 public:
-	UnixTimepoint LastMessageTimestamp;
+	UnixTimepoint LastMessageTimestamp{};
 
 	// Generic statistics
-	uint64_t MessageCount;
+	uint64_t TotalMessageCount{ 0 };
 
 	// Errors and other problems
-	uint64_t MissingPayloadFields;
-	uint64_t ErrorsWhileProcessing;
+	uint64_t MissingPayloadFields{ 0 };
+	uint64_t ErrorsWhileProcessing{ 0 };
 
 	// Payload types
-	uint64_t BillingPeriodCount;
-	uint64_t BlockPriceDetailCount;
-	uint64_t ConnectionStatusCount;
-	uint64_t CurrentSummationCount;
-	uint64_t DeviceInfoCount;
-	uint64_t InstantaneousDemandCount;
-	uint64_t MessageClusterCount;
-	uint64_t NetworkInfoCount;
-	uint64_t PriceClusterCount;
-	uint64_t TimeClusterCount;
-	uint64_t UnknownMessageCount;
+	uint64_t BillingPeriodCount{ 0 };
+	uint64_t BlockPriceDetailCount{ 0 };
+	uint64_t ConnectionStatusCount{ 0 };
+	uint64_t CurrentSummationCount{ 0 };
+	uint64_t DeviceInfoCount{ 0 };
+	uint64_t InstantaneousDemandCount{ 0 };
+	uint64_t MessageClusterCount{ 0 };
+	uint64_t NetworkInfoCount{ 0 };
+	uint64_t PriceClusterCount{ 0 };
+	uint64_t TimeClusterCount{ 0 };
+	uint64_t UnknownMessageCount{ 0 };
 
 public:
 	boost::json::object Serialize() const final;

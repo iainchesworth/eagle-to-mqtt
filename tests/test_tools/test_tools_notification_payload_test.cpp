@@ -6,7 +6,7 @@
 
 #include "test_tools/test_tools_notification_payload_test.h"
 
-void test_tools::NotificationPayload_ValueTester(const MeteringPayload_ElementMap& map, const MeteringPayload_ElementMap::key_type& key, const std::string& value_as_string)
+void test_tools::NotificationPayload_ValueTester(const EagleNotification_PublishPayload::Types::ElementMap& map, const EagleNotification_PublishPayload::Types::ElementMap::key_type& key, const std::string& value_as_string)
 {
 	if (const auto& it = map.find(key); map.end() == it)
 	{

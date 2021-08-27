@@ -1,6 +1,7 @@
 #ifndef EAGLE_H
 #define EAGLE_H
 
+#include <boost/json.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include <atomic>

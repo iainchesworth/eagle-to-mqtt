@@ -4,17 +4,17 @@
 #include <boost/signals2/signal.hpp>
 
 #include "metering/common/energy_value.h"
-#include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
+#include "notifications/common/notification_payload_types.h"
 #include "notifications/metering/notification_publishpayload.h"
 
-class Notification_EnergyUsage : public Notification_PublishPayload
+class Notification_EnergyUsage : public EagleNotification_PublishPayload
 {
 	static const std::string MAPKEY_INSTANTANEOUSDEMAND;
 	static const std::string MAPKEY_LIFETIMEDELIVERED;
 	static const std::string MAPKEY_LIFETIMERECEIVED;
 
 public:
-	explicit Notification_EnergyUsage(EthernetMacId device_id);
+	explicit Notification_EnergyUsage(EagleNotification_PublishPayload::Types::DeviceId device_id);
 
 public:
 	Notification_EnergyUsage& InstantaneousDemand(const Power& now);

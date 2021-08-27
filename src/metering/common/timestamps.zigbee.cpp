@@ -11,7 +11,7 @@ ZigbeeTimepoint::ZigbeeTimepoint() :
 }
 
 ZigbeeTimepoint::ZigbeeTimepoint(const std::string& zigbee_timepoint) :
-	ZigbeeTimepoint(FromString(zigbee_timepoint))
+	ZigbeeTimepoint(FromHexString(zigbee_timepoint))
 {
 }
 
@@ -20,13 +20,23 @@ ZigbeeTimepoint::ZigbeeTimepoint(const std::chrono::time_point<std::chrono::syst
 {
 }
 
-ZigbeeTimepoint ZigbeeTimepoint::FromString(const std::string& zigbee_timepoint_string)
+ZigbeeTimepoint ZigbeeTimepoint::FromHexString(const std::string& zigbee_timepoint_string)
 {
 	std::chrono::time_point<std::chrono::system_clock> timepoint_without_offset = hex_string_to_timepoint(zigbee_timepoint_string);
 	
 	auto timepoint_with_offset = timepoint_without_offset + DIFFERENCE_IN_SECONDS_FROM_1970_TO_2000;
 
 	return ZigbeeTimepoint(timepoint_with_offset);
+}
+
+ZigbeeTimepoint ZigbeeTimepoint::FromRFC3339String(const std::string& zigbee_timepoint_string)
+{
+	std::istringstream iss{ zigbee_timepoint_string };
+	date::sys_seconds tp;
+
+	iss >> date::parse("%FT%T%Ez", tp);
+
+	return ZigbeeTimepoint(tp);
 }
 
 std::string ZigbeeTimepoint::ToString(const ZigbeeTimepoint& zigbee_timepoint)

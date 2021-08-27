@@ -11,7 +11,9 @@ class SolarApi_Generator
 public:
 	enum class SolarApiVersions
 	{
-		V0, V1, V2
+		FroniusHybrid,
+		FroniusNonHybrid,
+		GEN24_Primo
 	};
 
 public:
@@ -19,6 +21,19 @@ public:
 
 public:
 	std::string Generate_CurrentData_Inverter() const;
+	std::string Generate_CurrentData_PowerFlow() const;
+
+private:
+	std::string Generate_CurrentData_Inverter_Hybrid() const;
+	std::string Generate_CurrentData_PowerFlow_Hybrid() const;
+
+private:
+	std::string Generate_CurrentData_Inverter_NonHybrid() const;
+	std::string Generate_CurrentData_PowerFlow_NonHybrid() const;
+
+private:
+	std::string Generate_CurrentData_Inverter_GEN24() const;
+	std::string Generate_CurrentData_PowerFlow_GEN24() const;
 
 private:
 	SolarApiVersions m_Version;

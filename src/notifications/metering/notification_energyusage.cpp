@@ -4,8 +4,8 @@ const std::string  Notification_EnergyUsage::MAPKEY_INSTANTANEOUSDEMAND{ "instan
 const std::string  Notification_EnergyUsage::MAPKEY_LIFETIMEDELIVERED{ "lifetimedelivered_kwh" };
 const std::string  Notification_EnergyUsage::MAPKEY_LIFETIMERECEIVED{ "lifetimereceived_kwh" };
 
-Notification_EnergyUsage::Notification_EnergyUsage(EthernetMacId device_id) :
-	Notification_PublishPayload(device_id)
+Notification_EnergyUsage::Notification_EnergyUsage(EagleNotification_PublishPayload::Types::DeviceId device_id) :
+	EagleNotification_PublishPayload(device_id)
 {
 }
 

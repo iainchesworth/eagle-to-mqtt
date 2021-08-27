@@ -5,7 +5,7 @@
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
 #include "notifications/notification_manager.h"
-#include "notifications/common/metering_payload_types.h"
+#include "notifications/common/notification_payload_types.h"
 #include "notifications/metering/notification_connectivity.h"
 
 #include "test_tools/test_tools_notification_payload_test.h"
@@ -14,8 +14,8 @@ struct Fixture_NotificationConnectivity
 {
 	struct LastNotificationPayload
 	{
-		MeteringPayload_DeviceId device_id;
-		MeteringPayload_ElementMap payload;
+		EagleNotification_PublishPayload::Types::DeviceId device_id;
+		EagleNotification_PublishPayload::Types::ElementMap payload;
 	};
 
 	LastNotificationPayload last_notification_payload;
@@ -34,7 +34,7 @@ struct Fixture_NotificationConnectivity
 		connection_status_notif{ std::make_shared<Notification_Connectivity>(device_id) }
 	{
 		mgr.RegisterCallback<Notification_Connectivity>(
-			[this](const MeteringPayload& metering_payload)
+			[this](const EagleNotification_PublishPayload::Types::Payload& metering_payload)
 			{
 				last_notification_payload.device_id = metering_payload.first;
 				last_notification_payload.payload = metering_payload.second;

@@ -8,11 +8,12 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <typeinfo>
 
 #include "exceptions/missing_message_key.h"
 #include "exceptions/not_implemented.h"
 
-// Forward Declarations
+// Forward declarations
 class CurrencyCodes;
 class EthernetMacId;
 class Priorities;
@@ -61,6 +62,10 @@ FIELD_TYPE RetrieveValue(GETTER_FUNC getter)
 template<typename FIELD_TYPE>
 FIELD_TYPE RetrieveValue(const boost::property_tree::ptree& node, const std::string& field)
 {
+	// Trigger compile time errors
+	static_assert(false);
+
+	spdlog::debug("NotImplemented -> TryAndRetrieveValue({}, {})", typeid(FIELD_TYPE).name(), field);
 	throw NotImplemented();
 }
 template<>
@@ -141,6 +146,10 @@ std::optional<FIELD_TYPE> TryAndRetrieveValue(GETTER_FUNC getter)
 template<typename FIELD_TYPE>
 std::optional<FIELD_TYPE> TryAndRetrieveValue(const boost::property_tree::ptree& node, const std::string& field)
 {
+	// Trigger compile time errors
+	static_assert(false);
+
+	spdlog::debug("NotImplemented -> TryAndRetrieveValue({}, {})", typeid(FIELD_TYPE).name(), field);
 	throw NotImplemented();
 }
 template<>

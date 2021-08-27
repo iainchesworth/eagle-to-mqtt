@@ -16,7 +16,7 @@ boost::json::object DeviceStatistics_Serializer::Serialize() const
 	spdlog::debug("Serializing Fronius::DeviceStatistics");
 
 	device_stats["LastMessageTimestamp"] = UnixTimepoint::ToString(m_Serializable.LastMessageTimestamp);
-	device_stats["MessageCount"] = m_Serializable.MessageCount;
+	device_stats["TotalMessageCount"] = m_Serializable.TotalMessageCount;
 	device_stats["MissingPayloadFields"] = m_Serializable.MissingPayloadFields;
 	device_stats["ErrorsWhileProcessing"] = m_Serializable.ErrorsWhileProcessing;
 	device_stats["SolarAPI_CurrentData_InverterCount"] = m_Serializable.SolarAPI_CurrentData_InverterCount;

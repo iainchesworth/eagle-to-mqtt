@@ -8,6 +8,7 @@
 #include "metering/types/boolean.h"
 #include "metering/types/integer.h"
 #include "metering/types/presence_helpers.h"
+#include "metering/devices/fronius/energy_management/energy_measurement.h"
 #include "metering/devices/rainforest/messages/partial_message_types/ethernet_mac_id.h"
 #include "metering/devices/rainforest/messages/partial_message_types/pricing_tier.h"
 #include "metering/devices/rainforest/messages/partial_message_types/zigbee_mac_id.h"
@@ -120,7 +121,7 @@ ZigBeeMacId PresenseHelpers::RetrieveValue<ZigBeeMacId>(const boost::property_tr
 template<>
 ZigbeeTimepoint PresenseHelpers::RetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field)
 {
-	return RetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromString(node.get<std::string>(field)); });
+	return RetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromHexString(node.get<std::string>(field)); });
 }
 
 //=====================================================================================================================
@@ -231,5 +232,5 @@ std::optional<ZigBeeMacId> PresenseHelpers::TryAndRetrieveValue<ZigBeeMacId>(con
 template<>
 std::optional<ZigbeeTimepoint> PresenseHelpers::TryAndRetrieveValue<ZigbeeTimepoint>(const boost::property_tree::ptree& node, const std::string& field)
 {
-	return TryAndRetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromString(node.get<std::string>(field)); });
+	return TryAndRetrieveValue<ZigbeeTimepoint>([&node, &field]() { return ZigbeeTimepoint::FromHexString(node.get<std::string>(field)); });
 }

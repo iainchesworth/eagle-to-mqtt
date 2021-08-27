@@ -15,7 +15,7 @@ boost::json::object Symo_Serializer::Serialize() const
 	spdlog::debug("Serializing Symo");
 
 	// Device Statistics
-	Fronius::DeviceStatistics_Serializer ds_serializer(m_Serializable.m_Statistics);
+	Fronius::DeviceStatistics_Serializer ds_serializer(m_Serializable.Statistics());
 	device_object["Stats"] = ds_serializer.Serialize();
 	
 	return device_object;

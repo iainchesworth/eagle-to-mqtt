@@ -5,7 +5,8 @@
 #include "metering/devices/fronius/energy_management/energy_production_stats.h"
 #include "notifications/notification_manager.h"
 #include "notifications/metering/notification_energygeneration.h"
-#include "notifications/metering/notification_inverterinfo.h"
+#include "notifications/metering/notification_invertergeneration.h"
+#include "notifications/metering/notification_inverterstatus.h"
 
 void Symo::ProcessFragment(const SolarApi_CurrentData_PowerFlow& solarapi_currentdata_powerflow)
 {
@@ -25,7 +26,9 @@ void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerF
 	{
 		spdlog::trace("Processing inverter {}...", inverter_id);
 
-		auto inverterinfo_notif = std::make_shared<Notification_InverterInfo>(inverter_id);
+		auto invertergeneration_notif = std::make_shared<Notification_InverterGeneration>(inverter_id);
+		auto inverterstatus_notif = std::make_shared<Notification_InverterStatus>(inverter_id);
+
 		Fronius::EnergyProductionStats updated_energy_stats;
 
 		if (inverter_data.GeneratedEnergy_Day().has_value())
@@ -34,7 +37,7 @@ void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerF
 			updated_energy_stats.Today = Production(inverter_data.GeneratedEnergy_Day().value().ValueIn<WattHours>());
 
 			// There's potentially been a change to the production statistics...report it.
-			inverterinfo_notif->DailyProduction(updated_energy_stats.Today);
+			invertergeneration_notif->DailyProduction(updated_energy_stats.Today);
 		}
 		else
 		{
@@ -47,7 +50,7 @@ void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerF
 			updated_energy_stats.Year = Production(inverter_data.GeneratedEnergy_Year().value().ValueIn<WattHours>());
 
 			// There's potentially been a change to the production statistics...report it.
-			inverterinfo_notif->AnnualProduction(updated_energy_stats.Year);
+			invertergeneration_notif->AnnualProduction(updated_energy_stats.Year);
 		}
 		else
 		{
@@ -60,7 +63,7 @@ void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerF
 			updated_energy_stats.AllTime = Production(inverter_data.GeneratedEnergy_Total().value().ValueIn<WattHours>());
 
 			// There's potentially been a change to the production statistics...report it.
-			inverterinfo_notif->AllTimeProduction(updated_energy_stats.AllTime);
+			invertergeneration_notif->AllTimeProduction(updated_energy_stats.AllTime);
 		}
 		else
 		{
@@ -73,7 +76,7 @@ void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerF
 			updated_energy_stats.InstantaneousGeneration = Power(inverter_data.InstananeousPower().value().ValueIn<Watts>());
 
 			// There's potentially been a change to the production statistics...report it.
-			inverterinfo_notif->InstantaneousDemand(updated_energy_stats.InstantaneousGeneration);
+			invertergeneration_notif->InstantaneousDemand(updated_energy_stats.InstantaneousGeneration);
 		}
 		else
 		{
@@ -82,7 +85,28 @@ void Symo::ProcessFragment_PowerFlow_Inverters(const SolarApi_CurrentData_PowerF
 
 		m_EnergyProduction.Inverters.insert_or_assign(inverter_id, updated_energy_stats);
 
-		NotificationManagerSingleton()->Dispatch(inverterinfo_notif);
+		if (inverter_data.DeviceType().has_value())
+		{
+			inverterstatus_notif->DeviceType(inverter_data.DeviceType().value());
+		}
+
+		if (inverter_data.StateOfCharge().has_value())
+		{
+			inverterstatus_notif->StateOfCharge(inverter_data.StateOfCharge().value());
+		}
+
+		if (inverter_data.ComponentId().has_value())
+		{
+			inverterstatus_notif->ComponentId(inverter_data.ComponentId().value());
+		}
+
+		if (inverter_data.BatteryMode().has_value())
+		{
+			inverterstatus_notif->BatteryMode(inverter_data.BatteryMode().value());
+		}
+
+		NotificationManagerSingleton()->Dispatch(invertergeneration_notif);
+		NotificationManagerSingleton()->Dispatch(inverterstatus_notif);
 	}
 }
 

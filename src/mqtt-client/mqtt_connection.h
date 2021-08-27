@@ -53,6 +53,8 @@ private:
 
 private:
 	void NotificationHandler_BridgeStatusChange(const BridgeStatus& bridge_status);
+
+private:
 	void NotificationHandler_Connectivity(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_DeviceInfo(const EagleNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_PublishKeepAlive(const std::chrono::seconds& uptime);
@@ -61,7 +63,8 @@ private:
 
 public:
 	void NotificationHandler_EnergyGeneration(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
-	void NotificationHandler_InverterInfo(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
+	void NotificationHandler_InverterGeneration(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
+	void NotificationHandler_InverterStatus(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
 	void NotificationHandler_FroniusDeviceStats(const SymoNotification_PublishPayload::Types::Payload& metering_payload);
 
 private:

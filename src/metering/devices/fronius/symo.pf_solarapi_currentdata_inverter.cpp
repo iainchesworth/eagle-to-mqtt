@@ -2,7 +2,7 @@
 
 #include "metering/devices/fronius/symo.h"
 #include "notifications/notification_manager.h"
-#include "notifications/metering/notification_inverterinfo.h"
+#include "notifications/metering/notification_invertergeneration.h"
 
 void Symo::ProcessFragment(const SolarApi_CurrentData_Inverter& solarapi_currentdata_inverter)
 {
@@ -14,7 +14,7 @@ void Symo::ProcessFragment(const SolarApi_CurrentData_Inverter& solarapi_current
 	{
 		spdlog::trace("Processing inverter {}...", inverter_id);
 
-		auto inverterinfo_notif = std::make_shared<Notification_InverterInfo>(inverter_id);
+		auto inverterinfo_notif = std::make_shared<Notification_InverterGeneration>(inverter_id);
 
 		(*inverterinfo_notif)
 			.DailyProduction(generation_data.Today)

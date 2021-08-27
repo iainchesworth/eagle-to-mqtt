@@ -17,7 +17,7 @@ void MqttConnection::NotificationHandler_EnergyUsage(const EagleNotification_Pub
 	}
 	else
 	{
-		const std::string TOPIC{ m_Options.MqttTopic() + "/" + EagleNotification_PublishPayload::Types::DeviceId::ToString(metering_payload.first) + "/energy-usage/" };
+		const std::string TOPIC{ m_Options.MqttTopic() + "/power/usage/" };
 		NotificationHandler_PublishPayload(TOPIC, metering_payload);
 	}
 }

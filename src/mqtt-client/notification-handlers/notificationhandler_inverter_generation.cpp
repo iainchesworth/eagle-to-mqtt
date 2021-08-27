@@ -3,9 +3,9 @@
 #include "mqtt-client/mqtt_connection.h"
 #include "notifications/common/notification_payload_types.h"
 
-void MqttConnection::NotificationHandler_EnergyGeneration(const SymoNotification_PublishPayload::Types::Payload& metering_payload)
+void MqttConnection::NotificationHandler_InverterGeneration(const SymoNotification_PublishPayload::Types::Payload& metering_payload)
 {
-	spdlog::trace("NotificationHandler_EnergyGeneration() -> Notification received by MQTT Connection");
+	spdlog::trace("NotifcationHandler_InverterInfo() -> Notification received by MQTT Connection");
 
 	if (nullptr == m_ClientPtr)
 	{
@@ -17,7 +17,9 @@ void MqttConnection::NotificationHandler_EnergyGeneration(const SymoNotification
 	}
 	else
 	{
-		const std::string TOPIC{ m_Options.MqttTopic() + "/power/generation/" };
+		const std::string INVERTER_ID{ "inverter_" + std::to_string(metering_payload.first)};
+		const std::string TOPIC{ m_Options.MqttTopic() + "/hardware/inverters/" + INVERTER_ID + "/" };
+		
 		NotificationHandler_PublishPayload(TOPIC, metering_payload);
 	}
 }

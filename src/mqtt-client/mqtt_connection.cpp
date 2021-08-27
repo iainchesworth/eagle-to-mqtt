@@ -11,7 +11,8 @@
 #include "notifications/metering/notification_deviceinfo.h"
 #include "notifications/metering/notification_energygeneration.h"
 #include "notifications/metering/notification_energyusage.h"
-#include "notifications/metering/notification_inverterinfo.h"
+#include "notifications/metering/notification_invertergeneration.h"
+#include "notifications/metering/notification_inverterstatus.h"
 #include "notifications/metering/fronius/notification_devicestats.h"
 #include "notifications/metering/rainforest/notification_devicestats.h"
 
@@ -30,6 +31,8 @@ MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& opti
 	///
 
 	NotificationManagerSingleton()->RegisterCallback<Notification_BridgeStatusChanged>(std::bind(&MqttConnection::NotificationHandler_BridgeStatusChange, this, std::placeholders::_1));
+
+	///
 	NotificationManagerSingleton()->RegisterCallback<Notification_Connectivity>(std::bind(&MqttConnection::NotificationHandler_Connectivity, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_DeviceInfo>(std::bind(&MqttConnection::NotificationHandler_DeviceInfo, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyUsage>(std::bind(&MqttConnection::NotificationHandler_EnergyUsage, this, std::placeholders::_1));
@@ -38,7 +41,8 @@ MqttConnection::MqttConnection(boost::asio::io_context& ioc, const Options& opti
 
 	///
 	NotificationManagerSingleton()->RegisterCallback<Notification_EnergyGeneration>(std::bind(&MqttConnection::NotificationHandler_EnergyGeneration, this, std::placeholders::_1));
-	NotificationManagerSingleton()->RegisterCallback<Notification_InverterInfo>(std::bind(&MqttConnection::NotificationHandler_InverterInfo, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Notification_InverterGeneration>(std::bind(&MqttConnection::NotificationHandler_InverterGeneration, this, std::placeholders::_1));
+	NotificationManagerSingleton()->RegisterCallback<Notification_InverterStatus>(std::bind(&MqttConnection::NotificationHandler_InverterStatus, this, std::placeholders::_1));
 	NotificationManagerSingleton()->RegisterCallback<Fronius::Notification_DeviceStats>(std::bind(&MqttConnection::NotificationHandler_FroniusDeviceStats, this, std::placeholders::_1));
 }
 

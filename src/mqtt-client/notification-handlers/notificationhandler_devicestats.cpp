@@ -17,7 +17,7 @@ void MqttConnection::NotificationHandler_RainforestDeviceStats(const EagleNotifi
 	}
 	else
 	{
-		const std::string TOPIC{ m_Options.MqttTopic() + "/hardware/rainforest/" + EagleNotification_PublishPayload::Types::DeviceId::ToString(metering_payload.first) + "/stats/" };
+		const std::string TOPIC{ m_Options.MqttTopic() + "/statistics/rainforest/" };
 		NotificationHandler_PublishPayload(TOPIC, metering_payload);
 	}
 }
@@ -36,7 +36,7 @@ void MqttConnection::NotificationHandler_FroniusDeviceStats(const SymoNotificati
 	}
 	else
 	{
-		const std::string TOPIC{ m_Options.MqttTopic() + "/hardware/fronius/stats/" };
+		const std::string TOPIC{ m_Options.MqttTopic() + "/statistics/fronius/" };
 		NotificationHandler_PublishPayload(TOPIC, metering_payload);
 	}
 }
